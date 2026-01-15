@@ -29,15 +29,30 @@ body {
     border-bottom: 1px solid #dadce0;
 }
 
-.malaria-header button {
+.btn-link {
     background: #fff;
+    color: #202124;
     border: 1px solid #dadce0;
-    border-radius: 4px;
-    padding: 4px 14px;
+    border-radius: 6px;
+    padding: 6px 16px;
     font-size: 13px;
     font-weight: 500;
+    text-decoration: none;
     cursor: pointer;
+    transition: 0.15s ease;
 }
+
+.btn-link:hover {
+    background: #f1f3f4;
+    border-color: #c6c9cc;
+}
+
+.btn-link:active,
+.btn-link:visited {
+    color: #202124;
+    background: #e8eaed;
+}
+
 
 .malaria-heading-section {
     position: absolute;
