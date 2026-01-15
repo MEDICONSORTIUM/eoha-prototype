@@ -5,9 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Malaria Prediction</title>
     <link rel="stylesheet" href="../styles/malaria-page.css">
-    <script src="../scripts/malaria-page.js"></script>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    
+    <link rel="stylesheet" href="https://js.arcgis.com/4.28/esri/themes/light/main.css">
 </head>
 <body>
+
+    <div id="map"></div>
+
     <header class="malaria-header">
         <a href="../pages/index.html" class="btn-link">Back</a>
         <section class="malaria-heading-section">
@@ -21,26 +27,25 @@
         
         <h2>Region Selector</h2>
         <p>Country</p>
-        <select name="country" class="countries-select">
-            <option value="South Africa">South Africa</option>
-            <option value="Botswana">Botswana</option>
-            <option value="Zimbabwe">Zimbabwe</option>
-            <option value="Lesotho">Lesotho</option>
+        <select name="country" id="country-select" class="countries-select">
+            <option value="">-- Select Country --</option>
         </select>
+        
         <p>Province</p>
-        <select name="province" class="provinces-select" disabled>
+        <select name="province" id="province-select" class="provinces-select" disabled>
             <option value="">-- Select Country First --</option>
         </select>
+        
         <p>City</p>
         <select name="city" id="city-select" disabled>
-            <option value="">-- Select Province/District First --</option>
+            <option value="">-- Select Province First --</option>
         </select>
         </section>
 
-    
     </article>
 
     <article class="env-risk-article">
+
     <section class="enviro-factors">
     <h2>Environmental Factors</h2>
     
@@ -61,16 +66,17 @@
     <p>Soil Moisture</p>
     <progress class="soil-moist-temp-bar" value="32" max="100">32%</progress>
     <output>32 m³</output>
-</section>
+    </section>
 
     <section class="risk-prediction">
     <h2>Risk Prediction</h2>
     <p>Current Risk Level</p>
-    <h3>High</h3>
-    <h4>73%</h4>
+    <h3 id="risk-text">--</h3>
+    <h4 id="risk-percentage">0%</h4>
     </section>
     </article>
-</body>
-    
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="../scripts/malaria-page.js"></script>
 </body>
 </html>

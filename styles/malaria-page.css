@@ -4,19 +4,31 @@ body {
     padding: 12px 16px;
     font-family: "Google Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #3c4043;
-    background-color: #f8f9fa;
+    /* Changed from #f8f9fa to transparent so we can see the map */
+    background-color: transparent; 
 
     height: 100vh;
-    overflow: auto;
+    overflow: hidden; /* Prevent scroll on body, let map handle it */
 
     display: grid;
     grid-template-columns: 260px 1fr 260px;
     grid-template-rows: auto min-content min-content;
     gap: 12px;
+    position: relative;
 }
 
 * {
     box-sizing: border-box;
+}
+
+/* Map Background - Floats behind everything */
+#map {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0; /* Behind content */
 }
 
 /* Header */
@@ -25,8 +37,14 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-bottom: 6px;
+    padding: 12px 16px;
+    /* Added background/shadow so header is readable over map */
+    background: rgba(255, 255, 255, 0.95);
     border-bottom: 1px solid #dadce0;
+    border-radius: 8px;
+    position: relative;
+    z-index: 2; /* Above Map */
+    box-shadow: 0 1px 2px rgba(60,64,67,0.15);
 }
 
 .btn-link {
@@ -46,13 +64,6 @@ body {
     background: #f1f3f4;
     border-color: #c6c9cc;
 }
-
-.btn-link:active,
-.btn-link:visited {
-    color: #202124;
-    background: #e8eaed;
-}
-
 
 .malaria-heading-section {
     position: absolute;
@@ -80,19 +91,22 @@ body {
     display: contents;
 }
 
-/* Cards */
+/* Cards - Floating Panels */
 .region-selector,
 .malaria-metrics,
 .enviro-factors,
 .risk-prediction {
-    background: #fff;
+    background: rgba(255, 255, 255, 0.95); /* Slight transparency */
     border-radius: 8px;
     padding: 16px;
-    box-shadow: 0 1px 2px rgba(60,64,67,0.15),
-                0 1px 3px rgba(60,64,67,0.1);
+    box-shadow: 0 2px 6px rgba(60,64,67,0.15),
+                0 1px 2px rgba(60,64,67,0.3);
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    position: relative;
+    z-index: 2; /* Above Map */
+    backdrop-filter: blur(5px); /* Nice glass effect */
 }
 
 /* Card positioning */
@@ -126,7 +140,7 @@ h2 {
     color: #202124;
 }
 
-/* Region Selector */
+/* Region Selector Styles */
 .region-selector {
     display: flex;
     flex-direction: column;
@@ -161,19 +175,12 @@ h2 {
     outline: none;
     cursor: pointer;
     transition: all 0.2s ease;
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%235F6368%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px top 50%;
-    background-size: 9px auto;
 }
 
 .region-selector select:disabled {
     background-color: #f1f3f4;
     color: #bdc1c6;
     cursor: not-allowed;
-    border-color: #f1f3f4;
-    background-image: none;
 }
 
 /* Environmental factors */
@@ -251,18 +258,4 @@ progress {
     padding: 4px 10px;
     border-radius: 16px;
     background-color: #f1f3f4;
-}
-
-/* Status colors */
-.status-high { color: #d93025; }
-.status-medium { color: #fa7b17; }
-.status-low { color: #34a853; }
-
-/* Center visualization placeholder */
-.center-visualization {
-    grid-column: 2;
-    grid-row: 2 / 4;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }

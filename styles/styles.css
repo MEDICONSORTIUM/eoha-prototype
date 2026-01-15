@@ -228,37 +228,6 @@ body {
     box-shadow: none;
 }
 
-.disease-cards .btn-link {
-    margin-top: auto;
-    align-self: center;
-
-    background-color: transparent;
-    color: #1a73e8;
-    border: 1px solid #1a73e8;
-    border-radius: 4px;
-
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding: 10px 24px;
-
-    cursor: pointer;
-    text-decoration: none;
-    transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.disease-cards .btn-link:hover {
-    background-color: #1a73e8;
-    color: #ffffff;
-    box-shadow: 0 1px 2px rgba(60,64,67,0.3);
-}
-
-.disease-cards .btn-link:active {
-    background-color: #174ea6;
-    border-color: #174ea6;
-}
 
 .africa {
     display: flex;
