@@ -1,0 +1,285 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Google Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #3c4043;
+    line-height: 1.5;
+    background-color: #fff;
+}
+
+.header-landing {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    background-color: #fff;
+    border-bottom: 1px solid #dadce0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.name h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #5f6368;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.name h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: #5f6368;
+    font-weight: 400;
+    display: inline-block;
+    margin-left: 10px;
+    border-left: 1px solid #dadce0;
+    padding-left: 10px;
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: #5f6368;
+    font-weight: 500;
+    font-size: 14px;
+    transition: color 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.navbar a:hover {
+    color: #1a73e8;
+}
+
+.about {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    background-color: #202124;
+    color: #fff;
+    padding: 80px 10%;
+    min-height: 30px;
+    max-height: 250px;
+    margin: 0;
+    max-width: 100%;
+}
+
+.about-header {
+    font-size: 3.5rem;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    max-width: 800px;
+    font-weight: 400;
+}
+
+.about-detail {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    max-width: 700px;
+    text-align: left;
+    color: #e8eaed;
+    font-weight: 300;
+}
+
+.images {
+    display: flex;
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    background-color: #000;
+}
+
+.images section {
+    flex: 1;
+    overflow: hidden;
+    transition: flex 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+    cursor: pointer;
+    position: relative;
+    border-right: 1px solid #fff;
+}
+
+.images section:last-child {
+    border-right: none;
+}
+
+.images section img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+    filter: brightness(0.8);
+}
+
+.images section:hover {
+    flex: 4;
+}
+
+.images section:hover img {
+    transform: scale(1.02);
+    filter: brightness(1);
+}
+
+.our-platform {
+    max-width: 900px;
+    margin: 80px auto 40px;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.powered-by {
+    font-size: 2.25rem;
+    color: #202124;
+    font-weight: 400;
+    margin-bottom: 24px;
+}
+
+.aim {
+    font-size: 1.1rem;
+    color: #5f6368;
+    line-height: 1.8;
+}
+
+.disease-cards {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    padding: 40px 10%;
+    background-color: #f8f9fa;
+    flex-wrap: wrap;
+}
+
+.disease-cards section {
+    background: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+    flex: 1;
+    min-width: 300px;
+    transition: box-shadow 0.3s ease;
+}
+
+.disease-cards section:hover {
+    box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+}
+
+.disease-cards h3 {
+    font-size: 1.5rem;
+    margin-top: 0;
+    color: #202124;
+    font-weight: 400;
+}
+
+.disease-cards p {
+    color: #5f6368;
+    line-height: 1.6;
+}
+
+.disease-cards section {
+    display: flex;             
+    flex-direction: column;    
+    align-items: flex-start;   
+    background: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+    flex: 1;                  
+    min-width: 300px;
+    transition: box-shadow 0.3s ease;
+}
+.disease-cards button {
+    margin-top: auto;
+    align-self: center;
+
+    background-color: transparent;
+    color: #1a73e8;            
+    border: 1px solid #1a73e8; 
+    border-radius: 4px;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 10px 24px;
+
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.disease-cards button:hover {
+    background-color: #1a73e8;
+    color: #ffffff;
+    box-shadow: 0 1px 2px rgba(60,64,67,0.3);
+}
+
+.disease-cards button:active {
+    background-color: #174ea6;
+    border-color: #174ea6;
+    box-shadow: none;
+}
+
+.africa {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 1200px;
+    margin: 80px auto;
+    padding: 0 24px;
+    gap: 60px;
+}
+
+.africa img {
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    object-fit: cover;
+}
+
+.africa-heading {
+    font-size: 2.5rem;
+    color: #202124;
+    font-weight: 400;
+    margin-bottom: 20px;
+}
+
+.africa p {
+    font-size: 1.1rem;
+    color: #5f6368;
+    line-height: 1.8;
+}
+
+footer {
+    background-color: #202124;
+    padding: 40px 20px;
+    border-top: 1px solid #dadce0;
+}
+
+.developedby {
+    text-align: center;
+    color: white;
+    font-size: 0.9rem;
+    margin-bottom: 30px;
+}
+
+.logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.logos section img {
+    height: 50px;
+    width: auto;
+    transition: all 0.3s;
+}
