@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NCD Risk Prediction</title>
+    <link rel="stylesheet" href="../styles/ncd-page.css">
+    <script src="../scripts/ncd-page.js"></script>
+</head>
+<body>
+    <header class="ncd-header">
+        <a href="../pages/index.html" class="btn-link">Back</a>
+        <section class="ncd-heading-section">
+            <h1 class="ncd-heading">NCD Risk Prediction</h1>
+            <p>Africa Wide Monitoring</p>
+        </section>
+    </header>
+    
+    <article class="region-metrics">
+        <section class="region-selector">
+            <h2>Region Selector</h2>
+            
+            <p>Country</p>
+            <select name="country" class="countries-select">
+                <option value="South Africa">South Africa</option>
+                <option value="Botswana">Botswana</option>
+                <option value="Zimbabwe">Zimbabwe</option>
+                <option value="Lesotho">Lesotho</option>
+            </select>
+            
+            <p>Province</p>
+            <select name="province" class="provinces-select" disabled>
+                <option value="">-- Select Country First --</option>
+            </select>
+            
+            <p>City</p>
+            <select name="city" id="city-select" disabled>
+                <option value="">-- Select Province/District First --</option>
+            </select>
+        </section>
+    </article>
+
+    <article class="env-risk-article">
+        <section class="enviro-factors">
+            <h2>Environmental & Lifestyle Factors</h2>
+            
+            <p>Lifestyle Type</p>
+            <span class="text-value">Urban / Sedentary</span>
+            
+            <p>Population Density</p>
+            <span class="text-value">1,250 persons/km²</span>
+
+            <p>Access to Healthcare</p>
+            <progress class="healthcare-access-bar" value="60" max="100">60%</progress>
+            <output>60%</output>
+            
+            <p>Average Air Quality Index (AQI)</p>
+            <progress class="air-quality-bar" value="75" max="100">75</progress>
+            <output>75 AQI</output>
+            
+            <p>Obesity Prevalence</p>
+            <progress class="obesity-bar" value="28" max="100">28%</progress>
+            <output>28%</output>
+        </section>
+
+        <section class="risk-prediction">
+            <h2>Risk Prediction</h2>
+            <p>Current Risk Level</p>
+            <h3>Moderate</h3>
+            <h4>58%</h4>
+        </section>
+    </article>
+</body>
+</html>

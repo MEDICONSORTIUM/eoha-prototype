@@ -1,0 +1,267 @@
+/* Base */
+body {
+    margin: 0;
+    padding: 12px 16px;
+    font-family: "Google Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #3c4043;
+    background-color: #f8f9fa;
+
+    height: 100vh;
+    overflow: auto;
+
+    display: grid;
+    grid-template-columns: 260px 1fr 260px;
+    grid-template-rows: auto min-content min-content;
+    gap: 12px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* Header */
+.ncd-header {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #dadce0;
+}
+
+.btn-link {
+    background: #fff;
+    color: #202124;
+    border: 1px solid #dadce0;
+    border-radius: 6px;
+    padding: 6px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.15s ease;
+}
+
+.btn-link:hover {
+    background: #f1f3f4;
+    border-color: #c6c9cc;
+}
+
+.btn-link:active,
+.btn-link:visited {
+    color: #202124;
+    background: #e8eaed;
+}
+
+.ncd-heading-section {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+}
+
+.ncd-heading {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 500;
+    color: #202124;
+}
+
+.ncd-heading-section p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: #5f6368;
+}
+
+/* Remove article layout influence */
+.region-metrics,
+.env-risk-article {
+    display: contents;
+}
+
+/* Cards */
+.region-selector,
+.ncd-metrics,
+.enviro-factors,
+.risk-prediction {
+    background: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 1px 2px rgba(60,64,67,0.15),
+                0 1px 3px rgba(60,64,67,0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+/* Card positioning */
+.region-selector {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.enviro-factors {
+    grid-column: 1;
+    grid-row: 3;
+}
+
+.risk-prediction {
+    grid-column: 3;
+    grid-row: 2;
+    text-align: center;
+    align-items: center;
+}
+
+.ncd-metrics {
+    grid-column: 3;
+    grid-row: 3;
+}
+
+/* Headings */
+h2 {
+    margin: 0 0 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #202124;
+}
+
+/* Region Selector */
+.region-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.region-selector h2 {
+    font-size: 0.95rem;
+    border-bottom: 1px solid #f1f3f4;
+    padding-bottom: 8px;
+    margin-bottom: 4px;
+}
+
+.region-selector p {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #5f6368;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.region-selector select {
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    color: #3c4043;
+    background-color: #fff;
+    border: 1px solid #dadce0;
+    border-radius: 6px;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%235F6368%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px top 50%;
+    background-size: 9px auto;
+}
+
+.region-selector select:disabled {
+    background-color: #f1f3f4;
+    color: #bdc1c6;
+    cursor: not-allowed;
+    border-color: #f1f3f4;
+    background-image: none;
+}
+
+/* Environmental & Lifestyle Factors */
+.enviro-factors {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: 8px;
+    row-gap: 2px;
+}
+
+.enviro-factors h2 {
+    grid-column: 1 / -1;
+    border-bottom: 1px solid #f1f3f4;
+    padding-bottom: 8px;
+    margin-bottom: 6px;
+}
+
+.enviro-factors p {
+    grid-column: 1 / -1;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #5f6368;
+    margin-top: 8px;
+    text-transform: uppercase;
+}
+
+.text-value {
+    grid-column: 1 / -1;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #202124;
+}
+
+output {
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+progress {
+    width: 100%;
+    height: 6px;
+    border-radius: 4px;
+    background-color: #f1f3f4;
+    border: none;
+}
+
+/* Risk prediction */
+.risk-prediction h2 {
+    width: 100%;
+    border-bottom: 1px solid #f1f3f4;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+    text-align: left;
+}
+
+.risk-prediction p {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #5f6368;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+}
+
+.risk-prediction h3 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.risk-prediction h4 {
+    font-size: 1rem;
+    margin-top: 6px;
+    padding: 4px 10px;
+    border-radius: 16px;
+    background-color: #f1f3f4;
+}
+
+/* Status colors */
+.status-high { color: #d93025; }
+.status-medium { color: #fa7b17; }
+.status-low { color: #34a853; }
+
+/* Center visualization placeholder */
+.center-visualization {
+    grid-column: 2;
+    grid-row: 2 / 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
