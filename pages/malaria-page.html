@@ -3,19 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Malaria Prediction</title>
+    <link rel="stylesheet" href="../styles/malaria-page.css">
 </head>
 <body>
     <header class="malaria-header">
         <button type="button">Back</button>
+        <section class="malaria-heading-section">
         <h1 class="malaria-heading">Malaria Risk Predition</h1>
         <p>Africa Wide Monitoring</p>
+        </section>
     </header>
     
-    <article class="region&metrics">
+    <article class="region-metrics">
         <section class="region-selector">
-            
+        
+        <h2>Region Selector</h2>
+        <p>Country</p>
+        <select name="country" class="countries-select">
+            <option value="South Africa">South Africa</option>
+            <option value="Botswana">Botswana</option>
+            <option value="Zimbabwe">Zimbabwe</option>
+            <option value="Lesotho">Lesotho</option>
+        </select>
+        <p>Province</p>
+        <select name="province" class="provinces-select" disabled>
+            <option value="">-- Select Country First --</option>
+        </select>
+        <p>City</p>
+        <select name="city" id="city-select" disabled>
+            <option value="">-- Select Province/District First --</option>
+        </select>
         </section>
+
+        <section class="malaria-metrics">
+        <h2>Malaria Metrics</h2>
+        <section class="cases-outbreaks">
+            <!--Cases-->
+            <section class="total-cases">
+            <p>Total Cases</p>
+            <h3>2562</h3>
+            </section>
+            <!--Outbreaks-->
+            <section class="outbreaks">
+            <p>Outbreaks</p>
+            <h3>3</h3>
+            </section>
+        </section>
+        <!--Population-->
+        <section class="population">
+            <p>Population</p>
+            <h3>1 250 000</h3>
+        <!--Incidence Rate-->
+        <section class="incident-rate">
+            <p>Incident Rate</p>
+            <h3>228</h3><p>per 100k</p>
+        </section>
+        </section>
+        </section>
+
+
     </article>
 </body>
     

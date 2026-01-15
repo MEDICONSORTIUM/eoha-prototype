@@ -1,0 +1,17 @@
+.malaria-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: row;
+}
+
+.malaria-heading-section{
+    margin: 0 auto;
+    align-content: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.region-metrics {
+
+}
