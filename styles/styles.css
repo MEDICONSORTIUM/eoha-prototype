@@ -196,10 +196,18 @@ body {
     min-width: 300px;
     transition: box-shadow 0.3s ease;
 }
-.disease-cards button {
-    margin-top: auto;
+/* Replace your existing .disease-cards button code with this: */
+
+.btn-link {
+    /* Critical for <a> tags to accept padding/margin correctly */
+    display: inline-block; 
+    text-decoration: none; /* Removes the standard link underline */
+    
+    /* Flex alignment (works because parent section is flex-column) */
+    margin-top: auto; 
     align-self: center;
 
+    /* Visual Styling */
     background-color: transparent;
     color: #1a73e8;            
     border: 1px solid #1a73e8; 
@@ -213,16 +221,16 @@ body {
     padding: 10px 24px;
 
     cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.disease-cards button:hover {
+.btn-link:hover {
     background-color: #1a73e8;
     color: #ffffff;
     box-shadow: 0 1px 2px rgba(60,64,67,0.3);
 }
 
-.disease-cards button:active {
+.btn-link:active {
     background-color: #174ea6;
     border-color: #174ea6;
     box-shadow: none;
