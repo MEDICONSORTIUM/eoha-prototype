@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Malaria Prediction</title>
     <link rel="stylesheet" href="../styles/malaria-page.css">
+    <script src="../scripts/malaria-page.js"></script>
 </head>
 <body>
     <header class="malaria-header">
         <button type="button">Back</button>
         <section class="malaria-heading-section">
-        <h1 class="malaria-heading">Malaria Risk Predition</h1>
+        <h1 class="malaria-heading">Malaria Risk Prediction</h1>
         <p>Africa Wide Monitoring</p>
         </section>
     </header>
@@ -57,12 +58,33 @@
         <!--Incidence Rate-->
         <section class="incident-rate">
             <p>Incident Rate</p>
-            <h3>228</h3><p>per 100k</p>
+            <h3>228</h3><p>per 100k</p>     
         </section>
         </section>
         </section>
+    </article>
 
+    <article class="env-risk-article">
+    <section class="enviro-factors">
+    <h2>Environmental Factors</h2>
+    <p>Habitat Type</p>
+    Urban/peri-urban
+    <p>Agricultural area</p>
+    <progress  class="agric-area-bar" value="32" max="100"> 32% </progress>
+    <p>Surface temperature (Water & Air) in Celsius</p>
+    <progress class="surface-temp-bar" value="32" max="100"> 32% </progress>
+    <p>Soil Moisture in m^3</p>
+    <progress class="soil-moist-temp-bar" value="32" max="100"> 32% </progress>
+    <p>Geospatial Demographics persons/km^2</p>
+    1,250 persons/km²
+    </section>
 
+    <section class="risk-prediction">
+    <h2>Risk Prediction</h2>
+    <p>Current Risk Level</p>
+    <h3>High</h3>
+    <h4>73%</h4>
+    </section>
     </article>
 </body>
     

@@ -1,17 +1,191 @@
-.malaria-header {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    flex-direction: row;
+/* Base */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Google Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #3c4043;
+    background-color: #f8f9fa;
+    height: 100vh;
+    overflow: hidden;
+
+    display: grid;
+    grid-template-columns: 280px 1fr 280px;
+    grid-template-rows: auto 1fr 1fr;
+    gap: 16px;
+    padding: 16px 24px;
 }
 
-.malaria-heading-section{
-    margin: 0 auto;
-    align-content: center;
-    justify-content: center;
+* {
+    box-sizing: border-box;
+}
+
+/* Header */
+.malaria-header {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #dadce0;
+}
+
+.malaria-header button {
+    background: #fff;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    padding: 6px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.malaria-heading-section {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     text-align: center;
 }
 
-.region-metrics {
+.malaria-heading {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: #202124;
+}
 
+.malaria-heading-section p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #5f6368;
+}
+
+/* Remove article layout influence */
+.region-metrics,
+.env-risk-article {
+    display: contents;
+}
+
+/* Cards */
+.region-selector,
+.malaria-metrics,
+.enviro-factors,
+.risk-prediction {
+    background: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 1px 2px rgba(60,64,67,0.15),
+                0 1px 3px rgba(60,64,67,0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Card positioning */
+.region-selector {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.enviro-factors {
+    grid-column: 1;
+    grid-row: 3;
+}
+
+.risk-prediction {
+    grid-column: 3;
+    grid-row: 2;
+    text-align: center;
+    align-items: center;
+}
+
+.malaria-metrics {
+    grid-column: 3;
+    grid-row: 3;
+}
+
+/* Headings */
+h2 {
+    margin: 0 0 12px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #202124;
+}
+
+/* Region selector */
+.region-selector p {
+    font-size: 0.75rem;
+    color: #5f6368;
+    margin: 8px 0 4px;
+}
+
+select {
+    width: 100%;
+    padding: 6px 8px;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    border: 1px solid #dadce0;
+    background: #fff;
+}
+
+/* Metrics */
+.malaria-metrics p {
+    font-size: 0.75rem;
+    color: #5f6368;
+    margin: 0;
+}
+
+.malaria-metrics h3 {
+    margin: 4px 0 8px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #202124;
+}
+
+.cases-outbreaks,
+.population,
+.incident-rate {
+    margin-bottom: 8px;
+}
+
+/* Environmental factors */
+.enviro-factors p {
+    font-size: 0.75rem;
+    color: #5f6368;
+    margin: 8px 0 4px;
+}
+
+progress {
+    width: 100%;
+    height: 6px;
+    border-radius: 4px;
+}
+
+/* Risk prediction */
+.risk-prediction p {
+    font-size: 0.8rem;
+    color: #5f6368;
+    margin: 0;
+}
+
+.risk-prediction h3 {
+    font-size: 2rem;
+    font-weight: 500;
+    margin: 4px 0;
+    color: #d93025;
+}
+
+.risk-prediction h4 {
+    font-size: 1.25rem;
+    font-weight: 400;
+    margin: 0;
+    color: #202124;
+}
+
+/* Center placeholder */
+.center-visualization {
+    grid-column: 2;
+    grid-row: 2 / 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
