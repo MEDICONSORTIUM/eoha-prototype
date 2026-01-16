@@ -1,4 +1,4 @@
-// 1. DATA STRUCTURE WITH MOCK ENVIRONMENTAL FACTORS
+// 1. JSON with the mock Data
 const ncdRegionData = {
   "South Africa": {
     "Eastern Cape": { 
@@ -190,7 +190,7 @@ const ncdRegionData = {
   }
 };
 
-// 2. MAP SETUP
+// initialize a normal map, centered on southern africa
 const map = L.map('map', { zoomControl: false }).setView([-25, 25], 5);
 
 L.control.zoom({
@@ -203,43 +203,38 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 let cityLayer = L.layerGroup().addTo(map);
 
-// 3. HELPER FUNCTIONS
+// allows easy changing of colors
 function riskColor(risk) {
   if (risk >= 60) return '#d93025'; 
   if (risk >= 50) return '#fa7b17'; 
   return '#34a853'; 
 }
 
+
+/* This is where dynamic data goes in, so even in the future when you have gotten the data it will be ingested in a similar procedure*/
 function updateRiskPanel(risk, riskLabel) {
     const riskTextEl = document.getElementById('risk-text');
     const riskPercEl = document.getElementById('risk-percentage');
-    
     riskTextEl.innerText = riskLabel;
     riskTextEl.style.color = riskColor(risk);
-    
     riskPercEl.innerText = risk + "%";
 }
 
-// NEW: Function to update Environmental factors
 function updateEnvironmentalFactors(envData) {
     // Habitat
     document.getElementById('env-habitat').innerText = envData.habitat;
-    
     // Demographics
     document.getElementById('env-demo').innerText = envData.pop;
-    
     // Agriculture
     const agricBar = document.getElementById('env-agric-bar');
     const agricVal = document.getElementById('env-agric-val');
     agricBar.value = envData.agric;
     agricVal.innerText = envData.agric + "%";
-    
     // Temperature
     const tempBar = document.getElementById('env-temp-bar');
     const tempVal = document.getElementById('env-temp-val');
     tempBar.value = envData.temp;
     tempVal.innerText = envData.temp + "°C";
-    
     // Soil Moisture
     const soilBar = document.getElementById('env-soil-bar');
     const soilVal = document.getElementById('env-soil-val');
@@ -247,7 +242,7 @@ function updateEnvironmentalFactors(envData) {
     soilVal.innerText = envData.soil + " m³";
 }
 
-// NEW: Function to reset factors when changing country
+/*cleared after choosing a new item*/
 function resetEnvironmentalFactors() {
     document.getElementById('env-habitat').innerText = "--";
     document.getElementById('env-demo').innerText = "--";
@@ -259,7 +254,6 @@ function resetEnvironmentalFactors() {
     document.getElementById('env-soil-val').innerText = "0 m³";
 }
 
-// 4. SELECTOR LOGIC
 const countrySelect = document.getElementById('country-select');
 const provinceSelect = document.getElementById('province-select');
 const citySelect = document.getElementById('city-select');
@@ -268,6 +262,7 @@ for (let country in ncdRegionData) {
   countrySelect.options[countrySelect.options.length] = new Option(country, country);
 }
 
+/* trigger */
 countrySelect.onchange = function() {
   provinceSelect.length = 1; 
   provinceSelect.selectedIndex = 0;
@@ -276,7 +271,6 @@ countrySelect.onchange = function() {
   citySelect.disabled = true;
   cityLayer.clearLayers();
   
-  // Reset panels
   resetEnvironmentalFactors();
   updateRiskPanel(0, "--");
 
@@ -301,7 +295,7 @@ provinceSelect.onchange = function() {
   
   if (!this.value) {
     citySelect.disabled = true;
-    resetEnvironmentalFactors(); // Reset if province deselected
+    resetEnvironmentalFactors(); 
     return;
   }
   
@@ -309,7 +303,7 @@ provinceSelect.onchange = function() {
   const cityData = ncdRegionData[countrySelect.value][this.value];
   citySelect.options[citySelect.options.length] = new Option(cityData.city, cityData.city);
   
-  // Update Map
+  // update map, this is what shows us that we will likely change this map beacuase in the json there are literal co-ords!
   const marker = L.circleMarker(cityData.coords, {
     radius: 12,
     fillColor: riskColor(cityData.risk),
@@ -321,13 +315,10 @@ provinceSelect.onchange = function() {
   
   marker.bindPopup(`<b>${cityData.city}</b><br>Risk: ${cityData.risk}%`);
   
-  // Update Risk Panel
   let label = "Low";
   if(cityData.risk >= 50) label = "Medium";
   if(cityData.risk >= 60) label = "High";
   updateRiskPanel(cityData.risk, label);
-
-  // === NEW: Update Environmental Panel ===
   updateEnvironmentalFactors(cityData.env);
 
   map.setView(cityData.coords, 8);
