@@ -159,11 +159,14 @@ body {
 }
 
 .disease-cards section {
+    display: flex;             
+    flex-direction: column;    
+    align-items: flex-start;   
     background: #fff;
     padding: 40px;
     border-radius: 8px;
     box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
-    flex: 1;
+    flex: 1;                  
     min-width: 300px;
     transition: box-shadow 0.3s ease;
 }
@@ -184,80 +187,35 @@ body {
     line-height: 1.6;
 }
 
-.disease-cards section {
-    display: flex;             
-    flex-direction: column;    
-    align-items: flex-start;   
-    background: #fff;
-    padding: 40px;
-    border-radius: 8px;
-    box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
-    flex: 1;                  
-    min-width: 300px;
-    transition: box-shadow 0.3s ease;
-}
-.disease-cards button {
-    margin-top: auto;
+.btn-link {
+    display: inline-block; 
+    text-decoration: none; 
+    margin-top: auto; 
     align-self: center;
-
     background-color: transparent;
     color: #1a73e8;            
     border: 1px solid #1a73e8; 
     border-radius: 4px;
-
     font-family: inherit;
     font-size: 14px;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding: 10px 24px;
-
     cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.disease-cards button:hover {
+.btn-link:hover {
     background-color: #1a73e8;
     color: #ffffff;
     box-shadow: 0 1px 2px rgba(60,64,67,0.3);
 }
 
-.disease-cards button:active {
+.btn-link:active {
     background-color: #174ea6;
     border-color: #174ea6;
     box-shadow: none;
-}
-
-.disease-cards .btn-link {
-    margin-top: auto;
-    align-self: center;
-
-    background-color: transparent;
-    color: #1a73e8;
-    border: 1px solid #1a73e8;
-    border-radius: 4px;
-
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding: 10px 24px;
-
-    cursor: pointer;
-    text-decoration: none;
-    transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.disease-cards .btn-link:hover {
-    background-color: #1a73e8;
-    color: #ffffff;
-    box-shadow: 0 1px 2px rgba(60,64,67,0.3);
-}
-
-.disease-cards .btn-link:active {
-    background-color: #174ea6;
-    border-color: #174ea6;
 }
 
 .africa {
@@ -316,4 +274,59 @@ footer {
     transition: all 0.3s;
 }
 
+@media (max-width: 900px) {
+    .header-landing {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .navbar ul {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
 
+    .about {
+        padding: 60px 24px;
+        max-height: none;
+        min-height: auto;
+    }
+
+    .about-header {
+        font-size: 2.5rem;
+    }
+
+    .images {
+        flex-direction: column;
+        height: 500px;
+    }
+
+    .images section {
+        border-right: none;
+        border-bottom: 1px solid #fff;
+    }
+    
+    .images section:last-child {
+        border-bottom: none;
+    }
+
+    .africa {
+        flex-direction: column;
+        margin: 40px auto;
+        gap: 30px;
+    }
+
+    .africa img {
+        width: 100%;
+        height: auto;
+        max-width: 450px;
+    }
+
+    .disease-cards {
+        padding: 40px 24px;
+    }
+    
+    .disease-cards section {
+        min-width: 100%;
+    }
+}

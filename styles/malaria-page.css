@@ -1,32 +1,47 @@
-/* Base */
+/* =========================================
+   BASE STYLES (Desktop Grid Layout)
+   ========================================= */
 body {
     margin: 0;
     padding: 12px 16px;
     font-family: "Google Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #3c4043;
-    background-color: #f8f9fa;
-
+    background-color: transparent; 
     height: 100vh;
-    overflow: auto;
-
+    overflow: hidden;
     display: grid;
     grid-template-columns: 260px 1fr 260px;
     grid-template-rows: auto min-content min-content;
     gap: 12px;
+    position: relative;
 }
 
-* {
-    box-sizing: border-box;
+* { box-sizing: border-box; }
+
+/* LANDSCAPE PROMPT (Hidden by default) */
+#orientation-lock { display: none; }
+
+/* MAP (Background) */
+#map {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: 0;
 }
 
-/* Header */
+/* HEADER */
 .malaria-header {
     grid-column: 1 / -1;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-bottom: 6px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.95);
     border-bottom: 1px solid #dadce0;
+    border-radius: 8px;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 1px 2px rgba(60,64,67,0.15);
 }
 
 .btn-link {
@@ -38,21 +53,9 @@ body {
     font-size: 13px;
     font-weight: 500;
     text-decoration: none;
-    cursor: pointer;
     transition: 0.15s ease;
 }
-
-.btn-link:hover {
-    background: #f1f3f4;
-    border-color: #c6c9cc;
-}
-
-.btn-link:active,
-.btn-link:visited {
-    color: #202124;
-    background: #e8eaed;
-}
-
+.btn-link:hover { background: #f1f3f4; border-color: #c6c9cc; }
 
 .malaria-heading-section {
     position: absolute;
@@ -60,209 +63,212 @@ body {
     transform: translateX(-50%);
     text-align: center;
 }
+.malaria-heading { margin: 0; font-size: 1.15rem; font-weight: 500; }
+.malaria-heading-section p { margin: 0; font-size: 0.75rem; color: #5f6368; }
 
-.malaria-heading {
-    margin: 0;
-    font-size: 1.15rem;
-    font-weight: 500;
-    color: #202124;
-}
-
-.malaria-heading-section p {
-    margin: 0;
-    font-size: 0.75rem;
-    color: #5f6368;
-}
-
-/* Remove article layout influence */
-.region-metrics,
-.env-risk-article {
+/* ARTICLES (Wrappers) */
+.region-metrics, .env-risk-article {
     display: contents;
 }
 
-/* Cards */
-.region-selector,
-.malaria-metrics,
-.enviro-factors,
-.risk-prediction {
-    background: #fff;
+/* CARDS */
+.region-selector, .enviro-factors, .risk-prediction {
+    background: rgba(255, 255, 255, 0.95);
     border-radius: 8px;
     padding: 16px;
-    box-shadow: 0 1px 2px rgba(60,64,67,0.15),
-                0 1px 3px rgba(60,64,67,0.1);
+    box-shadow: 0 2px 6px rgba(60,64,67,0.15);
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    position: relative;
+    z-index: 2;
+    backdrop-filter: blur(5px);
 }
 
-/* Card positioning */
-.region-selector {
-    grid-column: 1;
-    grid-row: 2;
-}
+/* Desktop Positioning */
+.region-selector { grid-column: 1; grid-row: 2; }
+.enviro-factors { grid-column: 1; grid-row: 3; }
+.risk-prediction { grid-column: 3; grid-row: 2; }
 
-.enviro-factors {
-    grid-column: 1;
-    grid-row: 3;
-}
+/* Typography & Inputs */
+h2 { margin: 0 0 8px; font-size: 0.95rem; font-weight: 500; color: #202124; border-bottom: 1px solid #f1f3f4; padding-bottom: 8px; }
+p { font-size: 0.7rem; font-weight: 600; color: #5f6368; margin: 8px 0 2px; text-transform: uppercase; }
 
-.risk-prediction {
-    grid-column: 3;
-    grid-row: 2;
-    text-align: center;
-    align-items: center;
-}
-
-.malaria-metrics {
-    grid-column: 3;
-    grid-row: 3;
-}
-
-/* Headings */
-h2 {
-    margin: 0 0 8px;
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: #202124;
-}
-
-/* Region Selector */
-.region-selector {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.region-selector h2 {
-    font-size: 0.95rem;
-    border-bottom: 1px solid #f1f3f4;
-    padding-bottom: 8px;
-    margin-bottom: 4px;
-}
-
-.region-selector p {
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: #5f6368;
-    margin: 0;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.region-selector select {
-    width: 100%;
-    padding: 8px 10px;
-    font-size: 0.85rem;
-    font-family: inherit;
-    color: #3c4043;
-    background-color: #fff;
-    border: 1px solid #dadce0;
-    border-radius: 6px;
-    outline: none;
+select {
+    width: 100%; padding: 8px 10px; font-size: 0.85rem;
+    border: 1px solid #dadce0; border-radius: 6px; background: #fff;
     cursor: pointer;
-    transition: all 0.2s ease;
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%235F6368%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px top 50%;
-    background-size: 9px auto;
+}
+select:disabled { background-color: #f1f3f4; color: #bdc1c6; }
+
+/* Bars */
+progress { width: 100%; height: 6px; border-radius: 4px; background-color: #f1f3f4; border: none; }
+progress::-webkit-progress-value { background-color: #1a73e8; border-radius: 4px; }
+output { font-size: 0.8rem; font-weight: 700; }
+
+/* Risk specific */
+.risk-prediction h3 { font-size: 2.4rem; font-weight: 700; margin: 0; }
+.risk-prediction h4 { font-size: 1rem; margin-top: 6px; padding: 4px 10px; border-radius: 16px; background-color: #f1f3f4; display: inline-block;}
+
+.dock-toggle { display: none; }
+
+
+/* =========================================
+   MOBILE LAYOUT ("Cockpit" / Floating Docks)
+   ========================================= */
+@media (max-width: 768px) {
+    
+    body {
+        display: block;
+        padding: 0;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .malaria-header {
+        height: 50px;
+        padding: 0 10px;
+        justify-content: space-between;
+    }
+    .malaria-heading { font-size: 1rem; }
+    .malaria-heading-section p { display: none; }
+    .btn-link { padding: 4px 10px; font-size: 0.75rem; }
+
+    .region-metrics, 
+    .env-risk-article {
+        display: block;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 95%;
+        background: rgba(255, 255, 255, 0.96);
+        border-radius: 12px;
+        padding: 10px 15px;
+        z-index: 1000;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        transition: max-height 0.3s ease-in-out, opacity 0.3s;
+        overflow-y: auto;
+    }
+
+    .region-selector, .enviro-factors, .risk-prediction {
+        box-shadow: none;
+        background: transparent;
+        padding: 0;
+        margin-bottom: 10px;
+    }
+
+    .dock-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 8px;
+        right: 10px;
+        width: 28px;
+        height: 28px;
+        background: #f1f3f4;
+        border: none;
+        border-radius: 50%;
+        font-size: 10px;
+        color: #5f6368;
+        cursor: pointer;
+        z-index: 1002;
+        transition: transform 0.3s;
+    }
+
+    .region-metrics {
+        top: 60px;
+        max-height: 45vh;
+    }
+
+    .env-risk-article {
+        bottom: 15px;
+        max-height: 50vh;
+        display: flex;
+        flex-direction: column-reverse;
+        border-top: 4px solid #1a73e8;
+    }
+
+    .risk-prediction {
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 10px;
+    }
+    
+    .risk-result-box {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .risk-prediction h3 { font-size: 1.5rem; } 
+
+    select { padding: 6px; font-size: 0.8rem; margin-bottom: 4px; }
+    p { margin: 4px 0 1px; font-size: 0.7rem; }
+    
+    .is-collapsed {
+        max-height: 45px !important;
+        overflow: hidden;
+    }
+    .is-collapsed .dock-toggle {
+        transform: rotate(180deg);
+        background: #e8f0fe;
+        color: #1a73e8;
+    }
+    .is-collapsed h2 {
+        margin: 0;
+        line-height: 25px;
+        white-space: nowrap;
+    }
+    .is-collapsed select, 
+    .is-collapsed .env-grid,
+    .is-collapsed .risk-result-box,
+    .is-collapsed span,
+    .is-collapsed .risk-prediction,
+    .is-collapsed .enviro-factors p {
+        opacity: 0;
+        pointer-events: none;
+    }
 }
 
-.region-selector select:disabled {
-    background-color: #f1f3f4;
-    color: #bdc1c6;
-    cursor: not-allowed;
-    border-color: #f1f3f4;
-    background-image: none;
-}
+/* =========================================
+   PORTRAIT LOCK (Mobile Only)
+   ========================================= */
+@media only screen and (max-width: 768px) and (orientation: portrait) {
+    #orientation-lock {
+        display: flex;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-color: #202124;
+        z-index: 9999;
+        color: #fff;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
 
-/* Environmental factors */
-.enviro-factors {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    column-gap: 8px;
-    row-gap: 2px;
-}
+    .lock-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
-.enviro-factors h2 {
-    grid-column: 1 / -1;
-    border-bottom: 1px solid #f1f3f4;
-    padding-bottom: 8px;
-    margin-bottom: 6px;
-}
+    .lock-content p {
+        color: #fff;
+        font-size: 1rem;
+        margin-top: 20px;
+        line-height: 1.5;
+        text-transform: none;
+        font-weight: 500;
+    }
 
-.enviro-factors p {
-    grid-column: 1 / -1;
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    color: #5f6368;
-    margin-top: 8px;
-    text-transform: uppercase;
-}
+    .phone-icon {
+        width: 64px;
+        height: 64px;
+        animation: rotate-phone 2s infinite ease-in-out;
+    }
 
-.text-value {
-    grid-column: 1 / -1;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #202124;
-}
-
-output {
-    font-size: 0.8rem;
-    font-weight: 700;
-}
-
-progress {
-    width: 100%;
-    height: 6px;
-    border-radius: 4px;
-    background-color: #f1f3f4;
-    border: none;
-}
-
-/* Risk prediction */
-.risk-prediction h2 {
-    width: 100%;
-    border-bottom: 1px solid #f1f3f4;
-    padding-bottom: 8px;
-    margin-bottom: 16px;
-    text-align: left;
-}
-
-.risk-prediction p {
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    color: #5f6368;
-    margin-bottom: 6px;
-    text-transform: uppercase;
-}
-
-.risk-prediction h3 {
-    font-size: 2.4rem;
-    font-weight: 700;
-    margin: 0;
-}
-
-.risk-prediction h4 {
-    font-size: 1rem;
-    margin-top: 6px;
-    padding: 4px 10px;
-    border-radius: 16px;
-    background-color: #f1f3f4;
-}
-
-/* Status colors */
-.status-high { color: #d93025; }
-.status-medium { color: #fa7b17; }
-.status-low { color: #34a853; }
-
-/* Center visualization placeholder */
-.center-visualization {
-    grid-column: 2;
-    grid-row: 2 / 4;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @keyframes rotate-phone {
+        0%, 10% { transform: rotate(0deg); }
+        40%, 60% { transform: rotate(90deg); }
+        90%, 100% { transform: rotate(0deg); }
+    }
 }
