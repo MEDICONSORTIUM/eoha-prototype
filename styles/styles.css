@@ -159,11 +159,14 @@ body {
 }
 
 .disease-cards section {
+    display: flex;             
+    flex-direction: column;    
+    align-items: flex-start;   
     background: #fff;
     padding: 40px;
     border-radius: 8px;
     box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
-    flex: 1;
+    flex: 1;                  
     min-width: 300px;
     transition: box-shadow 0.3s ease;
 }
@@ -184,42 +187,21 @@ body {
     line-height: 1.6;
 }
 
-.disease-cards section {
-    display: flex;             
-    flex-direction: column;    
-    align-items: flex-start;   
-    background: #fff;
-    padding: 40px;
-    border-radius: 8px;
-    box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
-    flex: 1;                  
-    min-width: 300px;
-    transition: box-shadow 0.3s ease;
-}
-/* Replace your existing .disease-cards button code with this: */
-
 .btn-link {
-    /* Critical for <a> tags to accept padding/margin correctly */
     display: inline-block; 
-    text-decoration: none; /* Removes the standard link underline */
-    
-    /* Flex alignment (works because parent section is flex-column) */
+    text-decoration: none; 
     margin-top: auto; 
     align-self: center;
-
-    /* Visual Styling */
     background-color: transparent;
     color: #1a73e8;            
     border: 1px solid #1a73e8; 
     border-radius: 4px;
-
     font-family: inherit;
     font-size: 14px;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding: 10px 24px;
-
     cursor: pointer;
     transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -235,7 +217,6 @@ body {
     border-color: #174ea6;
     box-shadow: none;
 }
-
 
 .africa {
     display: flex;
@@ -293,4 +274,59 @@ footer {
     transition: all 0.3s;
 }
 
+@media (max-width: 900px) {
+    .header-landing {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .navbar ul {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
 
+    .about {
+        padding: 60px 24px;
+        max-height: none;
+        min-height: auto;
+    }
+
+    .about-header {
+        font-size: 2.5rem;
+    }
+
+    .images {
+        flex-direction: column;
+        height: 500px;
+    }
+
+    .images section {
+        border-right: none;
+        border-bottom: 1px solid #fff;
+    }
+    
+    .images section:last-child {
+        border-bottom: none;
+    }
+
+    .africa {
+        flex-direction: column;
+        margin: 40px auto;
+        gap: 30px;
+    }
+
+    .africa img {
+        width: 100%;
+        height: auto;
+        max-width: 450px;
+    }
+
+    .disease-cards {
+        padding: 40px 24px;
+    }
+    
+    .disease-cards section {
+        min-width: 100%;
+    }
+}
