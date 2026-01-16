@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NCD Risk Prediction</title>
+
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+<!-- Your existing CSS -->
+<link rel="stylesheet" href="../styles/ncd-page.css">
+
+<style>
+/* ================= MAP BACKGROUND ================= */
+#map {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+/* ================= FOREGROUND UI ================= */
+body {
+  position: relative;
+  z-index: 1;
+}
+
+header,
+.region-metrics,
+.env-risk-article {
+  position: relative;
+  z-index: 2;
+}
+
+/* Optional glass effect */
+.region-selector,
+.enviro-factors,
+.risk-prediction {
+  backdrop-filter: blur(6px);
+  background: rgba(255, 255, 255, 0.92);
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= MAP BACKGROUND ================= -->
+<div id="map"></div>
+
+<!-- ================= UI ================= -->
+<header class="ncd-header">
+  <a href="../index.html" class="btn-link">Back</a>
+  <section class="ncd-heading-section">
+    <h1 class="ncd-heading">NCD Risk Prediction</h1>
+    <p>Africa Wide Monitoring</p>
+  </section>
+</header>
+
+<article class="region-metrics">
+  <section class="region-selector">
+    <h2>Region Selector</h2>
+
+    <p>Country</p>
+    <select id="country-select" class="countries-select">
+      <option value="">Select Country</option>
+      <option value="South Africa">South Africa</option>
+      <option value="Botswana">Botswana</option>
+      <option value="Zimbabwe">Zimbabwe</option>
+      <option value="Lesotho">Lesotho</option>
+    </select>
+
+    <p>Province</p>
+    <select id="province-select" class="provinces-select" disabled>
+      <option value="">Select Province</option>
+    </select>
+
+    <p>City / Municipality</p>
+    <select id="municipality-select" disabled>
+      <option value="">Select Municipality</option>
+    </select>
+  </section>
+</article>
+
+<article class="env-risk-article">
+  <section class="enviro-factors">
+    <h2>Environmental & Lifestyle Factors</h2>
+
+    <p>Lifestyle Type</p>
+    <span class="text-value">Urban / Sedentary</span>
+
+    <p>Population Density</p>
+    <span class="text-value">1,250 persons/km²</span>
+
+    <p>Access to Healthcare</p>
+    <progress value="60" max="100"></progress>
+    <output>60%</output>
+
+    <p>Air Quality Index</p>
+    <progress value="75" max="100"></progress>
+    <output>75 AQI</output>
+
+    <p>Obesity Prevalence</p>
+    <progress value="28" max="100"></progress>
+    <output>28%</output>
+  </section>
+
+  <section class="risk-prediction">
+    <h2>Risk Prediction</h2>
+    <p>Current Risk Level</p>
+    <h3>Moderate</h3>
+    <h4>58%</h4>
+  </section>
+</article>
+
+<!-- ================= LEAFLET ================= -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+// ================= MAP INIT =================
+const map = L.map("map", { zoomControl: false }).setView([0, 20], 3);
+
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  attribution: "&copy; OpenStreetMap contributors"
+}).addTo(map);
+
+// ================= DROPDOWNS =================
+const countrySelect = document.getElementById("country-select");
+const provinceSelect = document.getElementById("province-select");
+const municipalitySelect = document.getElementById("municipality-select");
+
+// ================= GLOBAL LAYERS =================
+let africaLayer, provinceLayer, cityLayer;
+let southAfricaADM1, southAfricaADM3;
+
+// ================= NCD RISK =================
+const countryNcdRisk = {
+  "South Africa": 58,
+  "Botswana": 45,
+  "Zimbabwe": 63,
+  "Lesotho": 52
+};
+
+// ================= COLOR =================
+function getCountryColor(risk) {
+  if (risk >= 70) return "#d73027";
+  if (risk >= 55) return "#fc8d59";
+  if (risk >= 40) return "#fee08b";
+  return "#91cf60";
+}
+
+// ================= COUNTRY STYLE =================
+function countryStyle(feature) {
+  const risk = countryNcdRisk[feature.properties.name] || 0;
+  return {
+    fillColor: getCountryColor(risk),
+    weight: 2,
+    color: "#00fff0",
+    fillOpacity: 0.45
+  };
+}
+
+// ================= LOAD AFRICA =================
+fetch("../data/africa-countries.geo.json")
+  .then(r => r.json())
+  .then(data => {
+    africaLayer = L.geoJSON(data, {
+      style: countryStyle,
+      onEachFeature: (feature, layer) => {
+        layer.on("click", () => {
+          map.fitBounds(layer.getBounds());
+          if (feature.properties.name === "South Africa") {
+            loadSouthAfricaProvinces();
+          }
+        });
+      }
+    }).addTo(map);
+  });
+
+// ================= LOAD SA GEOJSON =================
+fetch("../data/South_Africa_ADM1.geojson")
+  .then(r => r.json())
+  .then(d => southAfricaADM1 = d);
+
+fetch("../data/South_Africa_ADM3.geojson")
+  .then(r => r.json())
+  .then(d => southAfricaADM3 = d);
+
+// ================= PROVINCES =================
+function loadSouthAfricaProvinces() {
+  if (provinceLayer) map.removeLayer(provinceLayer);
+  if (cityLayer) map.removeLayer(cityLayer);
+
+  provinceSelect.innerHTML = `<option value="">Select Province</option>`;
+  municipalitySelect.innerHTML = `<option value="">Select Municipality</option>`;
+  provinceSelect.disabled = false;
+  municipalitySelect.disabled = true;
+
+  provinceLayer = L.geoJSON(southAfricaADM1, {
+    style: { color: "#fff", weight: 2, fillOpacity: 0.4 },
+    onEachFeature: (f, l) => {
+      const name = f.properties.NAME_1;
+      provinceSelect.innerHTML += `<option value="${name}">${name}</option>`;
+      l.on("click", () => {
+        map.fitBounds(l.getBounds());
+        loadMunicipalities(name);
+      });
+    }
+  }).addTo(map);
+}
+
+// ================= MUNICIPALITIES =================
+function loadMunicipalities(province) {
+  if (cityLayer) map.removeLayer(cityLayer);
+
+  municipalitySelect.innerHTML = `<option value="">Select Municipality</option>`;
+  municipalitySelect.disabled = false;
+
+  const filtered = southAfricaADM3.features.filter(
+    f => f.properties.NAME_1 === province
+  );
+
+  cityLayer = L.geoJSON(filtered, {
+    pointToLayer: (_, latlng) =>
+      L.circleMarker(latlng, {
+        radius: 4,
+        fillColor: "#d73027",
+        color: "#fff",
+        weight: 1,
+        fillOpacity: 0.9
+      }),
+    onEachFeature: (f, l) => {
+      municipalitySelect.innerHTML +=
+        `<option value="${f.properties.NAME_3}">${f.properties.NAME_3}</option>`;
+      l.on("click", () => map.setView(l.getLatLng(), 10));
+    }
+  }).addTo(map);
+}
+
+// ================= DROPDOWN SYNC =================
+countrySelect.onchange = () => {
+  africaLayer.eachLayer(l => {
+    if (l.feature.properties.name === countrySelect.value) {
+      map.fitBounds(l.getBounds());
+      if (countrySelect.value === "South Africa") {
+        loadSouthAfricaProvinces();
+      }
+    }
+  });
+};
+
+provinceSelect.onchange = () => loadMunicipalities(provinceSelect.value);
+
+municipalitySelect.onchange = () => {
+  cityLayer.eachLayer(l => {
+    if (l.feature.properties.NAME_3 === municipalitySelect.value) {
+      map.setView(l.getLatLng(), 10);
+    }
+  });
+};
+</script>
+
+</body>
+</html>
