@@ -1,111 +1,140 @@
+/* =========================================================
+   GLOBAL BASE STYLES
+   ========================================================= */
+
 body {
     margin: 0;
     padding: 0;
     font-family: "Google Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #3c4043;
     line-height: 1.5;
-    background-color: #fff;
+    background-color: #ffffff;
 }
 
+
+/* =========================================================
+   HEADER / NAVIGATION
+   ========================================================= */
+
 .header-landing {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 24px;
-    background-color: #fff;
-    border-bottom: 1px solid #dadce0;
     position: sticky;
     top: 0;
     z-index: 100;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 12px 24px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #dadce0;
 }
 
+/* Branding */
 .name h1 {
     margin: 0;
     font-size: 1.5rem;
-    color: #5f6368;
     font-weight: 500;
+    color: #5f6368;
     display: inline-block;
 }
 
 .name h3 {
-    margin: 0;
-    font-size: 1rem;
-    color: #5f6368;
-    font-weight: 400;
-    display: inline-block;
-    margin-left: 10px;
-    border-left: 1px solid #dadce0;
+    margin: 0 0 0 10px;
     padding-left: 10px;
+
+    font-size: 1rem;
+    font-weight: 400;
+    color: #5f6368;
+
+    display: inline-block;
+    border-left: 1px solid #dadce0;
 }
 
+/* Navigation */
 .navbar ul {
-    list-style: none;
-    display: flex;
-    gap: 30px;
     margin: 0;
     padding: 0;
+    list-style: none;
+
+    display: flex;
+    gap: 30px;
 }
 
 .navbar a {
     text-decoration: none;
     color: #5f6368;
-    font-weight: 500;
+
     font-size: 14px;
-    transition: color 0.2s;
+    font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+
+    transition: color 0.2s ease;
 }
 
 .navbar a:hover {
     color: #1a73e8;
 }
 
+
+/* =========================================================
+   HERO / ABOUT SECTION
+   ========================================================= */
+
 .about {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    background-color: #202124;
-    color: #fff;
     padding: 80px 10%;
-    min-height: 30px;
-    max-height: 250px;
-    margin: 0;
+    background-color: #202124;
+    color: #ffffff;
     max-width: 100%;
+    max-height: 250px;
 }
 
 .about-header {
-    font-size: 3.5rem;
-    line-height: 1.2;
     margin-bottom: 20px;
-    max-width: 800px;
+    max-width: 700px;
+
+    font-size: 3.5rem;
     font-weight: 400;
+    line-height: 1.2;
 }
 
 .about-detail {
-    font-size: 1.25rem;
-    line-height: 1.6;
     max-width: 700px;
-    text-align: left;
-    color: #e8eaed;
+
+    font-size: 1.25rem;
     font-weight: 300;
+    line-height: 1.6;
+
+    color: #e8eaed;
 }
+
+
+/* =========================================================
+   IMAGE STRIP / INTERACTIVE PANELS
+   ========================================================= */
 
 .images {
     display: flex;
     width: 100%;
     height: 300px;
     overflow: hidden;
-    background-color: #000;
+
+    background-color: #000000;
 }
 
 .images section {
+    position: relative;
     flex: 1;
     overflow: hidden;
-    transition: flex 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
     cursor: pointer;
-    position: relative;
-    border-right: 1px solid #fff;
+
+    border-right: 1px solid #ffffff;
+    transition: flex 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .images section:last-child {
@@ -116,8 +145,10 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+
     filter: brightness(0.8);
+    transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1),
+                filter 0.6s ease;
 }
 
 .images section:hover {
@@ -129,81 +160,124 @@ body {
     filter: brightness(1);
 }
 
+
+/* =========================================================
+   PLATFORM DESCRIPTION
+   ========================================================= */
+
 .our-platform {
     max-width: 900px;
     margin: 80px auto 40px;
-    text-align: center;
     padding: 0 20px;
+
+    text-align: center;
 }
 
 .powered-by {
-    font-size: 2.25rem;
-    color: #202124;
-    font-weight: 400;
     margin-bottom: 24px;
+
+    font-size: 2.25rem;
+    font-weight: 400;
+    color: #202124;
 }
 
 .aim {
     font-size: 1.1rem;
-    color: #5f6368;
     line-height: 1.8;
+    color: #5f6368;
 }
+
+
+/* =========================================================
+   DISEASE CARDS
+   ========================================================= */
 
 .disease-cards {
     display: flex;
-    justify-content: center;
+    flex-wrap: wrap;
     gap: 30px;
+    justify-content: center;
+    align-items: stretch; /* makes all cards the same height in a row */
     padding: 40px 10%;
     background-color: #f8f9fa;
-    flex-wrap: wrap;
 }
 
-.disease-cards section {
-    display: flex;             
-    flex-direction: column;    
-    align-items: flex-start;   
-    background: #fff;
-    padding: 40px;
-    border-radius: 8px;
-    box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
-    flex: 1;                  
-    min-width: 300px;
+.card {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 300px;
+    max-width: 550px; 
+    min-width: 300px; 
+    height: 100%; 
+    background-color: #ffffff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 
+        0 1px 2px rgba(60,64,67,0.3),
+        0 1px 3px rgba(60,64,67,0.15);
+
     transition: box-shadow 0.3s ease;
 }
 
-.disease-cards section:hover {
-    box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+.card-image img {
+    width: 100%;
+    height: 300px; 
+    object-fit: cover;
 }
 
-.disease-cards h3 {
+.card-content {
+    padding: 20px 30px;
+    display: flex;
+    flex-direction: column;
+    flex: 1; 
+}
+
+.card-content p {
+    flex: 1; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-content h3 {
+    margin: 0 0 10px;
     font-size: 1.5rem;
-    margin-top: 0;
-    color: #202124;
     font-weight: 400;
+    color: #202124;
 }
 
-.disease-cards p {
-    color: #5f6368;
+.card-content p {
+    margin: 0;
     line-height: 1.6;
+    color: #5f6368;
+    flex: 1;
 }
+
+
+/* =========================================================
+   BUTTONS / CALL TO ACTION
+   ========================================================= */
 
 .btn-link {
-    display: inline-block; 
-    text-decoration: none; 
-    margin-top: auto; 
+    margin-top: auto;
     align-self: center;
-    background-color: transparent;
-    color: #1a73e8;            
-    border: 1px solid #1a73e8; 
-    border-radius: 4px;
-    font-family: inherit;
+    display: inline-block;
+    padding: 10px 24px;
     font-size: 14px;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    padding: 10px 24px;
+    font-family: inherit;
+    color: #1a73e8;
+    background-color: transparent;
+    border: 1px solid #1a73e8;
+    border-radius: 4px;
+    text-decoration: none;
     cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    transition: background-color 0.2s ease,
+                color 0.2s ease,
+                box-shadow 0.2s ease;
 }
 
 .btn-link:hover {
@@ -218,46 +292,104 @@ body {
     box-shadow: none;
 }
 
+.card-image {
+    position: relative; 
+    overflow: hidden;   
+    cursor: pointer;    
+}
+
+.card-image img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    
+    transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+.img-overlay-btn {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background-color: rgba(255, 255, 255, 0.1); 
+    border: 1.5px solid #ffffff;
+    border-radius: 4px;
+    color: #ffffff;
+    /* Typography */
+    font-family: "Google Sans", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1.25px; 
+    text-decoration: none;
+    padding: 10px 24px;
+    opacity: 0; 
+    transition: opacity 0.3s ease, background-color 0.3s ease;
+}
+.card-image:hover img {
+    filter: blur(0px) brightness(0.6); 
+    transform: scale(1.05); 
+}
+
+.card-image:hover .img-overlay-btn {
+    opacity: 1;
+}
+
+.img-overlay-btn:hover {
+    background-color: rgba(255, 255, 255, 0.25); /* Light up on direct hover */
+}
+
+
+/* =========================================================
+   AFRICA FEATURE SECTION
+   ========================================================= */
+
 .africa {
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 60px;
+
     max-width: 1200px;
     margin: 80px auto;
     padding: 0 24px;
-    gap: 60px;
 }
 
 .africa img {
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     object-fit: cover;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 .africa-heading {
-    font-size: 2.5rem;
-    color: #202124;
-    font-weight: 400;
     margin-bottom: 20px;
+
+    font-size: 2.5rem;
+    font-weight: 400;
+    color: #202124;
 }
 
 .africa p {
     font-size: 1.1rem;
-    color: #5f6368;
     line-height: 1.8;
+    color: #5f6368;
 }
 
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
 footer {
-    background-color: #202124;
     padding: 40px 20px;
+    background-color: #202124;
     border-top: 1px solid #dadce0;
 }
 
 .developedby {
-    text-align: center;
-    color: white;
-    font-size: 0.9rem;
     margin-bottom: 30px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #ffffff;
 }
 
 .logos {
@@ -268,28 +400,33 @@ footer {
     flex-wrap: wrap;
 }
 
-.logos section img {
+.logos img {
     height: 50px;
     width: auto;
-    transition: all 0.3s;
+    transition: 0.3s ease;
 }
 
+
+/* =========================================================
+   RESPONSIVE DESIGN
+   ========================================================= */
+
 @media (max-width: 900px) {
+
     .header-landing {
         flex-direction: column;
         gap: 20px;
     }
-    
+
     .navbar ul {
-        flex-wrap: wrap;
         justify-content: center;
+        flex-wrap: wrap;
         gap: 15px;
     }
 
     .about {
         padding: 60px 24px;
         max-height: none;
-        min-height: auto;
     }
 
     .about-header {
@@ -303,29 +440,29 @@ footer {
 
     .images section {
         border-right: none;
-        border-bottom: 1px solid #fff;
+        border-bottom: 1px solid #ffffff;
     }
-    
+
     .images section:last-child {
         border-bottom: none;
     }
 
     .africa {
         flex-direction: column;
-        margin: 40px auto;
         gap: 30px;
+        margin: 40px auto;
     }
 
     .africa img {
+        max-width: 450px;
         width: 100%;
         height: auto;
-        max-width: 450px;
     }
 
     .disease-cards {
         padding: 40px 24px;
     }
-    
+
     .disease-cards section {
         min-width: 100%;
     }
