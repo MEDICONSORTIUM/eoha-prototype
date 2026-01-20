@@ -1,0 +1,46 @@
+/* styles for testing GSAP animations */
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      flex-direction: column;
+      background: #0f172a;
+      color: #e5e7eb;
+    }
+
+    .text {
+      font-family: 'JetBrains Mono', monospace;
+      box-sizing: border-box;
+      padding: 10% 5% 5% 5%;
+      text-align: center;
+      width: 90vw;
+      max-width: 50ch;
+      height: 300px;
+      font-size: 1.5rem;
+    }
+
+    .border {
+      outline: grey 2px dashed;
+      outline-offset: 5px;
+      border-radius: 10px;
+    }
+
+    .button {
+      margin-top: 20px;
+      padding: 12px 24px;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 8px;
+      border: none;
+      background: #22c55e;
+      color: #022c22;
+    }
+
+    .button:hover {
+      background: #16a34a;
+    }
+  
