@@ -1,0 +1,76 @@
+    /* ================= HEADER VIDEO ================= */
+        .header-landing {
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+            color: white;
+        }
+
+        .header-landing video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+
+        /* Dark overlay for readability */
+        .header-landing::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: -1;
+        }
+
+        /* Header content layout */
+        .header-content {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2rem 3rem;
+        }
+
+        /* Branding */
+        .name h1 {
+            font-size: 4rem;
+            letter-spacing: 2px;
+        }
+
+        .name h3 {
+            font-weight: 300;
+            margin-top: 0.5rem;
+        }
+
+        /* Navbar */
+        .navbar ul {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .navbar a::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -4px;
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: width 0.3s ease;
+        }
+
+        .navbar a:hover::after {
+            width: 100%;
+        }

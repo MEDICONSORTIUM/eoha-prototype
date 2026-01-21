@@ -1,28 +1,14 @@
-// GSAP ScrambleTextPlugin Example
-    gsap.registerPlugin(ScrambleTextPlugin);
+const indicator = document.getElementById("scrollIndicator");
 
-    const blurbs = [
-      "Scramble or unscramble text progressively.",
-      "Use specific chars like 'XO' or use only numbers, UPPERCASE or lowercase.",
-      "Even add a class to the new or old text."
-    ];
+window.addEventListener("scroll", () => {
+    if (window.scrollY > 50) {
+        indicator.style.opacity = "0";
+    } else {
+        indicator.style.opacity = "1";
+    }
+});
 
-    let curIndex = 0;
+document.querySelectorAll('.glow-wave span').forEach((span, i) => {
+    span.style.setProperty('--i', i);
+});
 
-    document.querySelector("#next").addEventListener("click", () => {
-      curIndex = (curIndex + 1) % blurbs.length;
-
-      gsap.to(".text", {
-        scrambleText: {
-          text: blurbs[curIndex],
-          chars: "upperAndLowerCase",
-          revealDelay: 0.2,
-          tweenLength: true,
-          newClass: curIndex === 2 ? "border" : ""
-        },
-        ease: "power2.inOut",
-        overwrite: "auto",
-        duration: 4.2
-      });
-    });
-  
