@@ -91,7 +91,7 @@ body {
     background-color: #202124;
     color: #ffffff;
     max-width: 100%;
-    max-height: 250px;
+    max-height: 200px;
 }
 
 .about-header {
@@ -121,9 +121,8 @@ body {
 .images {
     display: flex;
     width: 100%;
-    height: 300px;
+    height: 200px;
     overflow: hidden;
-
     background-color: #000000;
 }
 
@@ -160,6 +159,51 @@ body {
     filter: brightness(1);
 }
 
+/* =========================================================
+   IMAGE LABEL OVERLAY (MATERIAL STYLE)
+   ========================================================= */
+
+.images section {
+    position: relative;
+}
+
+.image-label {
+    position: absolute;
+    bottom: 24px;
+    left: 24px;
+
+    color: #ffffff;
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    
+    text-shadow:
+        0 2px 4px rgba(0,0,0,0.6),
+        0 4px 12px rgba(0,0,0,0.4);
+
+    z-index: 2;
+    pointer-events: none;
+
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.images section::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to top,
+        rgba(0,0,0,0.55),
+        rgba(0,0,0,0.15),
+        transparent
+    );
+    z-index: 1;
+}
+
+.images section:hover .image-label {
+    transform: translateY(-4px);
+}
+
 
 /* =========================================================
    PLATFORM DESCRIPTION
@@ -175,7 +219,6 @@ body {
 
 .powered-by {
     margin-bottom: 24px;
-
     font-size: 2.25rem;
     font-weight: 400;
     color: #202124;
@@ -197,7 +240,7 @@ body {
     flex-wrap: wrap;
     gap: 30px;
     justify-content: center;
-    align-items: stretch; /* makes all cards the same height in a row */
+    align-items: stretch; 
     padding: 40px 10%;
     background-color: #f8f9fa;
 }
@@ -234,12 +277,6 @@ body {
     flex: 1; 
 }
 
-.card-content p {
-    flex: 1; 
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .card-content h3 {
     margin: 0 0 10px;
     font-size: 1.5rem;
@@ -252,6 +289,8 @@ body {
     line-height: 1.6;
     color: #5f6368;
     flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 
@@ -314,7 +353,7 @@ body {
     border: 1.5px solid #ffffff;
     border-radius: 4px;
     color: #ffffff;
-    /* Typography */
+    
     font-family: "Google Sans", sans-serif;
     font-size: 14px;
     font-weight: 500;
@@ -322,11 +361,13 @@ body {
     letter-spacing: 1.25px; 
     text-decoration: none;
     padding: 10px 24px;
-    opacity: 0; 
+    
+    opacity: 1; 
     transition: opacity 0.3s ease, background-color 0.3s ease;
 }
+
 .card-image:hover img {
-    filter: blur(0px) brightness(0.6); 
+    filter: brightness(0.5); 
     transform: scale(1.05); 
 }
 
@@ -335,7 +376,16 @@ body {
 }
 
 .img-overlay-btn:hover {
-    background-color: rgba(255, 255, 255, 0.25); /* Light up on direct hover */
+    background-color: rgba(255, 255, 255, 0.25); 
+}
+
+@media (hover: none) {
+    .img-overlay-btn {
+        opacity: 1;
+    }
+    .card-image img {
+        filter: brightness(0.6);
+    }
 }
 
 
