@@ -146,9 +146,9 @@ body {
 .glow-wave span { display: inline-block; animation: glowWave 3s infinite; }
 .glow-wave span:nth-child(n) { animation-delay: calc(var(--i) * 0.15s); }
 @keyframes glowWave {
-    0%, 100% { color: red; text-shadow: 0 0 8px red; }
-    33% { color: lime; text-shadow: 0 0 8px lime; }
-    66% { color: dodgerblue; text-shadow: 0 0 8px dodgerblue; }
+    0%, 100% { color: white; text-shadow: 0 0 8px white; }
+    33% { color: white; text-shadow: 0 0 8px white; }
+    66% { color: white; text-shadow: 0 0 8px white; }
 }
 
 /* ================= STACK SECTION ================= */
