@@ -22,21 +22,6 @@
 
     <div id="map"></div>
 
-    <div class="time-control-panel">
-            
-            <input type="range" id="time-slider" min="0" max="12" value="0" step="1">
-            <div class="slider-ticks-container">
-                <div class="slider-ticks">
-                    <span>Jan 25</span>
-                    <span>Jan 26</span>
-                </div>
-            </div>
-            <div class="month-display">
-                <span id="month-label">January</span>
-                <span class="year-label">2025</span>
-            </div>
-    </div>
-
     <header class="malaria-header">
         <a href="../index.html" class="btn-link">Back</a>
         <section class="malaria-heading-section">
@@ -47,7 +32,11 @@
     
     <article class="region-metrics">
         <section class="region-selector">
-            <h2>Region Selector</h2>
+            <div class="selector-header">
+                <h2>Region Selector</h2>
+                <button id="reset-btn" class="btn-reset" title="Reset all filters">&#x21bb; Reset</button>
+            </div>
+
             <p>Province</p>
             <select name="country" id="country-select" class="countries-select">
                 <option value="">-- Select Province --</option>
@@ -62,6 +51,9 @@
             <select name="city" id="city-select" disabled>
                 <option value="">-- Select Ward --</option>
             </select>
+
+            <button id="apply-btn" class="btn-apply" disabled>Apply</button>
+            
         </section>
     </article>
 
@@ -101,6 +93,25 @@
             <p>Current Risk Level</p>
             <h3 id="risk-text">--</h3>
             <h4 id="risk-percentage">0%</h4>
+
+            <div class="timeline-container">
+                <div class="timeline-header">
+                    <p>Timeline Prediction</p>
+                    <div class="month-display">
+                        <span id="month-label">Jan</span> <span class="year-label">2025</span>
+                    </div>
+                </div>
+                
+                <input type="range" id="time-slider" min="0" max="12" value="0" step="1">
+                
+                <div class="slider-ticks-container">
+                    <div class="slider-ticks">
+                        <span>Jan 25</span>
+                        <span>Jan 26</span>
+                    </div>
+                </div>
+            </div>
+
         </section>
     </article>
 
