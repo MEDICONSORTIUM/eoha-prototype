@@ -620,3 +620,35 @@ input[type=range]::-moz-range-thumb {
 input[type=range]:focus {
   outline: none;
 }
+
+#risk-level-filter {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #dadce0;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    font-size: 0.85rem;
+    background-color: white;
+}
+
+.slider-ticks-container {
+    padding: 0 10px;
+    margin-top: 4px;
+}
+
+.slider-ticks {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: #5f6368;
+    font-weight: 600;
+}
+
+/* Style for text values like Habitat */
+.text-value {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #1a73e8;
+    margin-bottom: 8px;
+    display: block;
+}

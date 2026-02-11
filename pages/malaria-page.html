@@ -24,77 +24,85 @@
 
     <div class="time-control-panel">
             <div class="month-display">
-                <span id="month-label">November</span>
+                <span id="month-label">January</span>
                 <span class="year-label">2025</span>
             </div>
-            <input type="range" id="time-slider" min="0" max="2" value="0" step="1">
-            <div class="slider-ticks">
-                <span>N</span><span>D</span><span>J</span>
+            <input type="range" id="time-slider" min="0" max="12" value="0" step="1">
+            <div class="slider-ticks-container">
+                <div class="slider-ticks">
+                    <span>Jan 25</span>
+                    <span>Jan 26</span>
+                </div>
             </div>
-        </div>
     </div>
 
     <header class="malaria-header">
         <a href="../index.html" class="btn-link">Back</a>
         <section class="malaria-heading-section">
-        <h1 class="malaria-heading">Malaria Risk Prediction</h1>
-        <p>Africa Wide Monitoring</p>
+            <h1 class="malaria-heading">Malaria Risk Prediction</h1>
+            <p>Africa Wide Monitoring</p>
         </section>
     </header>
     
     <article class="region-metrics">
         <section class="region-selector">
-        
-        <h2>Region Selector</h2>
-        <p>Province</p>
-        <select name="country" id="country-select" class="countries-select">
-            <option value="">-- Select Province --</option>
-        </select>
-        
-        <p>Municpality</p>
-        <select name="province" id="province-select" class="provinces-select" disabled>
-            <option value="">-- Select Municpality --</option>
-        </select>
-        
-        <p>Ward</p>
-        <select name="city" id="city-select" disabled>
-            <option value="">-- Select Ward --</option>
-        </select>
+            <h2>Region Selector</h2>
+            <p>Province</p>
+            <select name="country" id="country-select" class="countries-select">
+                <option value="">-- Select Province --</option>
+            </select>
+            
+            <p>Municipality</p>
+            <select name="province" id="province-select" class="provinces-select" disabled>
+                <option value="">-- Select Municipality --</option>
+            </select>
+            
+            <p>Ward</p>
+            <select name="city" id="city-select" disabled>
+                <option value="">-- Select Ward --</option>
+            </select>
         </section>
-
     </article>
 
     <article class="env-risk-article">
+        <section class="enviro-factors">
+            <h2>Environmental Factors</h2>
+            <p>Habitat Type</p>
+            <span id="env-habitat" class="text-value">--</span>
+            
+            <p>Geospatial Demographics</p>
+            <span id="env-demo" class="text-value">--</span>
 
-    <section class="enviro-factors">
-    <h2>Environmental Factors</h2>
-    
-    <p>Habitat Type</p>
-    <span id="env-habitat" class="text-value">--</span>
-    
-    <p>Geospatial Demographics</p>
-    <span id="env-demo" class="text-value">--</span>
+            <p>Agricultural Area</p>
+            <progress id="env-agric-bar" class="agric-area-bar" value="0" max="100">0%</progress>
+            <output id="env-agric-val">0%</output>
+            
+            <p>Surface Temperature</p>
+            <progress id="env-temp-bar" class="surface-temp-bar" value="0" max="50">0%</progress>
+            <output id="env-temp-val">0°C</output>
+            
+            <p>Soil Moisture</p>
+            <progress id="env-soil-bar" class="soil-moist-temp-bar" value="0" max="100">0%</progress>
+            <output id="env-soil-val">0 m³</output>
+        </section>
 
-    <p>Agricultural Area</p>
-    <progress id="env-agric-bar" class="agric-area-bar" value="0" max="100">0%</progress>
-    <output id="env-agric-val">0%</output>
-    
-    <p>Surface Temperature (Water & Air)</p>
-    <progress id="env-temp-bar" class="surface-temp-bar" value="0" max="50">0%</progress>
-    <output id="env-temp-val">0°C</output>
-    
-    <p>Soil Moisture</p>
-    <progress id="env-soil-bar" class="soil-moist-temp-bar" value="0" max="100">0%</progress>
-    <output id="env-soil-val">0 m³</output>
-    </section>
+        <section class="risk-prediction">
+            <h2>Risk Prediction</h2>
+            
+            <p>Filter Risk Level</p>
+            <select id="risk-level-filter">
+                <option value="all">All Risks</option>
+                <option value="High">High Risk</option>
+                <option value="Moderate">Medium Risk</option>
+                <option value="Low">Low Risk</option>
+            </select>
 
-    <section class="risk-prediction">
-    <h2>Risk Prediction</h2>
-    <p>Current Risk Level</p>
-    <h3 id="risk-text">--</h3>
-    <h4 id="risk-percentage">0%</h4>
-    </section>
+            <p>Current Risk Level</p>
+            <h3 id="risk-text">--</h3>
+            <h4 id="risk-percentage">0%</h4>
+        </section>
     </article>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="../scripts/malaria-page.js"></script>
