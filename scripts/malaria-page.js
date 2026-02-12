@@ -297,3 +297,20 @@ Papa.parse('../data/Limpopo_Risk_Jan25_Jan26_Safe.csv', {
   },
   complete: () => renderAllHotspots()
 });
+
+var legend = L.control({ position: "bottomright" });
+
+legend.onAdd = function () {
+    var div = L.DomUtil.create("div", "legend");
+
+    div.innerHTML = `
+        <h4>Legend</h4>
+        <div class="legend-item"><span class="legend-color high-risk"></span> High Risk</div>
+        <div class="legend-item"><span class="legend-color moderate-risk"></span> Medium Risk</div>
+        <div class="legend-item"><span class="legend-color low-risk"></span> Low Risk</div>
+    `;
+
+    return div;
+};
+
+legend.addTo(map);
