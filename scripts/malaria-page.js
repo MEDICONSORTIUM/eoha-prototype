@@ -1,333 +1,299 @@
-// 1. JSON with the mock Data
-const ncdRegionData = {
-  "South Africa": {
-    "Eastern Cape": { 
-        city: "Bhisho", risk: 55, coords: [-32.849, 27.437],
-        env: { habitat: "Rural/Coastal", pop: "450 persons/km²", agric: 65, temp: 22, soil: 45 } 
-    },
-    "Free State": { 
-        city: "Bloemfontein", risk: 45, coords: [-29.118, 26.225],
-        env: { habitat: "Urban/Plains", pop: "850 persons/km²", agric: 80, temp: 26, soil: 30 }
-    },
-    "Gauteng": { 
-        city: "Johannesburg", risk: 58, coords: [-26.204, 28.047],
-        env: { habitat: "Dense Urban", pop: "3,200 persons/km²", agric: 15, temp: 24, soil: 20 }
-    },
-    "KwaZulu-Natal": { 
-        city: "Pietermaritzburg", risk: 62, coords: [-29.600, 30.383],
-        env: { habitat: "Sub-tropical", pop: "1,100 persons/km²", agric: 55, temp: 28, soil: 70 }
-    },
-    "Limpopo": { 
-        city: "Polokwane", risk: 72, coords: [-23.904, 29.468],
-        env: { habitat: "Bushveld", pop: "300 persons/km²", agric: 60, temp: 32, soil: 40 }
-    },
-    "Mpumalanga": { 
-        city: "Mbombela", risk: 68, coords: [-25.475, 30.969],
-        env: { habitat: "Sub-tropical/Forest", pop: "400 persons/km²", agric: 75, temp: 29, soil: 65 }
-    },
-    "North West": { 
-        city: "Mahikeng", risk: 50, coords: [-25.856, 25.640],
-        env: { habitat: "Savannah/Arid", pop: "150 persons/km²", agric: 40, temp: 31, soil: 25 }
-    },
-    "Northern Cape": { 
-        city: "Kimberley", risk: 35, coords: [-28.728, 24.749],
-        env: { habitat: "Semi-Arid Desert", pop: "50 persons/km²", agric: 20, temp: 34, soil: 10 }
-    },
-    "Western Cape": { 
-        city: "Cape Town", risk: 40, coords: [-33.924, 18.424],
-        env: { habitat: "Mediterranean", pop: "1,800 persons/km²", agric: 45, temp: 21, soil: 50 }
-    }
-  },
-  "Botswana": {
-    "Central": { 
-        city: "Serowe", risk: 44, coords: [-22.383, 26.716],
-        env: { habitat: "Semi-Arid", pop: "20 persons/km²", agric: 30, temp: 33, soil: 15 }
-    },
-    "Chobe": { 
-        city: "Kasane", risk: 75, coords: [-17.816, 25.163],
-        env: { habitat: "Riverine/Wetland", pop: "15 persons/km²", agric: 25, temp: 30, soil: 80 }
-    },
-    "Francistown": { 
-        city: "Francistown", risk: 48, coords: [-21.173, 27.514],
-        env: { habitat: "Urban/Arid", pop: "600 persons/km²", agric: 10, temp: 32, soil: 20 }
-    },
-    "Gaborone": { 
-        city: "Gaborone", risk: 42, coords: [-24.628, 25.923],
-        env: { habitat: "Urban Capital", pop: "1,400 persons/km²", agric: 10, temp: 31, soil: 25 }
-    },
-    "Ghanzi": { 
-        city: "Ghanzi", risk: 55, coords: [-21.696, 21.647],
-        env: { habitat: "Kalahari Desert", pop: "5 persons/km²", agric: 55, temp: 36, soil: 5 }
-    },
-    "Jwaneng": { 
-        city: "Jwaneng", risk: 38, coords: [-24.600, 24.730],
-        env: { habitat: "Mining/Arid", pop: "200 persons/km²", agric: 5, temp: 30, soil: 10 }
-    },
-    "Kgalagadi": { 
-        city: "Tsabong", risk: 30, coords: [-26.021, 22.401],
-        env: { habitat: "Deep Desert", pop: "2 persons/km²", agric: 15, temp: 38, soil: 2 }
-    },
-    "Kgatleng": { 
-        city: "Mochudi", risk: 40, coords: [-24.416, 26.150],
-        env: { habitat: "Rural Village", pop: "80 persons/km²", agric: 40, temp: 29, soil: 22 }
-    },
-    "Kweneng": { 
-        city: "Molepolole", risk: 41, coords: [-24.413, 25.531],
-        env: { habitat: "Semi-Rural", pop: "120 persons/km²", agric: 35, temp: 29, soil: 20 }
-    },
-    "Lobatse": { 
-        city: "Lobatse", risk: 39, coords: [-25.216, 25.666],
-        env: { habitat: "Hilly/Rural", pop: "300 persons/km²", agric: 25, temp: 27, soil: 28 }
-    },
-    "Ngamiland": { 
-        city: "Maun", risk: 68, coords: [-19.995, 23.416],
-        env: { habitat: "Delta/Swamp", pop: "100 persons/km²", agric: 30, temp: 31, soil: 75 }
-    },
-    "North-East": { 
-        city: "Masunga", risk: 52, coords: [-20.616, 27.416],
-        env: { habitat: "Rural", pop: "40 persons/km²", agric: 50, temp: 30, soil: 30 }
-    },
-    "Selebi-Phikwe": { 
-        city: "Selebi-Phikwe", risk: 46, coords: [-21.961, 27.842],
-        env: { habitat: "Industrial/Mining", pop: "550 persons/km²", agric: 10, temp: 31, soil: 18 }
-    },
-    "South-East": { 
-        city: "Ramotswa", risk: 40, coords: [-24.866, 25.866],
-        env: { habitat: "Peri-urban", pop: "400 persons/km²", agric: 25, temp: 28, soil: 25 }
-    },
-    "Southern": { 
-        city: "Kanye", risk: 36, coords: [-24.966, 25.333],
-        env: { habitat: "Highland/Rural", pop: "150 persons/km²", agric: 40, temp: 26, soil: 25 }
-    },
-    "Sowa": { 
-        city: "Sowa Town", risk: 43, coords: [-20.566, 26.216],
-        env: { habitat: "Salt Pan", pop: "10 persons/km²", agric: 5, temp: 35, soil: 15 }
-    }
-  },
-  "Zimbabwe": {
-    "Bulawayo": { 
-        city: "Bulawayo", risk: 60, coords: [-20.150, 28.583],
-        env: { habitat: "Urban", pop: "1,200 persons/km²", agric: 20, temp: 25, soil: 30 }
-    },
-    "Harare": { 
-        city: "Harare", risk: 65, coords: [-17.825, 31.033],
-        env: { habitat: "High Altitude Urban", pop: "2,500 persons/km²", agric: 25, temp: 24, soil: 55 }
-    },
-    "Manicaland": { 
-        city: "Mutare", risk: 62, coords: [-18.970, 32.670],
-        env: { habitat: "Mountainous", pop: "600 persons/km²", agric: 60, temp: 22, soil: 60 }
-    },
-    "Mashonaland Central": { 
-        city: "Bindura", risk: 70, coords: [-17.300, 31.333],
-        env: { habitat: "Agricultural/Rural", pop: "150 persons/km²", agric: 85, temp: 28, soil: 65 }
-    },
-    "Mashonaland East": { 
-        city: "Marondera", risk: 64, coords: [-18.183, 31.550],
-        env: { habitat: "Farmland", pop: "200 persons/km²", agric: 80, temp: 23, soil: 50 }
-    },
-    "Mashonaland West": { 
-        city: "Chinhoyi", risk: 68, coords: [-17.366, 30.200],
-        env: { habitat: "Caves/Rural", pop: "120 persons/km²", agric: 70, temp: 27, soil: 55 }
-    },
-    "Masvingo": { 
-        city: "Masvingo", risk: 58, coords: [-20.063, 30.827],
-        env: { habitat: "Dry Savannah", pop: "100 persons/km²", agric: 50, temp: 30, soil: 35 }
-    },
-    "Matabeleland North": { 
-        city: "Lupane", risk: 55, coords: [-18.931, 27.807],
-        env: { habitat: "Forest/Safari", pop: "15 persons/km²", agric: 30, temp: 31, soil: 25 }
-    },
-    "Matabeleland South": { 
-        city: "Gwanda", risk: 52, coords: [-20.933, 29.000],
-        env: { habitat: "Arid Cattle Land", pop: "20 persons/km²", agric: 60, temp: 32, soil: 20 }
-    },
-    "Midlands": { 
-        city: "Gweru", risk: 56, coords: [-19.450, 29.816],
-        env: { habitat: "Central Plateau", pop: "300 persons/km²", agric: 65, temp: 26, soil: 40 }
-    }
-  },
-  "Lesotho": {
-    "Berea": { 
-        city: "Teyateyaneng", risk: 25, coords: [-29.150, 27.750],
-        env: { habitat: "Highland/Rural", pop: "120 persons/km²", agric: 40, temp: 18, soil: 45 }
-    },
-    "Butha-Buthe": { 
-        city: "Butha-Buthe", risk: 22, coords: [-28.766, 28.250],
-        env: { habitat: "Mountainous", pop: "80 persons/km²", agric: 30, temp: 15, soil: 50 }
-    },
-    "Leribe": { 
-        city: "Hlotse", risk: 24, coords: [-28.871, 28.045],
-        env: { habitat: "River Valley", pop: "150 persons/km²", agric: 55, temp: 19, soil: 55 }
-    },
-    "Mafeteng": { 
-        city: "Mafeteng", risk: 28, coords: [-29.823, 27.244],
-        env: { habitat: "Lowlands", pop: "110 persons/km²", agric: 60, temp: 22, soil: 35 }
-    },
-    "Maseru": { 
-        city: "Maseru", risk: 35, coords: [-29.310, 27.483],
-        env: { habitat: "Urban Capital", pop: "900 persons/km²", agric: 20, temp: 21, soil: 30 }
-    },
-    "Mohale's Hoek": { 
-        city: "Mohale's Hoek", risk: 26, coords: [-30.150, 27.466],
-        env: { habitat: "Dry Highland", pop: "70 persons/km²", agric: 40, temp: 20, soil: 25 }
-    },
-    "Mokhotlong": { 
-        city: "Mokhotlong", risk: 20, coords: [-29.289, 29.064],
-        env: { habitat: "Alpine", pop: "30 persons/km²", agric: 15, temp: 12, soil: 60 }
-    },
-    "Qacha's Nek": { 
-        city: "Qacha's Nek", risk: 23, coords: [-30.115, 28.697],
-        env: { habitat: "Mountain Border", pop: "40 persons/km²", agric: 25, temp: 16, soil: 45 }
-    },
-    "Quthing": { 
-        city: "Moyeni", risk: 25, coords: [-30.400, 27.700],
-        env: { habitat: "Windy Highland", pop: "50 persons/km²", agric: 30, temp: 18, soil: 40 }
-    },
-    "Thaba-Tseka": { 
-        city: "Thaba-Tseka", risk: 21, coords: [-29.522, 28.608],
-        env: { habitat: "Central Range", pop: "20 persons/km²", agric: 20, temp: 14, soil: 50 }
-    }
-  }
+// -------------------- Globals --------------------
+const districtLookup = {};
+const markers = {};
+let allCSVData = []; // Store full dataset for filtering
+
+// Extended Slider Configuration Jan 2025 - Jan 2026
+const MONTH_DATA = [
+  { id: 'Jan 2025', month: 'January', year: '2025' },
+  { id: 'Feb 2025', month: 'February', year: '2025' },
+  { id: 'Mar 2025', month: 'March', year: '2025' },
+  { id: 'Apr 2025', month: 'April', year: '2025' },
+  { id: 'May 2025', month: 'May', year: '2025' },
+  { id: 'Jun 2025', month: 'June', year: '2025' },
+  { id: 'Jul 2025', month: 'July', year: '2025' },
+  { id: 'Aug 2025', month: 'August', year: '2025' },
+  { id: 'Sep 2025', month: 'September', year: '2025' },
+  { id: 'Oct 2025', month: 'October', year: '2025' },
+  { id: 'Nov 2025', month: 'November', year: '2025' },
+  { id: 'Dec 2025', month: 'December', year: '2025' },
+  { id: 'Jan 2026', month: 'January',  year: '2026' }
+];
+let currentMonthIndex = 0;
+
+// Define default view coordinates for easy resetting
+const DEFAULT_VIEW = { lat: -23.4013, lng: 29.4179, zoom: 7 };
+
+const LAND_COVER = {
+  10: 'Tree cover', 20: 'Shrubland', 30: 'Grassland', 40: 'Cropland',
+  50: 'Built-up', 60: 'Bare vegetation', 80: 'Water bodies', 90: 'Wetland'
 };
 
-// initialize a normal map, centered on southern africa
-const map = L.map('map', { zoomControl: false }).setView([-25, 25], 5);
+// -------------------- Map Setup --------------------
+const map = L.map('map', { zoomControl: false })
+  .setView([DEFAULT_VIEW.lat, DEFAULT_VIEW.lng], DEFAULT_VIEW.zoom);
 
-L.control.zoom({
-  position: 'bottomright'
-}).addTo(map);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+const cityLayer = L.layerGroup().addTo(map);
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '&copy; OpenStreetMap contributors'
-}).addTo(map);
+// -------------------- Risk Logic --------------------
+const riskColor = r => r >= 50 ? '#d93025' : r >= 25 ? '#f9bb06' : '#34a853';
 
-let cityLayer = L.layerGroup().addTo(map);
-
-// allows easy changing of colors
-function riskColor(risk) {
-  if (risk >= 60) return '#d93025'; 
-  if (risk >= 50) return '#fa7b17'; 
-  return '#34a853'; 
+function riskLabel(r) {
+  if (r >= 50) return 'High';
+  if (r >= 25) return 'Moderate';
+  return 'Low';
 }
 
-
-/* This is where dynamic data goes in, so even in the future when you have gotten the data it will be ingested in a similar procedure*/
-function updateRiskPanel(risk, riskLabel) {
-    const riskTextEl = document.getElementById('risk-text');
-    const riskPercEl = document.getElementById('risk-percentage');
-    riskTextEl.innerText = riskLabel;
-    riskTextEl.style.color = riskColor(risk);
-    riskPercEl.innerText = risk + "%";
+function calculateDynamicRisk(d) {
+  let score = 0;
+  if (d.Soil_Moisture > 0.35) score += 40;
+  else if (d.Soil_Moisture > 0.25) score += 20;
+  if (d.LST_Surface_C >= 25 && d.LST_Surface_C <= 30) score += 30;
+  if (d.NDWI_Water > -0.1) score += 20;
+  if (d.Population_Density_Per_KM2 > 300) score += 10;
+  return score;
 }
 
-function updateEnvironmentalFactors(envData) {
-    // Habitat
-    document.getElementById('env-habitat').innerText = envData.habitat;
-    // Demographics
-    document.getElementById('env-demo').innerText = envData.pop;
-    // Agriculture
-    const agricBar = document.getElementById('env-agric-bar');
-    const agricVal = document.getElementById('env-agric-val');
-    agricBar.value = envData.agric;
-    agricVal.innerText = envData.agric + "%";
-    // Temperature
-    const tempBar = document.getElementById('env-temp-bar');
-    const tempVal = document.getElementById('env-temp-val');
-    tempBar.value = envData.temp;
-    tempVal.innerText = envData.temp + "°C";
-    // Soil Moisture
-    const soilBar = document.getElementById('env-soil-bar');
-    const soilVal = document.getElementById('env-soil-val');
-    soilBar.value = envData.soil;
-    soilVal.innerText = envData.soil + " m³";
+// -------------------- UI Updates --------------------
+function updateEnvironmentalFactors(d, isWardSelected) {
+  const habitatEl = document.getElementById('env-habitat');
+  
+  // Habitat only has value when a ward is selected
+  if (isWardSelected && d.Habitat_Class_Code) {
+    habitatEl.innerText = LAND_COVER[Math.round(d.Habitat_Class_Code)] || 'Unknown';
+  } else {
+    habitatEl.innerText = '--';
+  }
+
+  document.getElementById('env-demo').innerText = isWardSelected ? `${Math.round(d.Population_Density_Per_KM2 || 0)}/km²` : '--';
+  setBar('env-agric-bar', 'env-agric-val', isWardSelected ? d.Agric_Percentage : 0, '%');
+  setBar('env-temp-bar', 'env-temp-val', isWardSelected ? d.LST_Surface_C : 0, '°C');
+  setBar('env-soil-bar', 'env-soil-val', isWardSelected ? (d.Soil_Moisture * 100) : 0, ' m³', 2);
 }
 
-/*cleared after choosing a new item*/
-function resetEnvironmentalFactors() {
-    document.getElementById('env-habitat').innerText = "--";
-    document.getElementById('env-demo').innerText = "--";
-    document.getElementById('env-agric-bar').value = 0;
-    document.getElementById('env-agric-val').innerText = "0%";
-    document.getElementById('env-temp-bar').value = 0;
-    document.getElementById('env-temp-val').innerText = "0°C";
-    document.getElementById('env-soil-bar').value = 0;
-    document.getElementById('env-soil-val').innerText = "0 m³";
+function setBar(barId, valId, value = 0, unit = '', decimals = 0) {
+  document.getElementById(barId).value = value;
+  document.getElementById(valId).innerText = `${value.toFixed(decimals)}${unit}`;
 }
 
+function resetPanels() {
+  document.getElementById('risk-text').innerText = '--';
+  document.getElementById('risk-percentage').innerText = '0%';
+  updateEnvironmentalFactors({}, false);
+}
+
+function selectWardFromMap(data) {
+    const risk = calculateDynamicRisk(data);
+    document.getElementById('risk-text').innerText = riskLabel(risk);
+    document.getElementById('risk-text').style.color = riskColor(risk);
+    document.getElementById('risk-percentage').innerText = `${Math.round(risk)}%`;
+    updateEnvironmentalFactors(data, true);
+}
+
+// -------------------- Filtering & Rendering --------------------
+const riskFilter = document.getElementById('risk-level-filter');
+riskFilter.onchange = () => renderAllHotspots();
+
+function renderAllHotspots() {
+  cityLayer.clearLayers();
+  const currentMonthId = MONTH_DATA[currentMonthIndex].id;
+  const filterVal = riskFilter.value;
+
+  allCSVData.forEach((w) => {
+    if (w.Month !== currentMonthId) return;
+
+    const risk = calculateDynamicRisk(w);
+    const label = riskLabel(risk);
+
+    if (filterVal !== 'all' && label !== filterVal) return;
+
+    const color = riskColor(risk);
+    const marker = L.circleMarker([w.latitude, w.longitude], {
+      radius: 8, fillColor: color, color: '#fff', weight: 1, fillOpacity: 0.7
+    });
+
+    // Create Card HTML for Popup
+    const riskClass = risk >= 50 ? 'popup-risk-high' : risk >= 25 ? 'popup-risk-mod' : 'popup-risk-low';
+    
+    const popupContent = `
+        <div class="modern-popup-card">
+          <div class="card-header" style="background:${color}">
+            <h3>${w.WardLabel}</h3>
+            <span class="subtitle">Risk Analysis</span>
+          </div>
+          <div class="card-footer">
+            <span>${Math.round(risk)}% Risk</span>
+          </div>
+        </div>
+    `;
+
+    marker.bindPopup(popupContent);
+    
+    // Simple click just selects data, doesn't force zoom (Zoom is handled by Apply button now)
+    marker.on('click', () => {
+        selectWardFromMap(w);
+        map.setView(marker.getLatLng(), 14);
+        marker.openPopup();
+    });
+
+    marker.addTo(cityLayer);
+  });
+}
+
+// -------------------- Dropdowns & Apply Logic --------------------
 const countrySelect = document.getElementById('country-select');
 const provinceSelect = document.getElementById('province-select');
 const citySelect = document.getElementById('city-select');
+const applyBtn = document.getElementById('apply-btn');
+const resetBtn = document.getElementById('reset-btn');
 
-for (let country in ncdRegionData) {
-  countrySelect.options[countrySelect.options.length] = new Option(country, country);
-}
+// --- 1. Populate Country/Province ---
+countrySelect.add(new Option('Limpopo', 'Limpopo'));
 
-/* trigger */
-countrySelect.onchange = function() {
-  provinceSelect.length = 1; 
-  provinceSelect.selectedIndex = 0;
-  citySelect.length = 1;
-  citySelect.selectedIndex = 0;
-  citySelect.disabled = true;
-  cityLayer.clearLayers();
-  
-  resetEnvironmentalFactors();
-  updateRiskPanel(0, "--");
-
-  if (!this.value) {
-    provinceSelect.disabled = true;
-    map.setView([-25, 25], 5);
-    return;
-  }
-  
+countrySelect.onchange = () => {
+  provinceSelect.length = 1;
   provinceSelect.disabled = false;
-  for (let province in ncdRegionData[this.value]) {
-    provinceSelect.options[provinceSelect.options.length] = new Option(province, province);
-  }
   
-  map.setView([-25, 25], 5); 
+  // Clear dependent dropdowns
+  citySelect.length = 1; 
+  citySelect.disabled = true;
+  applyBtn.disabled = true;
+
+  Object.keys(districtLookup).sort().forEach(m => {
+      // Strip "Local Municipality" for the dropdown list
+      const cleanName = m.replace(/ Local Municipality$/i, "");
+      provinceSelect.add(new Option(cleanName, m));
+  });
 };
 
-provinceSelect.onchange = function() {
-  citySelect.length = 1;
-  citySelect.selectedIndex = 0;
-  cityLayer.clearLayers();
-  
-  if (!this.value) {
-    citySelect.disabled = true;
-    resetEnvironmentalFactors(); 
-    return;
-  }
-  
-  citySelect.disabled = false;
-  const cityData = ncdRegionData[countrySelect.value][this.value];
-  citySelect.options[citySelect.options.length] = new Option(cityData.city, cityData.city);
-  
-  // update map, this is what shows us that we will likely change this map beacuase in the json there are literal co-ords!
-  const marker = L.circleMarker(cityData.coords, {
-    radius: 12,
-    fillColor: riskColor(cityData.risk),
-    color: '#fff',
-    weight: 2,
-    opacity: 1,
-    fillOpacity: 0.8
-  }).addTo(cityLayer);
-  
-  marker.bindPopup(`<b>${cityData.city}</b><br>Risk: ${cityData.risk}%`);
-  
-  let label = "Low";
-  if(cityData.risk >= 50) label = "Medium";
-  if(cityData.risk >= 60) label = "High";
-  updateRiskPanel(cityData.risk, label);
-  updateEnvironmentalFactors(cityData.env);
-
-  map.setView(cityData.coords, 8);
+// --- 2. Populate Wards ---
+provinceSelect.onchange = () => {
+    citySelect.length = 1;
+    citySelect.disabled = false;
+    applyBtn.disabled = true;
+    
+    const currentMonthId = MONTH_DATA[currentMonthIndex].id;
+    const wards = districtLookup[provinceSelect.value] || [];
+    
+    // Sort wards alphabetically or numerically if possible
+    wards.filter(w => w.Month === currentMonthId).forEach((w, i) => {
+        // Storing index as value to look up in array later
+        citySelect.add(new Option(w.WardLabel, i));
+    });
 };
 
-citySelect.onchange = function() {
-    if(this.value) {
-        const cityData = ncdRegionData[countrySelect.value][provinceSelect.value];
-        map.setView(cityData.coords, 10);
-        cityLayer.eachLayer(layer => layer.openPopup());
+// --- 3. Enable Apply Button on Ward Selection ---
+citySelect.onchange = () => {
+    if (citySelect.value !== "") {
+        applyBtn.disabled = false;
+    } else {
+        applyBtn.disabled = true;
     }
 };
+
+// --- 4. Apply Button Click Event ---
+applyBtn.addEventListener('click', () => {
+    const wardIndex = citySelect.value;
+    const municipality = provinceSelect.value;
+    
+    if (wardIndex !== "" && municipality) {
+        // Look up the actual data object using the index we stored in the option value
+        const wardData = districtLookup[municipality][wardIndex]; // NOTE: Ensure index logic matches how you populated it
+        
+        // Alternative lookup if your filtering logic in populate might have shifted indices:
+        // const currentMonthId = MONTH_DATA[currentMonthIndex].id;
+        // const validWards = districtLookup[municipality].filter(w => w.Month === currentMonthId);
+        // const wardData = validWards[wardIndex]; 
+
+        // However, since we used the loop index (i) from the filtered list in provinceSelect.onchange, 
+        // we must ensure we grab the correct object here. 
+        // SAFE APPROACH: Retrieve based on label match or ensure index consistency.
+        // Let's assume the index 'i' passed to Option corresponds to the index in the *filtered* array.
+        const currentMonthId = MONTH_DATA[currentMonthIndex].id;
+        const validWards = districtLookup[municipality].filter(w => w.Month === currentMonthId);
+        const specificWard = validWards[wardIndex];
+
+        if (specificWard) {
+            // A. Update the panels
+            selectWardFromMap(specificWard);
+            
+            // B. Zoom in to the exact ward
+            map.flyTo([specificWard.latitude, specificWard.longitude], 14, {
+                duration: 1.5
+            });
+
+            // C. Find and open the specific marker popup
+            cityLayer.eachLayer((layer) => {
+                const latLng = layer.getLatLng();
+                // Check for coordinate match
+                if (Math.abs(latLng.lat - specificWard.latitude) < 0.0001 && 
+                    Math.abs(latLng.lng - specificWard.longitude) < 0.0001) {
+                    layer.openPopup();
+                }
+            });
+        }
+    }
+});
+
+// --- 5. Reset Logic ---
+resetBtn.addEventListener('click', () => {
+    // 1. Reset Dropdowns
+    countrySelect.value = "Limpopo"; 
+    // Trigger manual reset of dependents since we might want specific behavior
+    provinceSelect.length = 1;
+    provinceSelect.disabled = false;
+    provinceSelect.value = "";
+    
+    citySelect.length = 1;
+    citySelect.disabled = true;
+    
+    applyBtn.disabled = true; 
+    
+    // 2. Reset Risk Filter
+    riskFilter.value = 'all';
+    
+    // 3. Reset Panels
+    resetPanels();
+    
+    // 4. Reset Map View
+    map.flyTo([DEFAULT_VIEW.lat, DEFAULT_VIEW.lng], DEFAULT_VIEW.zoom, {
+        duration: 1.5
+    });
+
+    // 5. Re-render map to show all points
+    renderAllHotspots();
+    
+    // Re-populate province dropdown since we cleared it
+    countrySelect.onchange(); 
+    provinceSelect.value = ""; // Ensure it stays on "Select Municipality"
+});
+
+// -------------------- Slider --------------------
+const timeSlider = document.getElementById('time-slider');
+timeSlider.oninput = (e) => {
+  currentMonthIndex = parseInt(e.target.value);
+  const cfg = MONTH_DATA[currentMonthIndex];
+  document.getElementById('month-label').innerText = cfg.month;
+  document.querySelector('.year-label').innerText = cfg.year;
+  
+  // Refresh map and reset selection on time change
+  renderAllHotspots();
+  resetPanels();
+  
+  // Reset dropdowns on time change to prevent mismatch
+  citySelect.value = "";
+  applyBtn.disabled = true;
+};
+
+// -------------------- CSV Load --------------------
+Papa.parse('../data/Limpopo_Risk_Jan25_Jan26_Safe.csv', {
+  download: true, header: true, dynamicTyping: true,
+  step: ({ data }) => {
+    if (data.Municipali) {
+        allCSVData.push(data);
+        (districtLookup[data.Municipali] ||= []).push(data);
+    }
+  },
+  complete: () => renderAllHotspots()
+});
