@@ -7,6 +7,121 @@
     <link rel="stylesheet" href="../styles/malaria-page.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://js.arcgis.com/4.28/esri/themes/light/main.css">
+
+    <style>
+        /* ── Average Risk Block ── */
+        #avg-risk-container {
+            margin-top: 14px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+
+        #avg-risk-container.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(6px);
+        }
+
+        #avg-risk-container.visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .avg-risk-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            opacity: 0.6;
+            margin: 0 0 8px 0;
+        }
+
+        .avg-risk-body {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* SVG donut ring */
+        .avg-ring-wrap {
+            flex-shrink: 0;
+        }
+
+        .avg-ring-wrap svg {
+            display: block;
+        }
+
+        .avg-ring-bg {
+            fill: none;
+            stroke: rgba(255,255,255,0.12);
+            stroke-width: 4;
+        }
+
+        #avg-risk-ring {
+            fill: none;
+            stroke-width: 4;
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: center;
+            transition: stroke-dashoffset 0.6s cubic-bezier(0.4,0,0.2,1), stroke 0.4s ease;
+        }
+
+        .avg-ring-pct {
+            font-size: 0.65rem;
+            font-weight: 700;
+            dominant-baseline: middle;
+            text-anchor: middle;
+            fill: currentColor;
+        }
+
+        .avg-risk-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .avg-risk-info .divider-label {
+            font-size: 0.68rem;
+            opacity: 0.55;
+            margin: 0 0 2px 0;
+        }
+
+        #avg-risk-text {
+            font-size: 1rem;
+            font-weight: 700;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        #avg-risk-percentage {
+            font-size: 0.78rem;
+            opacity: 0.75;
+            margin: 1px 0 4px 0;
+        }
+
+        #avg-ward-count {
+            font-size: 0.65rem;
+            opacity: 0.45;
+            margin: 0;
+        }
+
+        .avg-divider {
+            width: 100%;
+            height: 1px;
+            background: rgba(255,255,255,0.1);
+            margin: 12px 0 8px;
+        }
+
+        .ward-risk-label {
+            font-size: 0.68rem;
+            opacity: 0.55;
+            margin: 0 0 2px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+        }
+    </style>
 </head>
 <body>
 
@@ -79,63 +194,88 @@
             <output id="env-soil-val">0 m³</output>
         </section>
 
-        <section class="risk-prediction">
-            <h2>Risk Prediction</h2>
-            
-            <p>Filter Risk Level</p>
-            <select id="risk-level-filter">
-                <option value="all">All Risks</option>
-                <option value="High">High Risk</option>
-                <option value="Moderate">Medium Risk</option>
-                <option value="Low">Low Risk</option>
-            </select>
+<section class="risk-prediction">
+    <h2>Risk Prediction</h2>
+    
+    <p>Filter Risk Level</p>
+    <select id="risk-level-filter">
+        <option value="all">All Risks</option>
+        <option value="High">High Risk</option>
+        <option value="Moderate">Medium Risk</option>
+        <option value="Low">Low Risk</option>
+    </select>
 
-            <p>Current Risk Level</p>
-            <h3 id="risk-text">--</h3>
-            <h4 id="risk-percentage">0%</h4>
-
-            <div class="timeline-container">
-                <div class="timeline-header">
-                    <p>Timeline Prediction</p>
-                    <div class="month-display">
-                        <span id="month-label">Jan</span> <span class="year-label">2025</span>
-                    </div>
-                </div>
-                
-                <input type="range" id="time-slider" min="0" max="12" value="0" step="1">
-                
-                <div class="slider-ticks-container">
-                    <div class="slider-ticks">
-                        <span>Jan 25</span>
-                        <span>Jan 26</span>
-                    </div>
-                </div>
+    <div id="avg-risk-container" class="hidden">
+        <p class="avg-risk-label" style="font-size: 0.7rem; opacity: 0.6; margin-bottom: 8px;">Municipality Average</p>
+        <div class="avg-risk-body">
+            <div class="avg-ring-wrap">
+                <svg width="52" height="52" viewBox="0 0 52 52">
+                    <circle class="avg-ring-bg" cx="26" cy="26" r="20" fill="none" stroke="rgba(0,0,0,0.1)" stroke-width="4"/>
+                    <circle id="avg-risk-ring" cx="26" cy="26" r="20" fill="none" stroke-width="4" stroke-linecap="round"
+                        stroke-dasharray="125.66"
+                        stroke-dashoffset="125.66"
+                        transform="rotate(-90 26 26)"/>
+                    <text id="avg-ring-label" class="avg-ring-pct" x="26" y="26" text-anchor="middle" dominant-baseline="middle" font-size="0.65rem" font-weight="bold">0%</text>
+                </svg>
             </div>
-        </section>
 
-        <section class="map-legend">
-    <h2>Legend</h2>
-
-    <div class="legend-item">
-        <span class="legend-color high-risk"></span>
-        <span>High Risk</span>
+            <div class="avg-risk-info">
+                <h3 id="avg-risk-text" style="font-size: 1.1rem; margin:0;">--</h3>
+                <p id="avg-risk-percentage" style="margin:0; opacity: 0.7; font-size: 0.8rem;">0%</p>
+                <p id="avg-ward-count" style="margin:2px 0 0 0; font-size: 0.65rem; opacity: 0.5;"></p>
+            </div>
+        </div>
     </div>
 
-    <div class="legend-item">
-        <span class="legend-color moderate-risk"></span>
-        <span>Medium Risk</span>
+    <div id="ward-risk-container">
+        <div class="ward-risk-header">
+            <span class="ward-risk-label">Current Ward Risk</span>
+            <span id="risk-percentage">0%</span>
+        </div>
+        <div class="ward-risk-main">
+            <h3 id="risk-text">--</h3>
+        </div>
     </div>
 
-    <div class="legend-item">
-        <span class="legend-color low-risk"></span>
-        <span>Low Risk</span>
+    <div class="timeline-container" style="margin-top: 16px;">
+        <div class="timeline-header">
+            <p>Timeline Prediction</p>
+            <div class="month-display">
+                <span id="month-label">Jan</span> <span class="year-label">2025</span>
+            </div>
+        </div>
+        
+        <input type="range" id="time-slider" min="0" max="12" value="0" step="1">
+        
+        <div class="slider-ticks-container">
+            <div class="slider-ticks">
+                <span>Jan 25</span>
+                <span>Jan 26</span>
+            </div>
+        </div>
     </div>
 </section>
 
+        <section class="map-legend">
+            <h2>Legend</h2>
+
+            <div class="legend-item">
+                <span class="legend-color high-risk"></span>
+                <span>High Risk</span>
+            </div>
+
+            <div class="legend-item">
+                <span class="legend-color moderate-risk"></span>
+                <span>Medium Risk</span>
+            </div>
+
+            <div class="legend-item">
+                <span class="legend-color low-risk"></span>
+                <span>Low Risk</span>
+            </div>
+        </section>
 
     </article>
-
-    
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
