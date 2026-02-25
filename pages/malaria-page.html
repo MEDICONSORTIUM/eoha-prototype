@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Malaria Prediction</title>
+    <title>Malaria Prediction - Health Analytics</title>
     <link rel="stylesheet" href="../styles/malaria-page.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://js.arcgis.com/4.28/esri/themes/light/main.css">
@@ -168,7 +168,6 @@
             </select>
 
             <button id="apply-btn" class="btn-apply" disabled>Apply</button>
-            
         </section>
     </article>
 
@@ -182,99 +181,52 @@
             <span id="env-demo" class="text-value">--</span>
 
             <p>Agricultural Area</p>
-            <progress id="env-agric-bar" class="agric-area-bar" value="0" max="100">0%</progress>
+            <progress id="env-agric-bar" class="agric-area-bar" value="0" max="100"></progress>
             <output id="env-agric-val">0%</output>
             
-            <p>Surface Temperature</p>
-            <progress id="env-temp-bar" class="surface-temp-bar" value="0" max="50">0%</progress>
+            <p>Surface Temp</p>
+            <progress id="env-temp-bar" class="surface-temp-bar" value="0" max="50"></progress>
             <output id="env-temp-val">0°C</output>
-            
-            <p>Soil Moisture</p>
-            <progress id="env-soil-bar" class="soil-moist-temp-bar" value="0" max="100">0%</progress>
-            <output id="env-soil-val">0 m³</output>
         </section>
 
-<section class="risk-prediction">
-    <h2>Risk Prediction</h2>
-    
-    <p>Filter Risk Level</p>
-    <select id="risk-level-filter">
-        <option value="all">All Risks</option>
-        <option value="High">High Risk</option>
-        <option value="Moderate">Medium Risk</option>
-        <option value="Low">Low Risk</option>
-    </select>
-
-    <div id="avg-risk-container" class="hidden">
-        <p class="avg-risk-label" style="font-size: 0.7rem; opacity: 0.6; margin-bottom: 8px;">Municipality Average</p>
-        <div class="avg-risk-body">
-            <div class="avg-ring-wrap">
-                <svg width="52" height="52" viewBox="0 0 52 52">
-                    <circle class="avg-ring-bg" cx="26" cy="26" r="20" fill="none" stroke="rgba(0,0,0,0.1)" stroke-width="4"/>
-                    <circle id="avg-risk-ring" cx="26" cy="26" r="20" fill="none" stroke-width="4" stroke-linecap="round"
-                        stroke-dasharray="125.66"
-                        stroke-dashoffset="125.66"
-                        transform="rotate(-90 26 26)"/>
-                    <text id="avg-ring-label" class="avg-ring-pct" x="26" y="26" text-anchor="middle" dominant-baseline="middle" font-size="0.65rem" font-weight="bold">0%</text>
-                </svg>
+        <section class="risk-prediction">
+            <h2>Risk & Prevention</h2>
+            
+            <p>Current Risk Level</p>
+            <div class="risk-display-row">
+                <h3 id="risk-text">--</h3>
+                <h4 id="risk-percentage">0%</h4>
             </div>
 
-            <div class="avg-risk-info">
-                <h3 id="avg-risk-text" style="font-size: 1.1rem; margin:0;">--</h3>
-                <p id="avg-risk-percentage" style="margin:0; opacity: 0.7; font-size: 0.8rem;">0%</p>
-                <p id="avg-ward-count" style="margin:2px 0 0 0; font-size: 0.65rem; opacity: 0.5;"></p>
+            <div id="prevention-advice" class="advice-box">
+                <p class="advice-placeholder">Select a region to see preventative measures.</p>
             </div>
-        </div>
-    </div>
 
-    <div id="ward-risk-container">
-        <div class="ward-risk-header">
-            <span class="ward-risk-label">Current Ward Risk</span>
-            <span id="risk-percentage">0%</span>
-        </div>
-        <div class="ward-risk-main">
-            <h3 id="risk-text">--</h3>
-        </div>
-    </div>
-
-    <div class="timeline-container" style="margin-top: 16px;">
-        <div class="timeline-header">
-            <p>Timeline Prediction</p>
-            <div class="month-display">
-                <span id="month-label">Jan</span> <span class="year-label">2025</span>
+            <div class="timeline-container">
+                <div class="timeline-header">
+                    <p>Timeline Prediction</p>
+                    <div class="month-display">
+                        <span id="month-label">Jan</span> <span class="year-label">2025</span>
+                    </div>
+                </div>
+                <input type="range" id="time-slider" min="0" max="12" value="0" step="1">
             </div>
-        </div>
-        
-        <input type="range" id="time-slider" min="0" max="12" value="0" step="1">
-        
-        <div class="slider-ticks-container">
-            <div class="slider-ticks">
-                <span>Jan 25</span>
-                <span>Jan 26</span>
-            </div>
-        </div>
-    </div>
-</section>
 
         <section class="map-legend">
-            <h2>Legend</h2>
-
+            <h2>Map Legend</h2>
             <div class="legend-item">
                 <span class="legend-color high-risk"></span>
-                <span>High Risk</span>
+                <span>High Risk (>50%)</span>
             </div>
-
             <div class="legend-item">
                 <span class="legend-color moderate-risk"></span>
-                <span>Medium Risk</span>
+                <span>Medium Risk (25-50%)</span>
             </div>
-
             <div class="legend-item">
                 <span class="legend-color low-risk"></span>
-                <span>Low Risk</span>
+                <span>Low Risk (<25%></25>) </span>
             </div>
         </section>
-
     </article>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
