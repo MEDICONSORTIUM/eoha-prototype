@@ -7,6 +7,121 @@
     <link rel="stylesheet" href="../styles/malaria-page.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://js.arcgis.com/4.28/esri/themes/light/main.css">
+
+    <style>
+        /* ── Average Risk Block ── */
+        #avg-risk-container {
+            margin-top: 14px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+
+        #avg-risk-container.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(6px);
+        }
+
+        #avg-risk-container.visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .avg-risk-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            opacity: 0.6;
+            margin: 0 0 8px 0;
+        }
+
+        .avg-risk-body {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* SVG donut ring */
+        .avg-ring-wrap {
+            flex-shrink: 0;
+        }
+
+        .avg-ring-wrap svg {
+            display: block;
+        }
+
+        .avg-ring-bg {
+            fill: none;
+            stroke: rgba(255,255,255,0.12);
+            stroke-width: 4;
+        }
+
+        #avg-risk-ring {
+            fill: none;
+            stroke-width: 4;
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: center;
+            transition: stroke-dashoffset 0.6s cubic-bezier(0.4,0,0.2,1), stroke 0.4s ease;
+        }
+
+        .avg-ring-pct {
+            font-size: 0.65rem;
+            font-weight: 700;
+            dominant-baseline: middle;
+            text-anchor: middle;
+            fill: currentColor;
+        }
+
+        .avg-risk-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .avg-risk-info .divider-label {
+            font-size: 0.68rem;
+            opacity: 0.55;
+            margin: 0 0 2px 0;
+        }
+
+        #avg-risk-text {
+            font-size: 1rem;
+            font-weight: 700;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        #avg-risk-percentage {
+            font-size: 0.78rem;
+            opacity: 0.75;
+            margin: 1px 0 4px 0;
+        }
+
+        #avg-ward-count {
+            font-size: 0.65rem;
+            opacity: 0.45;
+            margin: 0;
+        }
+
+        .avg-divider {
+            width: 100%;
+            height: 1px;
+            background: rgba(255,255,255,0.1);
+            margin: 12px 0 8px;
+        }
+
+        .ward-risk-label {
+            font-size: 0.68rem;
+            opacity: 0.55;
+            margin: 0 0 2px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+        }
+    </style>
 </head>
 <body>
 
@@ -96,7 +211,6 @@
                 </div>
                 <input type="range" id="time-slider" min="0" max="12" value="0" step="1">
             </div>
-        </section>
 
         <section class="map-legend">
             <h2>Map Legend</h2>
