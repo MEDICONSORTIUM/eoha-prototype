@@ -31,7 +31,7 @@ jobs:
         if: success()
         run: |
           curl -H "Content-Type: application/json" \
-          -d "{\"username\": \"EOHA CI\", \"embeds\": [{\"title\": \"✅ Static Site Verified\", \"description\": \"Repository: ${{ github.repository }}\", \"color\": 3066993}]}" \
+          -d "{\"username\": \"EOHA CI\", \"embeds\": [{\"title\": \"✅ CI Success\", \"description\": \"Repository: ${{ github.repository }}\", \"color\": 3066993}]}" \
           ${{ secrets.DISCORD_WEBHOOK }}
 
       - name: Notify Discord (Failure)
