@@ -1,0 +1,42 @@
+name: EOHA Prototype CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Instead of NPM, let's just verify the main file exists
+      - name: Verify Static Files
+        run: |
+          if [ -f "index.html" ]; then
+            echo "Index file found. Ready to go!"
+          else
+            echo "Error: index.html not found!"
+            exit 1
+          fi
+
+      - name: Notify Discord (Success)
+        if: success()
+        run: |
+          curl -H "Content-Type: application/json" \
+          -d "{\"username\": \"EOHA CI\", \"embeds\": [{\"title\": \"✅ Static Site Verified\", \"description\": \"Repository: ${{ github.repository }}\", \"color\": 3066993}]}" \
+          ${{ secrets.DISCORD_WEBHOOK }}
+
+      - name: Notify Discord (Failure)
+        if: failure()
+        run: |
+          curl -H "Content-Type: application/json" \
+          -d "{\"username\": \"EOHA CI\", \"embeds\": [{\"title\": \"❌ CI Failed\", \"description\": \"Check the logs!\", \"color\": 15158332}]}" \
+          ${{ secrets.DISCORD_WEBHOOK }}
