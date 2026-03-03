@@ -209,4 +209,32 @@ input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.1); }
     margin: 12px 0; /* Adjusted for cleaner vertical stacking */
 }
 
+/* 1. Set the display type so the width/height works */
+.legend-color {
+    display: inline-block; /* Crucial for spans to show size */
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    flex-shrink: 0; /* Prevents the box from squishing */
+}
 
+/* 2. Define the actual colors */
+.high-risk {
+    background-color: #d93025; /* Red */
+}
+
+.moderate-risk {
+    background-color: #f9ab00; /* Amber/Orange */
+}
+
+.low-risk {
+    background-color: #1e8e3e; /* Green */
+}
+
+/* 3. Ensure the legend items align vertically */
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
