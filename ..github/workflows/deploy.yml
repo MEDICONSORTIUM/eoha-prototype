@@ -1,57 +1,44 @@
-name: Deploy Docusaurus to GitHub Pages
+name: EOHA Prototype CI Pipeline
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 jobs:
-
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
+      # ---- CHECKOUT CODE ----
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # ---- SETUP NODE ----
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: documentation/package-lock.json
 
+      # ---- INSTALL DEPENDENCIES ----
       - name: Install dependencies
-        run: npm install
-        working-directory: documentation
+        run: npm ci
 
-      - name: Build Docusaurus site
+      # ---- BUILD PROJECT ----
+      - name: Build project
         run: npm run build
-        working-directory: documentation
+        continue-on-error: false
 
-      - name: Upload GitHub Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: documentation/build
-
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      # ---- RUN TESTS ----
+      - name: Run tests
+        run: npm test
 
       # ---- DISCORD SUCCESS NOTIFICATION ----
       - name: Notify Discord (Success)
@@ -59,9 +46,9 @@ jobs:
         run: |
           curl -H "Content-Type: application/json" \
           -d "{
-            \"username\": \"GitHub CI\",
+            \"username\": \"EOHA CI\",
             \"embeds\": [{
-              \"title\": \"✅ Deployment Successful\",
+              \"title\": \"✅ CI Pipeline Successful\",
               \"description\": \"Repository: ${{ github.repository }}\nBranch: ${{ github.ref_name }}\nCommit: ${{ github.event.head_commit.message }}\nTriggered by: ${{ github.actor }}\",
               \"color\": 3066993
             }]
@@ -74,9 +61,9 @@ jobs:
         run: |
           curl -H "Content-Type: application/json" \
           -d "{
-            \"username\": \"GitHub CI\",
+            \"username\": \"EOHA CI\",
             \"embeds\": [{
-              \"title\": \"❌ Deployment Failed\",
+              \"title\": \"❌ CI Pipeline Failed\",
               \"description\": \"Repository: ${{ github.repository }}\nBranch: ${{ github.ref_name }}\nTriggered by: ${{ github.actor }}\",
               \"color\": 15158332
             }]
