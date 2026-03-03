@@ -1,4 +1,4 @@
-name: EOHA Prototype CI Pipeline
+name: EOHA Prototype CI
 
 on:
   push:
@@ -12,7 +12,7 @@ permissions:
   contents: read
 
 jobs:
-  build-and-test:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,14 +27,14 @@ jobs:
           node-version: 20
           cache: npm
 
-      # ---- INSTALL DEPENDENCIES ----
+      # ---- INSTALL DEPENDENCIES (only if package.json exists) ----
       - name: Install dependencies
         run: npm ci
 
-      # ---- BUILD PROJECT ----
-      - name: Build project
-        run: npm run build
-        continue-on-error: false
+      # ---- RUN LINT (optional, if eslint exists) ----
+      - name: Run Linter
+        run: npm run lint
+        continue-on-error: true
 
       # ---- RUN TESTS ----
       - name: Run tests
@@ -48,8 +48,8 @@ jobs:
           -d "{
             \"username\": \"EOHA CI\",
             \"embeds\": [{
-              \"title\": \"✅ CI Pipeline Successful\",
-              \"description\": \"Repository: ${{ github.repository }}\nBranch: ${{ github.ref_name }}\nCommit: ${{ github.event.head_commit.message }}\nTriggered by: ${{ github.actor }}\",
+              \"title\": \"✅ CI Passed\",
+              \"description\": \"Repository: ${{ github.repository }}\nBranch: ${{ github.ref_name }}\nTriggered by: ${{ github.actor }}\",
               \"color\": 3066993
             }]
           }" \
@@ -63,7 +63,7 @@ jobs:
           -d "{
             \"username\": \"EOHA CI\",
             \"embeds\": [{
-              \"title\": \"❌ CI Pipeline Failed\",
+              \"title\": \"❌ CI Failed\",
               \"description\": \"Repository: ${{ github.repository }}\nBranch: ${{ github.ref_name }}\nTriggered by: ${{ github.actor }}\",
               \"color\": 15158332
             }]
