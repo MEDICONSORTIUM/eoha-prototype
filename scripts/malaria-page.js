@@ -371,7 +371,7 @@ timeSlider.oninput = (e) => {
     wards.filter(w => w.Month === currentMonthId).forEach((w, i) => {
         citySelect.add(new Option(w.WardLabel, i));
     });
-    updateAverageRisk(); // recalculate average for the new month
+    updateAverageRisk(); 
   }
 };
 
