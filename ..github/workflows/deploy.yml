@@ -1,0 +1,84 @@
+name: Deploy Docusaurus to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: documentation/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: documentation
+
+      - name: Build Docusaurus site
+        run: npm run build
+        working-directory: documentation
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: documentation/build
+
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      # ---- DISCORD SUCCESS NOTIFICATION ----
+      - name: Notify Discord (Success)
+        if: success()
+        run: |
+          curl -H "Content-Type: application/json" \
+          -d "{
+            \"username\": \"GitHub CI\",
+            \"embeds\": [{
+              \"title\": \"✅ Deployment Successful\",
+              \"description\": \"Repository: ${{ github.repository }}\nBranch: ${{ github.ref_name }}\nCommit: ${{ github.event.head_commit.message }}\nTriggered by: ${{ github.actor }}\",
+              \"color\": 3066993
+            }]
+          }" \
+          ${{ secrets.DISCORD_WEBHOOK }}
+
+      # ---- DISCORD FAILURE NOTIFICATION ----
+      - name: Notify Discord (Failure)
+        if: failure()
+        run: |
+          curl -H "Content-Type: application/json" \
+          -d "{
+            \"username\": \"GitHub CI\",
+            \"embeds\": [{
+              \"title\": \"❌ Deployment Failed\",
+              \"description\": \"Repository: ${{ github.repository }}\nBranch: ${{ github.ref_name }}\nTriggered by: ${{ github.actor }}\",
+              \"color\": 15158332
+            }]
+          }" \
+          ${{ secrets.DISCORD_WEBHOOK }}
