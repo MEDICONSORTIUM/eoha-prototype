@@ -20,31 +20,48 @@ const MONTH_DATA = [
   { id: 'Jan 2026', month: 'January',  year: '2026' }
 ];
 let currentMonthIndex = 0;
-
-// Track which municipality is currently selected for filtering
 let selectedMunicipality = null;
 
-// Define default view coordinates for easy resetting
 const DEFAULT_VIEW = { lat: -23.4013, lng: 29.4179, zoom: 7 };
-
-const LAND_COVER = {
-  10: 'Tree cover', 20: 'Shrubland', 30: 'Grassland', 40: 'Cropland',
-  50: 'Built-up', 60: 'Bare vegetation', 80: 'Water bodies', 90: 'Wetland'
-};
 
 // -------------------- Map Setup --------------------
 const map = L.map('map', { zoomControl: false })
-  .setView([DEFAULT_VIEW.lat, DEFAULT_VIEW.lng], DEFAULT_VIEW.zoom);
+  .setView([-23.9, 29.4], 7);
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+// 1. BOTTOM LAYER: The blank map (land, roads, water - no text)
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+}).addTo(map);
+
+// 2. MIDDLE LAYER: The invisible markers layer for clicks/popups
 const cityLayer = L.layerGroup().addTo(map);
 
+// 3. MIDDLE LAYER: The actual glowing heatmap layer
+// You can adjust the overall intensity by lowering the 'max' value if it's still too much
+const heatLayer = L.heatLayer([], { 
+    radius: 20,       // Slightly smaller to reduce bleeding
+    blur: 15,         // Keeps the glow smooth
+    maxZoom: 10,
+    minOpacity: 0.3,  // Keeps low-risk areas semi-transparent
+    max: 1.5,         // NEW: Increasing this scale spreads the color out, making it less overwhelming
+    gradient: { 0.4: '#34a853', 0.6: '#f9bb06', 1.0: '#d93025' } 
+}).addTo(map);
+
+// 4. TOP LAYER: Map Labels (City names, provinces, borders)
+// We create a special pane and force it to sit above the heatmap (z-index: 650)
+map.createPane('labels');
+map.getPane('labels').style.zIndex = 650;
+map.getPane('labels').style.pointerEvents = 'none'; // Crucial: Lets your mouse clicks pass through the text to hit your invisible markers
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
+    pane: 'labels'
+}).addTo(map);
 // -------------------- Risk Logic --------------------
 const riskColor = r => r >= 50 ? '#d93025' : r >= 25 ? '#f9bb06' : '#34a853';
 
 function riskLabel(r) {
   if (r >= 50) return 'High';
-  if (r >= 25) return 'Moderate';
+  if (r >= 25) return 'Mod'; 
   return 'Low';
 }
 
@@ -58,95 +75,81 @@ function calculateDynamicRisk(d) {
   return score;
 }
 
+// -------------------- Donut Chart Animation --------------------
+function updateDonut(ringId, textId, pctId, value, label, color) {
+    const ring = document.getElementById(ringId);
+    if (!ring) return;
+    
+    // r=40 in viewBox 0 0 100 100 -> Circumference = 251.2
+    const circumference = 251.2;
+    const offset = circumference - (value / 100) * circumference;
+    
+    ring.style.strokeDashoffset = offset;
+    ring.style.stroke = color;
+    
+    document.getElementById(textId).innerText = label;
+    document.getElementById(textId).style.color = color; 
+    document.getElementById(pctId).innerText = `${Math.round(value)}% ${ringId.includes('avg') ? 'AVG' : 'RISK'}`;
+}
+
 // -------------------- Average Risk --------------------
-/**
- * Calculates the average risk score for all wards in the currently selected
- * municipality for the currently displayed month, then updates the average
- * risk UI elements.
- */
 function updateAverageRisk() {
   const avgContainer = document.getElementById('avg-risk-container');
 
   if (!selectedMunicipality) {
-    // No municipality selected — hide the average block
-    avgContainer.classList.remove('visible');
-    avgContainer.classList.add('hidden');
+    avgContainer.style.opacity = '0.4'; 
+    document.getElementById('selected-muni-name').innerText = 'Select Municipality';
+    updateDonut('avg-risk-ring', 'avg-risk-text', 'avg-risk-percentage', 0, '--', '#cbd5e1');
     return;
   }
 
   const currentMonthId = MONTH_DATA[currentMonthIndex].id;
   const wards = (districtLookup[selectedMunicipality] || []).filter(w => w.Month === currentMonthId);
 
-  if (wards.length === 0) {
-    avgContainer.classList.remove('visible');
-    avgContainer.classList.add('hidden');
-    return;
-  }
+  if (wards.length === 0) return;
 
   const total = wards.reduce((sum, w) => sum + calculateDynamicRisk(w), 0);
   const avg = Math.round(total / wards.length);
-  const color = riskColor(avg);
+  
+  const color = '#5c6c85'; 
   const label = riskLabel(avg);
 
-  // Update text content
-  document.getElementById('avg-risk-text').innerText = label;
-  document.getElementById('avg-risk-text').style.color = color;
-  document.getElementById('avg-risk-percentage').innerText = `${avg}%`;
-  document.getElementById('avg-ward-count').innerText = `Based on ${wards.length} ward${wards.length !== 1 ? 's' : ''}`;
-
-  // Animate the ring
-  const ring = document.getElementById('avg-risk-ring');
-  const circumference = 2 * Math.PI * 20; // r=20
-  const offset = circumference - (avg / 100) * circumference;
-  ring.style.stroke = color;
-  ring.style.strokeDasharray = circumference;
-  ring.style.strokeDashoffset = offset;
-
-  // Keep centre label in sync
-  const ringLabel = document.getElementById('avg-ring-label');
-  if (ringLabel) {
-    ringLabel.textContent = `${avg}%`;
-    ringLabel.style.fill = color;
-  }
-
-  // Show the block
-  avgContainer.classList.remove('hidden');
-  avgContainer.classList.add('visible');
+  updateDonut('avg-risk-ring', 'avg-risk-text', 'avg-risk-percentage', avg, label, color);
+  document.getElementById('selected-muni-name').innerText = selectedMunicipality.replace(/ Local Municipality$/i, "");
+  avgContainer.style.opacity = '1';
 }
 
 // -------------------- UI Updates --------------------
 function updateEnvironmentalFactors(d, isWardSelected) {
-  const habitatEl = document.getElementById('env-habitat');
-  
-  if (isWardSelected && d.Habitat_Class_Code) {
-    habitatEl.innerText = LAND_COVER[Math.round(d.Habitat_Class_Code)] || 'Unknown';
-  } else {
-    habitatEl.innerText = '--';
-  }
-
-  document.getElementById('env-demo').innerText = isWardSelected ? `${Math.round(d.Population_Density_Per_KM2 || 0)}/km²` : '--';
-  setBar('env-agric-bar', 'env-agric-val', isWardSelected ? d.Agric_Percentage : 0, '%');
-  setBar('env-temp-bar', 'env-temp-val', isWardSelected ? d.LST_Surface_C : 0, '°C');
-  setBar('env-soil-bar', 'env-soil-val', isWardSelected ? (d.Soil_Moisture * 100) : 0, ' m³', 2);
+  setBar('env-agric-bar', 'env-agric-val', isWardSelected ? d.Agric_Percentage : 0, '%', 0, 100);
+  setBar('env-temp-bar', 'env-temp-val', isWardSelected ? d.LST_Surface_C : 0, '°C', 0, 50);
+  setBar('env-soil-bar', 'env-soil-val', isWardSelected ? (d.Soil_Moisture * 100) : 0, '%', 0, 100);
 }
 
-function setBar(barId, valId, value = 0, unit = '', decimals = 0) {
-  document.getElementById(barId).value = value;
-  document.getElementById(valId).innerText = `${value.toFixed(decimals)}${unit}`;
+function setBar(barId, valId, value = 0, unit = '', decimals = 0, max = 100) {
+  const bar = document.getElementById(barId);
+  const valText = document.getElementById(valId);
+  
+  if (bar) {
+      const percentage = (value / max) * 100;
+      bar.style.width = `${Math.min(Math.max(percentage, 0), 100)}%`;
+  }
+  if (valText) {
+      valText.innerText = value > 0 ? `${value.toFixed(decimals)}${unit}` : '--';
+  }
 }
 
 function resetPanels() {
-  document.getElementById('risk-text').innerText = '--';
-  document.getElementById('risk-percentage').innerText = '0%';
+  updateDonut('ward-risk-ring', 'risk-text', 'risk-percentage', 0, '--', '#cbd5e1');
+  document.getElementById('selected-ward-name').innerText = 'Select a Ward';
   updateEnvironmentalFactors({}, false);
   updateAverageRisk();
 }
 
 function selectWardFromMap(data) {
     const risk = calculateDynamicRisk(data);
-    document.getElementById('risk-text').innerText = riskLabel(risk);
-    document.getElementById('risk-text').style.color = riskColor(risk);
-    document.getElementById('risk-percentage').innerText = `${Math.round(risk)}%`;
+    updateDonut('ward-risk-ring', 'risk-text', 'risk-percentage', risk, riskLabel(risk), riskColor(risk));
+    document.getElementById('selected-ward-name').innerText = data.WardLabel || 'Unknown Ward';
     updateEnvironmentalFactors(data, true);
     updateAverageRisk();
 }
@@ -155,23 +158,16 @@ function selectWardFromMap(data) {
 const riskFilter = document.getElementById('risk-level-filter');
 riskFilter.onchange = () => renderAllHotspots();
 
-/**
- * Renders markers for the current month.
- * If selectedMunicipality is set, only that municipality's wards are shown.
- * Also fits the map to the visible markers when a municipality is selected.
- */
 function renderAllHotspots(fitToMunicipality = false) {
   cityLayer.clearLayers();
   const currentMonthId = MONTH_DATA[currentMonthIndex].id;
   const filterVal = riskFilter.value;
-
-  // Collect bounds for fitting the map when a municipality is zoomed in
+  
   const boundsPoints = [];
+  const heatData = []; // Store coordinates and intensity for heatmap
 
   allCSVData.forEach((w) => {
     if (w.Month !== currentMonthId) return;
-
-    // ---- KEY FIX: only show wards belonging to the selected municipality ----
     if (selectedMunicipality && w.Municipali !== selectedMunicipality) return;
 
     const risk = calculateDynamicRisk(w);
@@ -180,19 +176,24 @@ function renderAllHotspots(fitToMunicipality = false) {
     if (filterVal !== 'all' && label !== filterVal) return;
 
     const color = riskColor(risk);
+    
+    // Add point to heatmap array (lat, lng, intensity)
+    heatData.push([w.latitude, w.longitude, risk / 100]); 
+
+    // Create INVISIBLE marker for clicks and popups
     const marker = L.circleMarker([w.latitude, w.longitude], {
-      radius: 8, fillColor: color, color: '#fff', weight: 1, fillOpacity: 0.7
+      radius: 12, 
+      fillColor: color, 
+      color: '#fff', 
+      weight: 0, 
+      fillOpacity: 0.0, // Hidden
+      opacity: 0.0      // Hidden
     });
 
     const popupContent = `
-        <div class="modern-popup-card">
-          <div class="card-header" style="background:${color}">
-            <h3>${w.WardLabel}</h3>
-            <span class="subtitle">Risk Analysis</span>
-          </div>
-          <div class="card-footer">
-            <span>${Math.round(risk)}% Risk</span>
-          </div>
+        <div style="font-family:'Inter',sans-serif; text-align:center;">
+          <h3 style="margin:0 0 5px 0; font-size:14px;">${w.WardLabel}</h3>
+          <span style="color:${color}; font-weight:bold;">${Math.round(risk)}% Risk</span>
         </div>
     `;
 
@@ -208,7 +209,9 @@ function renderAllHotspots(fitToMunicipality = false) {
     boundsPoints.push([w.latitude, w.longitude]);
   });
 
-  // ---- Zoom to fit all visible municipality wards ----
+  // Update heatmap layer with new data
+  heatLayer.setLatLngs(heatData);
+
   if (fitToMunicipality && boundsPoints.length > 0) {
     const bounds = L.latLngBounds(boundsPoints);
     map.flyToBounds(bounds, { padding: [40, 40], maxZoom: 13, duration: 1.2 });
@@ -222,8 +225,8 @@ const citySelect = document.getElementById('city-select');
 const applyBtn = document.getElementById('apply-btn');
 const resetBtn = document.getElementById('reset-btn');
 
-// --- 1. Populate Country/Province ---
-countrySelect.add(new Option('Limpopo', 'Limpopo'));
+countrySelect.add(new Option('Zambia', 'Zambia')); 
+countrySelect.add(new Option('South Africa', 'South Africa')); 
 
 countrySelect.onchange = () => {
   provinceSelect.length = 1;
@@ -233,7 +236,6 @@ countrySelect.onchange = () => {
   citySelect.disabled = true;
   applyBtn.disabled = true;
 
-  // Clear any municipality filter when the province changes
   selectedMunicipality = null;
   updateAverageRisk();
   renderAllHotspots();
@@ -244,7 +246,6 @@ countrySelect.onchange = () => {
   });
 };
 
-// --- 2. Populate Wards + Zoom to Municipality ---
 provinceSelect.onchange = () => {
     citySelect.length = 1;
     citySelect.disabled = false;
@@ -258,11 +259,10 @@ provinceSelect.onchange = () => {
         citySelect.add(new Option(w.WardLabel, i));
     });
 
-    // ---- KEY FIX: filter map to this municipality and zoom to fit its wards ----
     if (provinceSelect.value) {
         selectedMunicipality = provinceSelect.value;
-        renderAllHotspots(true); // true = fit map to these wards
-        updateAverageRisk();     // show average for this municipality
+        renderAllHotspots(true); 
+        updateAverageRisk();     
     } else {
         selectedMunicipality = null;
         updateAverageRisk();
@@ -270,16 +270,10 @@ provinceSelect.onchange = () => {
     }
 };
 
-// --- 3. Enable Apply Button on Ward Selection ---
 citySelect.onchange = () => {
-    if (citySelect.value !== "") {
-        applyBtn.disabled = false;
-    } else {
-        applyBtn.disabled = true;
-    }
+    applyBtn.disabled = citySelect.value === "";
 };
 
-// --- 4. Apply Button: Zoom to exact ward and open popup ---
 applyBtn.addEventListener('click', () => {
     const wardIndex = citySelect.value;
     const municipality = provinceSelect.value;
@@ -290,15 +284,9 @@ applyBtn.addEventListener('click', () => {
         const specificWard = validWards[wardIndex];
 
         if (specificWard) {
-            // A. Update the side panels
             selectWardFromMap(specificWard);
-            
-            // B. Fly to the specific ward
-            map.flyTo([specificWard.latitude, specificWard.longitude], 14, {
-                duration: 1.5
-            });
+            map.flyTo([specificWard.latitude, specificWard.longitude], 14, { duration: 1.5 });
 
-            // C. Open the matching marker's popup
             cityLayer.eachLayer((layer) => {
                 const latLng = layer.getLatLng();
                 if (Math.abs(latLng.lat - specificWard.latitude) < 0.0001 && 
@@ -310,60 +298,34 @@ applyBtn.addEventListener('click', () => {
     }
 });
 
-// --- 5. Reset Logic ---
 resetBtn.addEventListener('click', () => {
-    // 1. Reset Dropdowns
-    countrySelect.value = "Limpopo"; 
-    provinceSelect.length = 1;
-    provinceSelect.disabled = false;
-    provinceSelect.value = "";
-    
-    citySelect.length = 1;
-    citySelect.disabled = true;
-    
+    countrySelect.value = ""; 
+    provinceSelect.length = 1; provinceSelect.disabled = true;
+    citySelect.length = 1; citySelect.disabled = true;
     applyBtn.disabled = true; 
     
-    // 2. Reset Risk Filter
     riskFilter.value = 'all';
-    
-    // 3. Reset Panels
     resetPanels();
 
-    // 4. Clear municipality filter so all wards show again
     selectedMunicipality = null;
     updateAverageRisk();
     
-    // 5. Reset Map View
-    map.flyTo([DEFAULT_VIEW.lat, DEFAULT_VIEW.lng], DEFAULT_VIEW.zoom, {
-        duration: 1.5
-    });
-
-    // 6. Re-render map (no municipality filter, all wards)
+    map.flyTo([DEFAULT_VIEW.lat, DEFAULT_VIEW.lng], DEFAULT_VIEW.zoom, { duration: 1.5 });
     renderAllHotspots();
-    
-    // 7. Re-populate province dropdown
-    countrySelect.onchange(); 
-    provinceSelect.value = "";
 });
 
 // -------------------- Slider --------------------
 const timeSlider = document.getElementById('time-slider');
 timeSlider.oninput = (e) => {
   currentMonthIndex = parseInt(e.target.value);
-  const cfg = MONTH_DATA[currentMonthIndex];
-  document.getElementById('month-label').innerText = cfg.month;
-  document.querySelector('.year-label').innerText = cfg.year;
   
-  // Refresh map — preserve municipality filter if one is active
   renderAllHotspots(false);
   resetPanels();
   
-  // Reset ward dropdown to prevent stale selection across months
   citySelect.length = 1;
   citySelect.disabled = true;
   applyBtn.disabled = true;
 
-  // Repopulate ward list for new month if a municipality is selected
   if (selectedMunicipality) {
     citySelect.disabled = false;
     const currentMonthId = MONTH_DATA[currentMonthIndex].id;
@@ -374,6 +336,9 @@ timeSlider.oninput = (e) => {
     updateAverageRisk(); 
   }
 };
+
+// Initialize dim states
+resetPanels();
 
 // -------------------- CSV Load --------------------
 Papa.parse('../data/Limpopo_Risk_Jan25_Jan26_Safe.csv', {
@@ -386,19 +351,3 @@ Papa.parse('../data/Limpopo_Risk_Jan25_Jan26_Safe.csv', {
   },
   complete: () => renderAllHotspots()
 });
-
-// -------------------- Legend --------------------
-var legend = L.control({ position: "bottomright" });
-
-legend.onAdd = function () {
-    var div = L.DomUtil.create("div", "legend");
-    div.innerHTML = `
-        <h4>Legend</h4>
-        <div class="legend-item"><span class="legend-color high-risk"></span> High Risk</div>
-        <div class="legend-item"><span class="legend-color moderate-risk"></span> Medium Risk</div>
-        <div class="legend-item"><span class="legend-color low-risk"></span> Low Risk</div>
-    `;
-    return div;
-};
-
-legend.addTo(map);
