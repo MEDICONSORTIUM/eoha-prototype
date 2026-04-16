@@ -3,125 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Malaria Prediction</title>
+    <title>Malaria Guard - Dashboard</title>
     <link rel="stylesheet" href="../styles/malaria-page.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-    <link rel="stylesheet" href="https://js.arcgis.com/4.28/esri/themes/light/main.css">
-
-    <style>
-        /* ── Average Risk Block ── */
-        #avg-risk-container {
-            margin-top: 14px;
-            padding: 10px 12px;
-            border-radius: 10px;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.12);
-            transition: opacity 0.35s ease, transform 0.35s ease;
-        }
-
-        #avg-risk-container.hidden {
-            opacity: 0;
-            pointer-events: none;
-            transform: translateY(6px);
-        }
-
-        #avg-risk-container.visible {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translateY(0);
-        }
-
-        .avg-risk-label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            opacity: 0.6;
-            margin: 0 0 8px 0;
-        }
-
-        .avg-risk-body {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        /* SVG donut ring */
-        .avg-ring-wrap {
-            flex-shrink: 0;
-        }
-
-        .avg-ring-wrap svg {
-            display: block;
-        }
-
-        .avg-ring-bg {
-            fill: none;
-            stroke: rgba(255,255,255,0.12);
-            stroke-width: 4;
-        }
-
-        #avg-risk-ring {
-            fill: none;
-            stroke-width: 4;
-            stroke-linecap: round;
-            transform: rotate(-90deg);
-            transform-origin: center;
-            transition: stroke-dashoffset 0.6s cubic-bezier(0.4,0,0.2,1), stroke 0.4s ease;
-        }
-
-        .avg-ring-pct {
-            font-size: 0.65rem;
-            font-weight: 700;
-            dominant-baseline: middle;
-            text-anchor: middle;
-            fill: currentColor;
-        }
-
-        .avg-risk-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .avg-risk-info .divider-label {
-            font-size: 0.68rem;
-            opacity: 0.55;
-            margin: 0 0 2px 0;
-        }
-
-        #avg-risk-text {
-            font-size: 1rem;
-            font-weight: 700;
-            margin: 0;
-            line-height: 1.2;
-        }
-
-        #avg-risk-percentage {
-            font-size: 0.78rem;
-            opacity: 0.75;
-            margin: 1px 0 4px 0;
-        }
-
-        #avg-ward-count {
-            font-size: 0.65rem;
-            opacity: 0.45;
-            margin: 0;
-        }
-
-        .avg-divider {
-            width: 100%;
-            height: 1px;
-            background: rgba(255,255,255,0.1);
-            margin: 12px 0 8px;
-        }
-
-        .ward-risk-label {
-            font-size: 0.68rem;
-            opacity: 0.55;
-            margin: 0 0 2px 0;
-            text-transform: uppercase;
-            letter-spacing: 0.07em;
-        }
-    </style>
 </head>
 <body>
 
@@ -137,148 +21,189 @@
 
     <div id="map"></div>
 
-    <header class="malaria-header">
-        <a href="../index.html" class="btn-link">Back</a>
-        <section class="malaria-heading-section">
-            <h1 class="malaria-heading">Malaria Risk Prediction</h1>
-            <p>Africa Wide Monitoring</p>
-        </section>
-    </header>
-    
-    <article class="region-metrics">
-        <section class="region-selector">
-            <div class="selector-header">
-                <h2>Region Selector</h2>
-                <button id="reset-btn" class="btn-reset" title="Reset all filters">&#x21bb; Reset</button>
-            </div>
-
-            <p>Province</p>
-            <select name="country" id="country-select" class="countries-select">
-                <option value="">-- Select Province --</option>
-            </select>
-            
-            <p>Municipality</p>
-            <select name="province" id="province-select" class="provinces-select" disabled>
-                <option value="">-- Select Municipality --</option>
-            </select>
-            
-            <p>Ward</p>
-            <select name="city" id="city-select" disabled>
-                <option value="">-- Select Ward --</option>
-            </select>
-
-            <button id="apply-btn" class="btn-apply" disabled>Apply</button>
-            
-        </section>
-    </article>
-
-    <article class="env-risk-article">
-        <section class="enviro-factors">
-            <h2>Environmental Factors</h2>
-            <p>Habitat Type</p>
-            <span id="env-habitat" class="text-value">--</span>
-            
-            <p>Geospatial Demographics</p>
-            <span id="env-demo" class="text-value">--</span>
-
-            <p>Agricultural Area</p>
-            <progress id="env-agric-bar" class="agric-area-bar" value="0" max="100">0%</progress>
-            <output id="env-agric-val">0%</output>
-            
-            <p>Surface Temperature</p>
-            <progress id="env-temp-bar" class="surface-temp-bar" value="0" max="50">0%</progress>
-            <output id="env-temp-val">0°C</output>
-            
-            <p>Soil Moisture</p>
-            <progress id="env-soil-bar" class="soil-moist-temp-bar" value="0" max="100">0%</progress>
-            <output id="env-soil-val">0 m³</output>
-        </section>
-
-<section class="risk-prediction">
-    <h2>Risk Prediction</h2>
-    
-    <p>Filter Risk Level</p>
-    <select id="risk-level-filter">
-        <option value="all">All Risks</option>
-        <option value="High">High Risk</option>
-        <option value="Moderate">Medium Risk</option>
-        <option value="Low">Low Risk</option>
-    </select>
-
-    <div id="avg-risk-container" class="hidden">
-        <p class="avg-risk-label" style="font-size: 0.7rem; opacity: 0.6; margin-bottom: 8px;">Municipality Average</p>
-        <div class="avg-risk-body">
-            <div class="avg-ring-wrap">
-                <svg width="52" height="52" viewBox="0 0 52 52">
-                    <circle class="avg-ring-bg" cx="26" cy="26" r="20" fill="none" stroke="rgba(0,0,0,0.1)" stroke-width="4"/>
-                    <circle id="avg-risk-ring" cx="26" cy="26" r="20" fill="none" stroke-width="4" stroke-linecap="round"
-                        stroke-dasharray="125.66"
-                        stroke-dashoffset="125.66"
-                        transform="rotate(-90 26 26)"/>
-                    <text id="avg-ring-label" class="avg-ring-pct" x="26" y="26" text-anchor="middle" dominant-baseline="middle" font-size="0.65rem" font-weight="bold">0%</text>
-                </svg>
-            </div>
-
-            <div class="avg-risk-info">
-                <h3 id="avg-risk-text" style="font-size: 1.1rem; margin:0;">--</h3>
-                <p id="avg-risk-percentage" style="margin:0; opacity: 0.7; font-size: 0.8rem;">0%</p>
-                <p id="avg-ward-count" style="margin:2px 0 0 0; font-size: 0.65rem; opacity: 0.5;"></p>
-            </div>
-        </div>
-    </div>
-
-    <div id="ward-risk-container">
-        <div class="ward-risk-header">
-            <span class="ward-risk-label">Current Ward Risk</span>
-            <span id="risk-percentage">0%</span>
-        </div>
-        <div class="ward-risk-main">
-            <h3 id="risk-text">--</h3>
-        </div>
-    </div>
-
-    <div class="timeline-container" style="margin-top: 16px;">
-        <div class="timeline-header">
-            <p>Timeline Prediction</p>
-            <div class="month-display">
-                <span id="month-label">Jan</span> <span class="year-label">2025</span>
-            </div>
-        </div>
+    <div class="dashboard-layout">
         
-        <input type="range" id="time-slider" min="0" max="12" value="0" step="1">
-        
-        <div class="slider-ticks-container">
-            <div class="slider-ticks">
-                <span>Jan 25</span>
-                <span>Jan 26</span>
+        <header class="top-bar">
+            <div class="brand-pill">
+                <h1></h1>
             </div>
-        </div>
+
+            <nav class="nav-pill">
+                <a href="#" class="active">Dashboard</a>
+                <a href="#">Forecasting</a>
+                <a href="#">Resource Center</a>
+                <a href="#">Reports</a>
+            </nav>
+
+            <div class="actions-pill">
+                <button class="icon-btn">
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </button>
+                <button class="icon-btn">
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                </button>
+                <div class="avatar"></div>
+            </div>
+        </header>
+
+        <aside class="sidebar-left">
+            <section class="card region-selector">
+                <div class="card-header">
+                    <span class="icon text-primary">
+                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    </span>
+                    <h2>Region Selector</h2>
+                    <button id="reset-btn" class="hidden-reset" title="Reset Filters">
+                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><polyline points="3 3 3 8 8 8"></polyline></svg>
+                    </button>
+                </div>
+                <p class="subtitle">Refine your spatial analysis</p>
+
+                <div class="input-group">
+                    <label>COUNTRY</label>
+                    <select id="country-select">
+                        <option value="">-- Select Country --</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>PROVINCE</label>
+                    <select id="province-select" disabled>
+                        <option value="">-- Select Province --</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>WARD</label>
+                    <select id="city-select" disabled>
+                        <option value="">-- Select Ward --</option>
+                    </select>
+                </div>
+
+                <button id="apply-btn" class="btn-primary" disabled>
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                    Update View
+                </button>
+            </section>
+
+            <section class="card enviro-factors">
+                <div class="card-header">
+                    <span class="icon text-primary">
+                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                    </span>
+                    <h2>Environmental Factors</h2>
+                </div>
+                
+                <div class="factor-row">
+                    <div class="factor-labels">
+                        <span>Precipitation</span>
+                        <span id="env-agric-val" class="val">--</span>
+                    </div>
+                    <div class="track"><div class="fill" id="env-agric-bar"></div></div>
+                </div>
+                
+                <div class="factor-row">
+                    <div class="factor-labels">
+                        <span>Avg Temperature</span>
+                        <span id="env-temp-val" class="val">--</span>
+                    </div>
+                    <div class="track"><div class="fill" id="env-temp-bar"></div></div>
+                </div>
+                
+                <div class="factor-row">
+                    <div class="factor-labels">
+                        <span>Humidity Level</span>
+                        <span id="env-soil-val" class="val">--</span>
+                    </div>
+                    <div class="track"><div class="fill" id="env-soil-bar"></div></div>
+                </div>
+
+                <div class="insight-box">
+                    "Higher precipitation levels in the last 14 days indicate a surge in mosquito breeding sites."
+                </div>
+            </section>
+        </aside>
+
+        <aside class="sidebar-right">
+            <section class="card risk-card">
+                <p class="risk-label">CURRENT WARD RISK</p>
+                <div class="donut-container">
+                    <svg viewBox="0 0 100 100">
+                        <circle class="donut-bg" cx="50" cy="50" r="40"></circle>
+                        <circle class="donut-prog" id="ward-risk-ring" cx="50" cy="50" r="40"></circle>
+                    </svg>
+                    <div class="donut-center">
+                        <h3 id="risk-text">--</h3>
+                        <span id="risk-percentage">0% RISK</span>
+                    </div>
+                </div>
+                <h4 id="selected-ward-name">Select a Ward</h4>
+                <a href="#" class="view-link">View Full Analysis &rsaquo;</a>
+            </section>
+
+            <section class="card risk-card" id="avg-risk-container">
+                <p class="risk-label">MUNICIPALITY AVERAGE</p>
+                <div class="donut-container">
+                    <svg viewBox="0 0 100 100">
+                        <circle class="donut-bg" cx="50" cy="50" r="40"></circle>
+                        <circle class="donut-prog avg-prog" id="avg-risk-ring" cx="50" cy="50" r="40"></circle>
+                    </svg>
+                    <div class="donut-center">
+                        <h3 id="avg-risk-text">--</h3>
+                        <span id="avg-risk-percentage">0% AVG</span>
+                    </div>
+                </div>
+                <h4 id="selected-muni-name">Select Municipality</h4>
+                <a href="#" class="view-link">Compare Regions ⇋</a>
+            </section>
+
+            <section class="card map-legend">
+                <div class="legend-header">
+                    <h2>Map Legend</h2>
+                    <span class="info-icon">i</span>
+                </div>
+                <ul class="legend-list">
+                    <li class="active"><span class="dot blue"></span> LIVE HEATMAP OVERLAY ACTIVE</li>
+                    <li><span class="dot red"></span> High Risk (Red)</li>
+                    <li><span class="dot yellow"></span> Moderate (Yellow)</li>
+                    <li><span class="dot green"></span> Low Risk (Green)</li>
+                </ul>
+                <select id="risk-level-filter" style="display:none;">
+                    <option value="all">All</option>
+                </select>
+            </section>
+        </aside>
+
+        <footer class="bottom-panel">
+            <div class="timeline-controls">
+                <div class="title-area">
+                    <div class="play-btn">
+                        <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    </div>
+                    <h3>Forecasting Timeline</h3>
+                </div>
+                <div class="badge">NEXT 30 DAYS</div>
+                <div class="target-icon" title="Recenter Map">
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="18" y2="12"></line><line x1="6" y1="12" x2="2" y2="12"></line><line x1="12" y1="6" x2="12" y2="2"></line><line x1="12" y1="22" x2="12" y2="18"></line></svg>
+                </div>
+            </div>
+            
+            <div class="slider-wrapper">
+                <input type="range" id="time-slider" min="0" max="12" value="0" step="1">
+                <div class="slider-labels">
+                    <span>Oct 12</span>
+                    <span class="current">Today</span>
+                    <span>Oct 26</span>
+                    <span>Nov 11</span>
+                </div>
+            </div>
+            <span id="month-label" style="display:none;"></span>
+            <span class="year-label" style="display:none;"></span>
+        </footer>
+
     </div>
-</section>
-
-        <section class="map-legend">
-            <h2>Legend</h2>
-
-            <div class="legend-item">
-                <span class="legend-color high-risk"></span>
-                <span>High Risk</span>
-            </div>
-
-            <div class="legend-item">
-                <span class="legend-color moderate-risk"></span>
-                <span>Medium Risk</span>
-            </div>
-
-            <div class="legend-item">
-                <span class="legend-color low-risk"></span>
-                <span>Low Risk</span>
-            </div>
-        </section>
-
-    </article>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script> 
     <script src="../scripts/malaria-page.js"></script>
 </body>
 </html>
