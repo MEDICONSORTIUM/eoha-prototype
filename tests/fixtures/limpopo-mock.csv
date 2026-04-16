@@ -1,0 +1,8 @@
+Municipali,Month,latitude,longitude,WardLabel,Soil_Moisture,LST_Surface_C,NDWI_Water,Population_Density_Per_KM2,Agric_Percentage
+Tzaneen Local Municipality,Jan 2025,-23.8333,30.1667,Ward 1 Tzaneen,0.40,27.5,0.05,350,45.2
+Tzaneen Local Municipality,Jan 2025,-23.9000,30.2000,Ward 2 Tzaneen,0.28,28.0,-0.05,150,32.1
+Tzaneen Local Municipality,Jan 2025,-23.8500,30.1500,Ward 3 Tzaneen,0.15,35.0,-0.20,100,20.0
+Tzaneen Local Municipality,Feb 2025,-23.8333,30.1667,Ward 1 Tzaneen,0.38,26.0,0.10,350,45.2
+Tzaneen Local Municipality,Feb 2025,-23.9000,30.2000,Ward 2 Tzaneen,0.30,29.0,0.02,150,32.1
+Mopani District Municipality,Jan 2025,-23.7000,30.4000,Ward 1 Mopani,0.42,26.5,0.08,400,55.0
+Mopani District Municipality,Jan 2025,-23.7500,30.4500,Ward 2 Mopani,0.22,32.0,-0.15,200,28.0
