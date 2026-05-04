@@ -2,6 +2,8 @@
 import { test, expect } from '@playwright/test';
 import { MALARIA_URL, CSV_ROUTE, getMockCsv } from './helpers/malaria.js';
 
+/* global allCSVData, districtLookup, calculateDynamicRisk */
+
 // ---------------------------------------------------------------------------
 // These tests treat the CSV fetch + PapaParse pipeline as the "API layer".
 // We verify the route is requested, the data is parsed correctly into globals,

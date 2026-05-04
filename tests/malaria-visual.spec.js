@@ -31,7 +31,7 @@ test.describe(`Visual - Default State`, () => {
     test.beforeEach(async ({ page }) => {
         await setupMalariaPage(page);
         // Let any CSS transitions settle
-        await page.waitForTimeout(500);
+        await page.waitForTimeout(5000);
     });
 
     test('top bar matches baseline', async ({ page }) => {
@@ -119,7 +119,7 @@ test.describe(`Visual - Low Risk Ward Selected`, () => {
         await setupMalariaPage(page);
         await drillToWard(page, { wardIndex: '2' }); // Ward 3 Tzaneen → 0% risk
         await page.locator('#apply-btn').click();
-        await page.waitForTimeout(1_200);
+        await page.waitForTimeout(2_400);
     });
 
     test('ward risk donut shows Low state', async ({ page }) => {

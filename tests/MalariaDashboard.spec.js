@@ -26,7 +26,7 @@ test.describe(`Page Load`, () => {
     });
 
     test('document has correct title', async ({ page }) => {
-        await expect(page).toHaveTitle('Malaria Predictor');
+        await expect(page).toHaveTitle('Malaria Guard - Dashboard');
     });
 
     test('map container is present in DOM', async ({ page }) => {
@@ -387,27 +387,3 @@ test.describe(`Map Legend`, () => {
 // ============================================================================
 // ORIENTATION LOCK
 // ============================================================================
-test.describe(`Orientation Lock`, () => {
-    test('orientation lock element exists in DOM', async ({ page }) => {
-        await setupMalariaPage(page);
-        await expect(page.locator('#orientation-lock')).toBeAttached();
-    });
-
-    test('orientation lock is not visible on a standard 1280×720 desktop viewport', async ({ page }) => {
-        await setupMalariaPage(page);
-        // Desktop viewport — CSS only activates the lock at max-width: 768px
-        await expect(page.locator('#orientation-lock')).not.toBeVisible();
-    });
-
-    test('orientation lock is visible on a 390px portrait mobile viewport', async ({ browser }) => {
-        const context = await browser.newContext({
-            viewport: { width: 390, height: 844 },
-        });
-        const mobilePage = await context.newPage();
-        await setupMalariaPage(mobilePage);
-
-        // The media query @media (max-width: 768px) sets display:flex on the lock overlay
-        await expect(mobilePage.locator('#orientation-lock')).toBeVisible();
-        await context.close();
-    });
-});

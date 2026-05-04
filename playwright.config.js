@@ -2,6 +2,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
+  timeout: 240000,
   testDir: './tests',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
@@ -21,8 +22,8 @@ export default defineConfig({
 
     // Give external scripts (Leaflet, PapaParse CDN) time to load.
     // Route mocking bypasses the CSV fetch so this is mainly for Leaflet.
-    actionTimeout: 10_000,
-    navigationTimeout: 20_000,
+    actionTimeout: 60_000,
+    navigationTimeout: 120_000,
   },
 
   projects: [

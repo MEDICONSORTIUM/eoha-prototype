@@ -1,7 +1,8 @@
 // @ts-check
-// No Node.js imports — this file must work whether the project uses
 // "type":"module" or CommonJS. Playwright handles the ESM transform for
 // spec files, but helper modules loaded via import() must be self-contained.
+
+/* global allCSVData, districtLookup, calculateDynamicRisk */
 
 /** Relative URL for the malaria dashboard page */
 export const MALARIA_URL = '/pages/malaria-page.html';
