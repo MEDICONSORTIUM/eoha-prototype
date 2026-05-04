@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Malaria Guard - Dashboard</title>
     <link rel="stylesheet" href="../styles/malaria-page.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
+
 <body>
 
     <div id="orientation-lock">
@@ -22,7 +24,7 @@
     <div id="map"></div>
 
     <div class="dashboard-layout">
-        
+
         <header class="top-bar">
             <div class="brand-pill">
                 <h1></h1>
@@ -37,10 +39,18 @@
 
             <div class="actions-pill">
                 <button class="icon-btn">
-                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
                 </button>
                 <button class="icon-btn">
-                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
                 </button>
                 <div class="avatar"></div>
             </div>
@@ -50,11 +60,19 @@
             <section class="card region-selector">
                 <div class="card-header">
                     <span class="icon text-primary">
-                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
                     </span>
                     <h2>Region Selector</h2>
                     <button id="reset-btn" class="hidden-reset" title="Reset Filters">
-                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><polyline points="3 3 3 8 8 8"></polyline></svg>
+                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                            <polyline points="3 3 3 8 8 8"></polyline>
+                        </svg>
                     </button>
                 </div>
                 <p class="subtitle">Refine your spatial analysis</p>
@@ -66,9 +84,9 @@
                     </select>
                 </div>
                 <div class="input-group">
-                    <label>PROVINCE</label>
+                    <label>Municipality</label>
                     <select id="province-select" disabled>
-                        <option value="">-- Select Province --</option>
+                        <option value="">-- Select Municipality --</option>
                     </select>
                 </div>
                 <div class="input-group">
@@ -79,7 +97,12 @@
                 </div>
 
                 <button id="apply-btn" class="btn-primary" disabled>
-                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <polyline points="1 20 1 14 7 14"></polyline>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
                     Update View
                 </button>
             </section>
@@ -87,33 +110,44 @@
             <section class="card enviro-factors">
                 <div class="card-header">
                     <span class="icon text-primary">
-                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="20" x2="18" y2="10"></line>
+                            <line x1="12" y1="20" x2="12" y2="4"></line>
+                            <line x1="6" y1="20" x2="6" y2="14"></line>
+                        </svg>
                     </span>
                     <h2>Environmental Factors</h2>
                 </div>
-                
+
                 <div class="factor-row">
                     <div class="factor-labels">
                         <span>Precipitation</span>
                         <span id="env-agric-val" class="val">--</span>
                     </div>
-                    <div class="track"><div class="fill" id="env-agric-bar"></div></div>
+                    <div class="track">
+                        <div class="fill" id="env-agric-bar"></div>
+                    </div>
                 </div>
-                
+
                 <div class="factor-row">
                     <div class="factor-labels">
                         <span>Avg Temperature</span>
                         <span id="env-temp-val" class="val">--</span>
                     </div>
-                    <div class="track"><div class="fill" id="env-temp-bar"></div></div>
+                    <div class="track">
+                        <div class="fill" id="env-temp-bar"></div>
+                    </div>
                 </div>
-                
+
                 <div class="factor-row">
                     <div class="factor-labels">
                         <span>Humidity Level</span>
                         <span id="env-soil-val" class="val">--</span>
                     </div>
-                    <div class="track"><div class="fill" id="env-soil-bar"></div></div>
+                    <div class="track">
+                        <div class="fill" id="env-soil-bar"></div>
+                    </div>
                 </div>
 
                 <div class="insight-box">
@@ -176,16 +210,25 @@
             <div class="timeline-controls">
                 <div class="title-area">
                     <div class="play-btn">
-                        <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
                     </div>
                     <h3>Forecasting Timeline</h3>
                 </div>
                 <div class="badge">NEXT 30 DAYS</div>
                 <div class="target-icon" title="Recenter Map">
-                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="18" y2="12"></line><line x1="6" y1="12" x2="2" y2="12"></line><line x1="12" y1="6" x2="12" y2="2"></line><line x1="12" y1="22" x2="12" y2="18"></line></svg>
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="22" y1="12" x2="18" y2="12"></line>
+                        <line x1="6" y1="12" x2="2" y2="12"></line>
+                        <line x1="12" y1="6" x2="12" y2="2"></line>
+                        <line x1="12" y1="22" x2="12" y2="18"></line>
+                    </svg>
                 </div>
             </div>
-            
+
             <div class="slider-wrapper">
                 <input type="range" id="time-slider" min="0" max="12" value="0" step="1">
                 <div class="slider-labels">
@@ -203,7 +246,8 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script> 
+    <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
     <script src="../scripts/malaria-page.js"></script>
 </body>
+
 </html>
