@@ -1,64 +1,69 @@
-// Header Logic
-const indicator = document.getElementById("scrollIndicator");
+/**
+ * Earth Observation Health Analytics Platform
+ * Script: Scroll-driven card stack and progress bar
+ */
 
-document.querySelectorAll('.glow-wave span').forEach((span, i) => {
-    span.style.setProperty('--i', i);
-});
-
-// Card Stack Logic
+// ==================== DOM ELEMENTS ====================
+const scroll_indicator = document.getElementById("scrollIndicator");
 const cards = document.querySelectorAll('.content-card');
-const stackSection = document.querySelector('.stack-section');
-const progressBar = document.getElementById('progressBar');
+const stack_section = document.querySelector('.stack-section');
+const progress_bar = document.getElementById('progressBar');
 
-function handleScroll() {
-    const scrollY = window.scrollY;
+// ==================== HELPER FUNCTIONS ====================
 
-    // 1. Header fade
-    if (indicator) {
-        if (scrollY > 50) {
-            indicator.style.opacity = "0";
-        } else {
-            indicator.style.opacity = "1";
-        }
+/**
+ * update_card_stack_and_progress()
+ * --------------------------------
+ * Calculates scroll progress inside the stack section,
+ * updates the vertical progress bar, and applies 'above'/'active'/'below'
+ * classes to each card.
+ *
+ * Parameters:
+ * -----------
+ * none
+ *
+ * Returns:
+ * --------
+ * void
+ */
+function update_card_stack_and_progress() {
+    // 1. Header fade (scroll indicator)
+    if (scroll_indicator) {
+        scroll_indicator.style.opacity = window.scrollY > 50 ? "0" : "1";
     }
 
-    // 2. Card Stack Progress
-    if (!stackSection) return;
+    // 2. Card stack progress – only if stack section exists
+    if (!stack_section) return;
 
-    const sectionRect = stackSection.getBoundingClientRect();
-    const sectionTop = sectionRect.top;
-    
+    const section_rect = stack_section.getBoundingClientRect();
+    const section_top = section_rect.top;
+
     // Total scroll distance available inside the stack section
-    const maxScroll = stackSection.offsetHeight - window.innerHeight;
-    
-    // Calculate how far we've scrolled INTO the section
-    let currentScroll = -sectionTop;
+    const max_scroll = stack_section.offsetHeight - window.innerHeight;
 
-    // Clamp
-    if (currentScroll < 0) currentScroll = 0;
-    if (currentScroll > maxScroll) currentScroll = maxScroll;
+    // How far we've scrolled INTO the section
+    let current_scroll = -section_top;
+    current_scroll = Math.min(Math.max(current_scroll, 0), max_scroll);
 
     // Progress 0.0 to 1.0
-    let progress = currentScroll / maxScroll;
+    let progress = current_scroll / max_scroll;
 
-    // Update Progress Bar
-    if (progressBar) {
-        progressBar.style.height = `${Math.min(progress * 100, 100)}%`;
+    // Update progress bar height
+    if (progress_bar) {
+        progress_bar.style.height = `${Math.min(progress * 100, 100)}%`;
     }
 
-    // Determine Active Card
-    let activeIndex = Math.floor(progress * cards.length);
+    // Determine active card index
+    let active_index = Math.floor(progress * cards.length);
+    active_index = Math.min(Math.max(active_index, 0), cards.length - 1);
 
-    if (activeIndex < 0) activeIndex = 0;
-    if (activeIndex >= cards.length) activeIndex = cards.length - 1;
-
-    // Apply Classes
+    // Apply classes to each card
     cards.forEach((card, i) => {
         card.classList.remove('above', 'active', 'below');
 
-        if (i < activeIndex) {
+        if (i < active_index) {
             card.classList.add('above');
-        } else if (i === activeIndex) {
+        } else if (i === active_index) {
             card.classList.add('active');
         } else {
             card.classList.add('below');
@@ -66,5 +71,59 @@ function handleScroll() {
     });
 }
 
-window.addEventListener('scroll', handleScroll);
-handleScroll();
+/**
+ * init_glow_wave_delays()
+ * -----------------------
+ * Sets CSS custom property '--i' on each letter span of the .glow-wave
+ * to create staggered animation delays.
+ *
+ * Parameters:
+ * -----------
+ * none
+ *
+ * Returns:
+ * --------
+ * void
+ */
+function init_glow_wave_delays() {
+    document.querySelectorAll('.glow-wave span').forEach((span, i) => {
+        span.style.setProperty('--i', i);
+    });
+}
+
+/**
+ * init_scroll_listeners()
+ * -----------------------
+ * Attaches scroll and resize event listeners with passive/RAF optimisations.
+ *
+ * Parameters:
+ * -----------
+ * none
+ *
+ * Returns:
+ * --------
+ * void
+ */
+function init_scroll_listeners() {
+    let ticking = false;
+
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                update_card_stack_and_progress();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+
+    window.addEventListener('resize', () => {
+        // Recalculate everything on window resize
+        update_card_stack_and_progress();
+    });
+}
+
+// ==================== INITIALISATION ====================
+init_glow_wave_delays();
+init_scroll_listeners();
+update_card_stack_and_progress();   // set initial state
