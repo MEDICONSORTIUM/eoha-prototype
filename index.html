@@ -1,31 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EOHA - Health Analytics Platform</title>
+    <!-- Stylesheet (relative path – adjust if needed) -->
     <link rel="stylesheet" href="./styles/styles.css">
 </head>
+
 <body>
 
+    <!-- ==================== NAVIGATION BAR ==================== -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <ul class="nav-links">
-                <li><a href="#">Contact Us</a></li>
+                <li><a href="../pages/contact-page.html">Contact Us</a></li>
                 <li><a href="../pages/malaria-page.html">Malaria Prediction</a></li>
                 <li><a href="../pages/ncd-page.html">NCD Prediction</a></li>
             </ul>
         </div>
     </nav>
 
+    <!-- ==================== HERO HEADER ==================== -->
     <header class="header-landing">
-        
-        <video autoplay muted loop playsinline class="bg-video">
-            <source src="../data/8947-215890483.mp4" type="video/mp4">
-        </video>
 
+        <!-- Background video (fallback poster recommended) -->
+        <video autoplay muted loop playsinline class="bg-video" poster="fallback.jpg">
+            <source src="../data/8947-215890483.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
         <div class="video-overlay"></div>
 
+        <!-- Main title -->
         <div class="header-content">
             <section class="name">
                 <h1 class="glow-wave">
@@ -37,6 +44,7 @@
             </section>
         </div>
 
+        <!-- Floating about panel -->
         <article class="about-floating">
             <h1>Earth Observation Health Analytics Platform</h1>
             <p>
@@ -45,6 +53,7 @@
             </p>
         </article>
 
+        <!-- Scroll indicator (mouse wheel animation) -->
         <div class="scroll-indicator" id="scrollIndicator">
             <div class="mouse">
                 <div class="wheel"></div>
@@ -52,84 +61,95 @@
         </div>
     </header>
 
-
+    <!-- ==================== CARD STACK SECTION ==================== -->
     <main class="stack-section">
-        
         <div class="sticky-container">
-            
             <div class="card-stack">
 
+                <!-- CARD 1: About -->
                 <article class="content-card about">
                     <h1 class="about-header">Precise Health Informatics</h1>
                     <p class="about-detail">
-                        Transitioning from raw data to actionable intelligence. We combine real-time human surveillance with satellite telemetry to predict outbreaks before they happen.
+                        Transitioning from raw data to actionable intelligence. We combine real-time human surveillance
+                        with satellite telemetry to predict outbreaks before they happen.
                     </p>
                 </article>
 
+                <!-- CARD 2: Powered by Earth Observation -->
                 <article class="content-card powered-by-card">
                     <h2 class="section-title">Powered by Earth Observation</h2>
                     <p class="card-text">
-                        Our machine surveillance platform uses EO data to inform public health on two critical threats in Africa: Malaria and Non-communicable diseases.
+                        Our machine surveillance platform uses EO data to inform public health on two critical threats
+                        in Africa: Malaria and Non-communicable diseases.
                     </p>
                     <div class="mini-gallery">
-                        <img src="../images/hartbeesdam_oli2_20220810_lrg.jpg" alt="Sat View 1">
-                        <img src="../images/iss072e807123_lrg.jpg" alt="Sat View 2">
-                        <img src="../images/northatlantic_tmo_2017197_lrg.jpg" alt="Sat View 3">
+                        <img src="../images/hartbeesdam_oli2_20220810_lrg.jpg" alt="Satellite view 1">
+                        <img src="../images/iss072e807123_lrg.jpg" alt="Satellite view 2">
+                        <img src="../images/northatlantic_tmo_2017197_lrg.jpg" alt="Satellite view 3">
                     </div>
                 </article>
 
+                <!-- CARD 3: NCD Prediction (image background) -->
                 <article class="content-card ncd-card">
                     <div class="card-icon">🫀</div>
                     <h2 class="section-title text-white">NCD Prediction</h2>
                     <p class="card-text text-white">
-                        We integrate geospatial demographics, urban growth, and environmental stressors (NO₂, PM2.5) to model Non-Communicable Disease trajectories.
+                        We integrate geospatial demographics, urban growth, and environmental stressors (NO₂, PM2.5) to
+                        model Non-Communicable Disease trajectories.
                     </p>
                     <a href="../pages/ncd-page.html" class="btn-link btn-white">Analyze NCD Data &rarr;</a>
                 </article>
 
+                <!-- CARD 4: Malaria Surveillance (image background) -->
                 <article class="content-card malaria-card">
                     <div class="card-icon">🦟</div>
                     <h2 class="section-title text-white">Malaria Surveillance</h2>
                     <p class="card-text text-white">
-                        By combining habitat type, soil moisture, and surface temperature, we model vector suitability and outbreak risk in real-time.
+                        By combining habitat type, soil moisture, and surface temperature, we model vector suitability
+                        and outbreak risk in real-time.
                     </p>
                     <a href="../pages/malaria-page.html" class="btn-link btn-white">Predict Malaria &rarr;</a>
                 </article>
 
+                <!-- CARD 5: Built for Africa -->
                 <article class="content-card africa">
                     <div class="africa-layout">
                         <div class="africa-text">
                             <h1 class="africa-heading">Built for Africa.</h1>
                             <p class="card-text">
-                                Purpose-built for the African context, leveraging local geospatial demographics to enable real-time disease surveillance and policy formulation.
+                                Purpose-built for the African context, leveraging local geospatial demographics to
+                                enable real-time disease surveillance and policy formulation.
                             </p>
                         </div>
                         <img src="../images/PIA04965.jpg" alt="Africa Satellite View" class="africa-img">
                     </div>
                 </article>
 
+                <!-- CARD 6: Footer / Partners -->
                 <article class="content-card footer-card">
                     <div class="footer-content">
                         <p class="developedby">&copy; 2026 Medical Consortium of Africa. All rights reserved.</p>
                         <section class="logos">
-                            <img src="../images/Science-Technology_-and-Innovation-1024x382.jpg" alt="Partner">
-                            <img src="../images/SANSA_Logo_small-1-1.jpg" alt="Partner">
-                            <img src="../images/Partner_0010_Layer-1.jpg" alt="Partner">
-                            <img src="../images/TuksNovation-logo-2-menu-1.png" alt="Partner">
-                            <img src="../images/uct-research-support-hub-navigator-funder-nrf_0.png" alt="Partner">
+                            <img src="../images/Science-Technology_-and-Innovation-1024x382.jpg" alt="Partner logo">
+                            <img src="../images/SANSA_Logo_small-1-1.jpg" alt="Partner logo">
+                            <img src="../images/Partner_0010_Layer-1.jpg" alt="Partner logo">
+                            <img src="../images/TuksNovation-logo-2-menu-1.png" alt="Partner logo">
+                            <img src="../images/uct-research-support-hub-navigator-funder-nrf_0.png" alt="Partner logo">
                         </section>
                     </div>
                 </article>
 
-            </div>
-            
+            </div> <!-- end card-stack -->
+
+            <!-- Vertical progress bar -->
             <div class="scroll-progress-bar">
                 <div class="bar-fill" id="progressBar"></div>
             </div>
-
-        </div>
+        </div> <!-- end sticky-container -->
     </main>
 
+    <!-- JavaScript (relative path – adjust if needed) -->
     <script src="./scripts/script.js"></script>
 </body>
+
 </html>
