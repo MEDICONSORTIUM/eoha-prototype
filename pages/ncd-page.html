@@ -1,263 +1,269 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NCD Risk Prediction</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NCD Risk Prediction</title>
 
-<!-- Leaflet -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-
-<!-- Your existing CSS -->
-<link rel="stylesheet" href="../styles/ncd-page.css">
-
-<style>
-/* ================= MAP BACKGROUND ================= */
-#map {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-}
-
-/* ================= FOREGROUND UI ================= */
-body {
-  position: relative;
-  z-index: 1;
-}
-
-header,
-.region-metrics,
-.env-risk-article {
-  position: relative;
-  z-index: 2;
-}
-
-/* Optional glass effect */
-.region-selector,
-.enviro-factors,
-.risk-prediction {
-  backdrop-filter: blur(6px);
-  background: rgba(255, 255, 255, 0.92);
-}
-</style>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <link rel="stylesheet" href="../styles/ncd-page.css">
 </head>
-
 <body>
 
-<!-- ================= MAP BACKGROUND ================= -->
-<div id="map"></div>
+    <div id="orientation-lock">
+        <div class="lock-content">
+            <svg class="phone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                <path d="M12 18h.01"></path>
+            </svg>
+            <p>Please rotate your device<br>to view the dashboard</p>
+        </div>
+    </div>
 
-<!-- ================= UI ================= -->
-<header class="ncd-header">
-  <a href="../index.html" class="btn-link">Back</a>
-  <section class="ncd-heading-section">
-    <h1 class="ncd-heading">NCD Risk Prediction</h1>
-    <p>Africa Wide Monitoring</p>
-  </section>
-</header>
+    <div id="map"></div>
 
-<article class="region-metrics">
-  <section class="region-selector">
-    <h2>Region Selector</h2>
+    <div class="dashboard-layout">
 
-    <p>Country</p>
-    <select id="country-select" class="countries-select">
-      <option value="">Select Country</option>
-      <option value="South Africa">South Africa</option>
-      <option value="Botswana">Botswana</option>
-      <option value="Zimbabwe">Zimbabwe</option>
-      <option value="Lesotho">Lesotho</option>
-    </select>
+        <header class="top-bar">
+            <div class="brand-pill">
+                <h1>NCD Risk Prediction</h1>
+            </div>
 
-    <p>Province</p>
-    <select id="province-select" class="provinces-select" disabled>
-      <option value="">Select Province</option>
-    </select>
+            <nav class="nav-pill">
+                <a href="#" class="active">Dashboard</a>
+                <a href="#">Forecasting</a>
+                <a href="#">Reports</a>
+                <a href="#">Resource Center</a>
+            </nav>
 
-    <p>City / Municipality</p>
-    <select id="municipality-select" disabled>
-      <option value="">Select Municipality</option>
-    </select>
-  </section>
-</article>
+            <div class="actions-pill">
+                <a href="../index.html" class="back-link">Back</a>
 
-<article class="env-risk-article">
-  <section class="enviro-factors">
-    <h2>Environmental & Lifestyle Factors</h2>
+                <button class="icon-btn">
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </button>
 
-    <p>Lifestyle Type</p>
-    <span class="text-value">Urban / Sedentary</span>
+                <button class="icon-btn">
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                </button>
 
-    <p>Population Density</p>
-    <span class="text-value">1,250 persons/km²</span>
+                <div class="avatar"></div>
+            </div>
+        </header>
 
-    <p>Access to Healthcare</p>
-    <progress value="60" max="100"></progress>
-    <output>60%</output>
+        <aside class="sidebar-left">
 
-    <p>Air Quality Index</p>
-    <progress value="75" max="100"></progress>
-    <output>75 AQI</output>
+            <section class="card region-selector">
+                <div class="card-header">
+                    <span class="icon text-primary">
+                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                    </span>
+                    <h2>Region Selector</h2>
 
-    <p>Obesity Prevalence</p>
-    <progress value="28" max="100"></progress>
-    <output>28%</output>
-  </section>
+                    <button id="reset-btn" class="hidden-reset" title="Reset Filters">
+                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                            <polyline points="3 3 3 8 8 8"></polyline>
+                        </svg>
+                    </button>
+                </div>
 
-  <section class="risk-prediction">
-    <h2>Risk Prediction</h2>
-    <p>Current Risk Level</p>
-    <h3>Moderate</h3>
-    <h4>58%</h4>
-  </section>
-</article>
+                <p class="subtitle">Refine your spatial analysis</p>
 
-<!-- ================= LEAFLET ================= -->
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+                <div class="input-group">
+                    <label>Country</label>
+                    <select id="country-select" class="countries-select">
+                        <option value="">-- Select Country --</option>
+                    </select>
+                </div>
 
-<script>
-// ================= MAP INIT =================
-const map = L.map("map", { zoomControl: false }).setView([0, 20], 3);
+                <div class="input-group">
+                    <label>Province / Region</label>
+                    <select id="province-select" class="provinces-select" disabled>
+                        <option value="">-- Select Province --</option>
+                    </select>
+                </div>
 
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  attribution: "&copy; OpenStreetMap contributors"
-}).addTo(map);
+                <div class="input-group">
+                    <label>City / Municipality</label>
+                    <select id="city-select" disabled>
+                        <option value="">-- Select City --</option>
+                    </select>
+                </div>
 
-// ================= DROPDOWNS =================
-const countrySelect = document.getElementById("country-select");
-const provinceSelect = document.getElementById("province-select");
-const municipalitySelect = document.getElementById("municipality-select");
+                <button id="apply-btn" class="btn-primary" disabled>
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <polyline points="1 20 1 14 7 14"></polyline>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
+                    Update View
+                </button>
+            </section>
 
-// ================= GLOBAL LAYERS =================
-let africaLayer, provinceLayer, cityLayer;
-let southAfricaADM1, southAfricaADM3;
+            <section class="card enviro-factors">
+                <div class="card-header">
+                    <span class="icon text-primary">
+                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="20" x2="18" y2="10"></line>
+                            <line x1="12" y1="20" x2="12" y2="4"></line>
+                            <line x1="6" y1="20" x2="6" y2="14"></line>
+                        </svg>
+                    </span>
+                    <h2>Environmental & Lifestyle Factors</h2>
+                </div>
 
-// ================= NCD RISK =================
-const countryNcdRisk = {
-  "South Africa": 58,
-  "Botswana": 45,
-  "Zimbabwe": 63,
-  "Lesotho": 52
-};
+                <div class="factor-row">
+                    <div class="factor-labels">
+                        <span>Lifestyle Type</span>
+                        <span class="val">Urban</span>
+                    </div>
+                    <div class="track"><div class="fill" style="width: 70%;"></div></div>
+                </div>
 
-// ================= COLOR =================
-function getCountryColor(risk) {
-  if (risk >= 70) return "#d73027";
-  if (risk >= 55) return "#fc8d59";
-  if (risk >= 40) return "#fee08b";
-  return "#91cf60";
-}
+                <div class="factor-row">
+                    <div class="factor-labels">
+                        <span>Population Density</span>
+                        <span class="val">62%</span>
+                    </div>
+                    <div class="track"><div class="fill" style="width: 62%;"></div></div>
+                </div>
 
-// ================= COUNTRY STYLE =================
-function countryStyle(feature) {
-  const risk = countryNcdRisk[feature.properties.name] || 0;
-  return {
-    fillColor: getCountryColor(risk),
-    weight: 2,
-    color: "#00fff0",
-    fillOpacity: 0.45
-  };
-}
+                <div class="factor-row">
+                    <div class="factor-labels">
+                        <span>Access to Healthcare</span>
+                        <span class="val">60%</span>
+                    </div>
+                    <div class="track"><div class="fill" style="width: 60%;"></div></div>
+                </div>
 
-// ================= LOAD AFRICA =================
-fetch("../data/africa-countries.geo.json")
-  .then(r => r.json())
-  .then(data => {
-    africaLayer = L.geoJSON(data, {
-      style: countryStyle,
-      onEachFeature: (feature, layer) => {
-        layer.on("click", () => {
-          map.fitBounds(layer.getBounds());
-          if (feature.properties.name === "South Africa") {
-            loadSouthAfricaProvinces();
-          }
-        });
-      }
-    }).addTo(map);
-  });
+                <div class="factor-row">
+                    <div class="factor-labels">
+                        <span>Air Quality Index</span>
+                        <span class="val">75 AQI</span>
+                    </div>
+                    <div class="track"><div class="fill warning" style="width: 75%;"></div></div>
+                </div>
 
-// ================= LOAD SA GEOJSON =================
-fetch("../data/South_Africa_ADM1.geojson")
-  .then(r => r.json())
-  .then(d => southAfricaADM1 = d);
+                <div class="factor-row">
+                    <div class="factor-labels">
+                        <span>Obesity Prevalence</span>
+                        <span class="val">28%</span>
+                    </div>
+                    <div class="track"><div class="fill success" style="width: 28%;"></div></div>
+                </div>
 
-fetch("../data/South_Africa_ADM3.geojson")
-  .then(r => r.json())
-  .then(d => southAfricaADM3 = d);
+                <div class="insight-box">
+                    "Lifestyle, access to healthcare, air quality and population density are shown here as presentation placeholders."
+                </div>
+            </section>
 
-// ================= PROVINCES =================
-function loadSouthAfricaProvinces() {
-  if (provinceLayer) map.removeLayer(provinceLayer);
-  if (cityLayer) map.removeLayer(cityLayer);
+        </aside>
 
-  provinceSelect.innerHTML = `<option value="">Select Province</option>`;
-  municipalitySelect.innerHTML = `<option value="">Select Municipality</option>`;
-  provinceSelect.disabled = false;
-  municipalitySelect.disabled = true;
+        <aside class="sidebar-right">
 
-  provinceLayer = L.geoJSON(southAfricaADM1, {
-    style: { color: "#fff", weight: 2, fillOpacity: 0.4 },
-    onEachFeature: (f, l) => {
-      const name = f.properties.NAME_1;
-      provinceSelect.innerHTML += `<option value="${name}">${name}</option>`;
-      l.on("click", () => {
-        map.fitBounds(l.getBounds());
-        loadMunicipalities(name);
-      });
-    }
-  }).addTo(map);
-}
+            <section class="card risk-card">
+                <p class="risk-label">Current Regional Risk</p>
 
-// ================= MUNICIPALITIES =================
-function loadMunicipalities(province) {
-  if (cityLayer) map.removeLayer(cityLayer);
+                <div class="donut-container">
+                    <svg viewBox="0 0 100 100">
+                        <circle class="donut-bg" cx="50" cy="50" r="40"></circle>
+                        <circle class="donut-prog" id="risk-ring" cx="50" cy="50" r="40"></circle>
+                    </svg>
 
-  municipalitySelect.innerHTML = `<option value="">Select Municipality</option>`;
-  municipalitySelect.disabled = false;
+                    <div class="donut-center">
+                        <h3 id="risk-text">--</h3>
+                        <span id="risk-percentage">0% Risk</span>
+                    </div>
+                </div>
 
-  const filtered = southAfricaADM3.features.filter(
-    f => f.properties.NAME_1 === province
-  );
+                <h4 id="selected-region-name">Select a Region</h4>
+                <a href="#" class="view-link">View Full Analysis &rsaquo;</a>
+            </section>
 
-  cityLayer = L.geoJSON(filtered, {
-    pointToLayer: (_, latlng) =>
-      L.circleMarker(latlng, {
-        radius: 4,
-        fillColor: "#d73027",
-        color: "#fff",
-        weight: 1,
-        fillOpacity: 0.9
-      }),
-    onEachFeature: (f, l) => {
-      municipalitySelect.innerHTML +=
-        `<option value="${f.properties.NAME_3}">${f.properties.NAME_3}</option>`;
-      l.on("click", () => map.setView(l.getLatLng(), 10));
-    }
-  }).addTo(map);
-}
+            <section class="card risk-card">
+                <p class="risk-label">National Average</p>
 
-// ================= DROPDOWN SYNC =================
-countrySelect.onchange = () => {
-  africaLayer.eachLayer(l => {
-    if (l.feature.properties.name === countrySelect.value) {
-      map.fitBounds(l.getBounds());
-      if (countrySelect.value === "South Africa") {
-        loadSouthAfricaProvinces();
-      }
-    }
-  });
-};
+                <div class="donut-container">
+                    <svg viewBox="0 0 100 100">
+                        <circle class="donut-bg" cx="50" cy="50" r="40"></circle>
+                        <circle class="donut-prog avg-prog" id="avg-risk-ring" cx="50" cy="50" r="40"></circle>
+                    </svg>
 
-provinceSelect.onchange = () => loadMunicipalities(provinceSelect.value);
+                    <div class="donut-center">
+                        <h3 id="avg-risk-text">58</h3>
+                        <span id="avg-risk-percentage">58% Avg</span>
+                    </div>
+                </div>
 
-municipalitySelect.onchange = () => {
-  cityLayer.eachLayer(l => {
-    if (l.feature.properties.NAME_3 === municipalitySelect.value) {
-      map.setView(l.getLatLng(), 10);
-    }
-  });
-};
-</script>
+                <h4>Southern Africa</h4>
+                <a href="#" class="view-link">Compare Regions ⇋</a>
+            </section>
 
+            <section class="card map-legend">
+                <div class="legend-header">
+                    <h2>Map Legend</h2>
+                    <span class="info-icon">i</span>
+                </div>
+
+                <ul class="legend-list">
+                    <li class="active"><span class="dot blue"></span> NCD risk overlay active</li>
+                    <li><span class="dot red"></span> High Risk</li>
+                    <li><span class="dot yellow"></span> Moderate Risk</li>
+                    <li><span class="dot green"></span> Low Risk</li>
+                </ul>
+            </section>
+
+        </aside>
+
+        <footer class="bottom-panel">
+            <div class="timeline-controls">
+                <div class="title-area">
+                    <div class="play-btn">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                    </div>
+                    <h3>Risk Timeline</h3>
+                </div>
+
+                <div class="badge">NEXT 30 DAYS</div>
+
+                <div class="target-icon" title="Recenter Map">
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="22" y1="12" x2="18" y2="12"></line>
+                        <line x1="6" y1="12" x2="2" y2="12"></line>
+                        <line x1="12" y1="6" x2="12" y2="2"></line>
+                        <line x1="12" y1="22" x2="12" y2="18"></line>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="slider-wrapper">
+                <input type="range" id="time-slider" min="0" max="12" value="0" step="1">
+
+                <div class="slider-labels">
+                    <span>Week 1</span>
+                    <span class="current">Today</span>
+                    <span>Week 3</span>
+                    <span>Week 4</span>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="../scripts/ncd-page.js"></script>
 </body>
 </html>
