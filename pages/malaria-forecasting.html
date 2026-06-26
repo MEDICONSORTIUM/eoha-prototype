@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malaria Guard - Forecasting</title>
+    <link rel="stylesheet" href="../styles/theme.css">
+    <link rel="stylesheet" href="../styles/forecasting.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../scripts/theme.js"></script>
+</head>
+
+<body>
+
+    <div class="dashboard-layout">
+
+        <header class="top-bar">
+            <div class="brand-pill">
+                <h1>Malaria Guard</h1>
+            </div>
+
+            <nav class="nav-pill">
+                <a href="malaria-page.html">Dashboard</a>
+                <a href="malaria-forecasting.html" class="active">Forecasting</a>
+                <a href="resource-center.html">Resource Center</a>
+                <a href="malaria-reports.html">Reports</a>
+            </nav>
+
+            <div class="actions-pill">
+                <button class="icon-btn">
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </button>
+                <button class="icon-btn">
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                </button>
+                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                </button>
+                <div class="avatar"></div>
+            </div>
+        </header>
+
+        <aside class="sidebar-left">
+            <section class="card range-card">
+                <div class="card-header">
+                    <span class="icon text-primary">
+                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                    </span>
+                    <h2>Forecast Range</h2>
+                </div>
+                <p class="subtitle">Select prediction window</p>
+                <div class="range-btns">
+                    <button class="range-btn active" data-days="7">7 Days</button>
+                    <button class="range-btn" data-days="30">30 Days</button>
+                    <button class="range-btn" data-days="90">90 Days</button>
+                </div>
+            </section>
+
+            <section class="card region-card">
+                <div class="card-header">
+                    <span class="icon text-primary">
+                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                    </span>
+                    <h2>Region</h2>
+                </div>
+                <p class="subtitle">Filter by region</p>
+                <div class="input-group">
+                    <label>Province</label>
+                    <select id="region-select">
+                        <option value="limpopo">Limpopo</option>
+                        <option value="mpumalanga">Mpumalanga</option>
+                        <option value="kwazulu-natal">KwaZulu-Natal</option>
+                    </select>
+                </div>
+            </section>
+
+            <section class="card model-card">
+                <div class="card-header">
+                    <span class="icon text-primary">
+                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                    </span>
+                    <h2>Model Info</h2>
+                </div>
+                <div class="model-detail"><span class="model-label">Algorithm</span><span class="model-val">Random Forest</span></div>
+                <div class="model-detail"><span class="model-label">Accuracy</span><span class="model-val">91.4%</span></div>
+                <div class="model-detail"><span class="model-label">Last trained</span><span class="model-val">Jan 2026</span></div>
+                <div class="model-detail"><span class="model-label">Data source</span><span class="model-val">Sentinel-2 / MODIS</span></div>
+            </section>
+        </aside>
+
+        <main class="chart-area">
+            <div class="chart-header">
+                <h2>Malaria Risk Forecast</h2>
+                <span class="chart-badge" id="range-label">Next 7 Days</span>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="forecastChart"></canvas>
+            </div>
+        </main>
+
+        <aside class="sidebar-right">
+            <section class="card confidence-card">
+                <p class="risk-label">CONFIDENCE INTERVAL</p>
+                <div class="ci-row">
+                    <span class="ci-label">Upper bound</span>
+                    <span class="ci-val text-danger" id="ci-upper">--</span>
+                </div>
+                <div class="ci-row">
+                    <span class="ci-label">Mean forecast</span>
+                    <span class="ci-val" id="ci-mean">--</span>
+                </div>
+                <div class="ci-row">
+                    <span class="ci-label">Lower bound</span>
+                    <span class="ci-val text-success" id="ci-lower">--</span>
+                </div>
+                <div class="ci-bar-track">
+                    <div class="ci-bar-fill" id="ci-bar"></div>
+                </div>
+            </section>
+
+            <section class="card trend-card">
+                <p class="risk-label">TREND</p>
+                <div class="trend-display" id="trend-display">
+                    <span class="trend-arrow" id="trend-arrow">↗</span>
+                    <span class="trend-text" id="trend-text">Worsening</span>
+                </div>
+                <p class="trend-detail" id="trend-detail">Risk increasing over forecast window</p>
+            </section>
+
+            <section class="card peak-card">
+                <p class="risk-label">PEAK RISK DAY</p>
+                <h3 id="peak-day" class="peak-val">--</h3>
+                <p class="peak-label" id="peak-pct">-- % predicted risk</p>
+            </section>
+
+            <section class="card legend-card">
+                <div class="legend-header"><h2>Chart Legend</h2></div>
+                <ul class="legend-list">
+                    <li><span class="dot blue"></span> Predicted Risk</li>
+                    <li><span class="dot light-blue"></span> Confidence Band</li>
+                    <li><span class="dot red"></span> High Risk ≥ 50%</li>
+                    <li><span class="dot yellow"></span> Moderate 25–49%</li>
+                    <li><span class="dot green"></span> Low Risk &lt; 25%</li>
+                </ul>
+            </section>
+        </aside>
+
+    </div>
+
+    <script src="../scripts/malaria-forecasting.js"></script>
+</body>
+
+</html>

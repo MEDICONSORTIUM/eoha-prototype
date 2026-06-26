@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EOHA - Contact Us</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="../styles/theme.css">
+    <link rel="stylesheet" href="../styles/contact.css">
+    <script src="../scripts/theme.js"></script>
+</head>
+
+<body>
+
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../pages/malaria-page.html">Malaria Prediction</a></li>
+                <li><a href="../pages/ncd-page.html">NCD Prediction</a></li>
+            </ul>
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            </button>
+        </div>
+    </nav>
+
+    <header class="contact-header">
+        <div class="contact-header-overlay"></div>
+        <div class="contact-header-content">
+            <h1 class="contact-title">Contact Us</h1>
+            <p class="contact-subtitle">
+                Have questions or partnership inquiries? Reach out to the Medical Consortium of Africa.
+            </p>
+        </div>
+    </header>
+
+    <main class="contact-main">
+        <div class="contact-container">
+
+            <div class="contact-info-card">
+                <h2 class="info-title">Get in Touch</h2>
+                <div class="info-details">
+
+                    <div class="info-item">
+                        <span class="info-icon">📍</span>
+                        <p>Medical Consortium of Africa<br>1225 Pretoria Street, Hatfield<br>Pretoria, 0028, South Africa</p>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-icon">📞</span>
+                        <p><a href="tel:+27767120362" class="contact-link">+27 (0)76 712 0362</a></p>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-icon">✉️</span>
+                        <p>
+                            <button id="email_btn" class="email-button">
+                                <a href="mailto:kmontjaneconsortium@gmail.com" class="contact-link">kmontjaneconsortium@gmail.com</a>
+                            </button>
+                        </p>
+                    </div>
+
+                </div>
+
+                <div id="contact_map" class="contact-leaflet-map"></div>
+
+                <div class="contact-logos">
+                    <img src="../images/SANSA_Logo_small-1-1.jpg" alt="SANSA">
+                    <img src="../images/TuksNovation-logo-2-menu-1.png" alt="TuksNovation">
+                    <img src="../images/uct-research-support-hub-navigator-funder-nrf_0.png" alt="NRF">
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="contact-footer">
+        <p>&copy; 2026 Medical Consortium of Africa. All rights reserved.</p>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="../scripts/contact.js"></script>
+</body>
+
+</html>

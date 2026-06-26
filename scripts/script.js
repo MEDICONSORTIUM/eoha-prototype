@@ -1,70 +1,58 @@
-// Header Logic
-const indicator = document.getElementById("scrollIndicator");
-
+// ===== Glow-wave letter index =====
 document.querySelectorAll('.glow-wave span').forEach((span, i) => {
     span.style.setProperty('--i', i);
 });
 
-// Card Stack Logic
-const cards = document.querySelectorAll('.content-card');
-const stackSection = document.querySelector('.stack-section');
-const progressBar = document.getElementById('progressBar');
-
-function handleScroll() {
-    const scrollY = window.scrollY;
-
-    // 1. Header fade
-    if (indicator) {
-        if (scrollY > 50) {
-            indicator.style.opacity = "0";
-        } else {
-            indicator.style.opacity = "1";
-        }
+// ===== Animated stat counters =====
+function animateCounter(el, target, duration) {
+    const start = performance.now();
+    function step(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.round(eased * target);
+        if (progress < 1) requestAnimationFrame(step);
+        else el.textContent = target;
     }
+    requestAnimationFrame(step);
+}
 
-    // 2. Card Stack Progress
-    if (!stackSection) return;
+document.querySelectorAll('.stat-num').forEach(el => {
+    animateCounter(el, parseInt(el.dataset.target, 10), 1800);
+});
 
-    const sectionRect = stackSection.getBoundingClientRect();
-    const sectionTop = sectionRect.top;
-    
-    // Total scroll distance available inside the stack section
-    const maxScroll = stackSection.offsetHeight - window.innerHeight;
-    
-    // Calculate how far we've scrolled INTO the section
-    let currentScroll = -sectionTop;
+// ===== Hamburger menu =====
+const hamburger = document.getElementById('hamburger');
+const navLinks  = document.getElementById('navLinks');
 
-    // Clamp
-    if (currentScroll < 0) currentScroll = 0;
-    if (currentScroll > maxScroll) currentScroll = maxScroll;
+if (hamburger && navLinks) {
+    hamburger.addEventListener('click', function () {
+        this.classList.toggle('open');
+        navLinks.classList.toggle('open');
+    });
 
-    // Progress 0.0 to 1.0
-    let progress = currentScroll / maxScroll;
-
-    // Update Progress Bar
-    if (progressBar) {
-        progressBar.style.height = `${Math.min(progress * 100, 100)}%`;
-    }
-
-    // Determine Active Card
-    let activeIndex = Math.floor(progress * cards.length);
-
-    if (activeIndex < 0) activeIndex = 0;
-    if (activeIndex >= cards.length) activeIndex = cards.length - 1;
-
-    // Apply Classes
-    cards.forEach((card, i) => {
-        card.classList.remove('above', 'active', 'below');
-
-        if (i < activeIndex) {
-            card.classList.add('above');
-        } else if (i === activeIndex) {
-            card.classList.add('active');
-        } else {
-            card.classList.add('below');
-        }
+    navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            hamburger.classList.remove('open');
+            navLinks.classList.remove('open');
+        });
     });
 }
 
-window.addEventListener('scroll', handleScroll);
-handleScroll();
+// ===== Scroll indicator hide =====
+const indicator = document.getElementById('scrollIndicator');
+window.addEventListener('scroll', () => {
+    if (indicator) indicator.style.opacity = window.scrollY > 50 ? '0' : '1';
+}, { passive: true });
+
+// ===== Scroll-reveal (IntersectionObserver) =====
+const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            revealObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
