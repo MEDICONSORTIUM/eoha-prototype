@@ -12,7 +12,7 @@ The prototype currently focuses on two public-health areas:
 ## Live Demo
 
 ```text
-https://main.d1jko0jkg4m7f.amplifyapp.com/
+[https://e/](https://eoha.co.za/)
 ```
 
 ## Project Purpose
