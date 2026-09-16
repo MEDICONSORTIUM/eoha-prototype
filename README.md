@@ -12,7 +12,7 @@ The prototype currently focuses on two public-health areas:
 ## Live Demo
 
 ```text
-[https://e/](https://eoha.co.za/)
+https://eoha.co.za/
 ```
 
 ## Project Purpose
