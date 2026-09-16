@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link rel="stylesheet" href="./styles/styles.css">
     <script src="./scripts/theme.js"></script>
 </head>
+
 <body>
 
     <!-- ===== NAVBAR ===== -->
@@ -36,8 +38,14 @@
             <source src="./data/8947-215890483.mp4" type="video/mp4">
         </video>
 
+        <!-- Background video (fallback poster recommended) -->
+        <video autoplay muted loop playsinline class="bg-video" poster="fallback.jpg">
+            <source src="../data/8947-215890483.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
         <div class="video-overlay"></div>
 
+        <!-- Main title -->
         <div class="header-content">
             <section class="name">
                 <h1 class="glow-wave">
@@ -66,6 +74,7 @@
             </div>
         </div>
 
+        <!-- Floating about panel -->
         <article class="about-floating">
             <h1>Earth Observation Health Analytics Platform</h1>
             <p>
@@ -78,6 +87,7 @@
             </div>
         </article>
 
+        <!-- Scroll indicator (mouse wheel animation) -->
         <div class="scroll-indicator" id="scrollIndicator">
             <div class="mouse">
                 <div class="wheel"></div>

@@ -1,5 +1,9 @@
-/* ================= RESET ================= */
-* { margin: 0; padding: 0; box-sizing: border-box; }
+/* ================= RESET & BASE ================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 body {
     font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
@@ -8,7 +12,7 @@ body {
     color: var(--text-primary);
 }
 
-/* ================= NAVBAR (STICKY GLASS) ================= */
+/* ================= NAVBAR (GLASS) ================= */
 .navbar {
     position: fixed;
     top: 0;
@@ -82,7 +86,7 @@ body {
 .video-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0,0,0,0.55);
+    background: rgba(0, 0, 0, 0.55);
     z-index: 2;
 }
 
@@ -102,8 +106,6 @@ body {
     text-align: center;
     margin-bottom: 2rem;
 }
-.name h1 { font-size: 4rem; }
-.name h3 { font-weight: 300; opacity: 0.9; letter-spacing: 2px; margin-top: 10px; }
 
 .glow-wave { font-size: 4rem; letter-spacing: 0.15em; font-weight: 700; }
 .glow-wave span { display: inline-block; animation: glowWave 3s infinite; }
@@ -119,22 +121,32 @@ body {
     left: 50%;
     transform: translateX(-50%);
     z-index: 4;
-    background: rgba(255,255,255,0.15);
+    background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
     padding: 2rem 2.5rem;
     border-radius: 16px;
     max-width: 800px;
     text-align: center;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
+
 .about-floating:hover {
     transform: translateX(-50%) translateY(-10px);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
 }
-.about-floating h1 { font-size: 2.2rem; margin-bottom: 1rem; }
-.about-floating p { font-size: 1.1rem; opacity: 0.95; }
 
+.about-floating h1 {
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+}
+
+.about-floating p {
+    font-size: 1.1rem;
+    opacity: 0.95;
+}
+
+/* Scroll indicator (mouse wheel) */
 .scroll-indicator {
     position: absolute;
     bottom: 30px;
@@ -143,18 +155,25 @@ body {
     z-index: 4;
     transition: opacity 0.4s ease;
 }
+
 .mouse {
-    width: 28px; height: 46px; border: 2px solid white; border-radius: 20px; position: relative;
+    width: 28px;
+    height: 46px;
+    border: 2px solid white;
+    border-radius: 20px;
+    position: relative;
 }
+
 .wheel {
-    width: 4px; height: 8px; background: white; border-radius: 2px;
-    position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
-    animation: scrollWheel 1.5s infinite;
-}
-@keyframes scrollWheel {
-    0% { opacity: 0; transform: translate(-50%, 0); }
-    50% { opacity: 1; }
-    100% { opacity: 0; transform: translate(-50%, 12px); }
+    width: 4px;
+    height: 8px;
+    background: white;
+    border-radius: 2px;
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: scroll_wheel 1.5s infinite;
 }
 
 /* ================= STATS BAR ================= */
