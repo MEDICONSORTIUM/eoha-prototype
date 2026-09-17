@@ -1,15 +1,4 @@
-/* ================= CONTACT PAGE – COMPLETE STYLES ================= */
-/* This file contains all styling for the contact page, including
-   navbar, hero, info card, Leaflet map, logos, and footer.
-   No external styles.css required.
-*/
-
-/* ================= RESET & BASE ================= */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
     font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
@@ -17,11 +6,9 @@ body {
     overflow-x: hidden;
 }
 
-/* ================= NAVBAR (GLASS) ================= */
 .navbar {
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 0; left: 0;
     width: 100%;
     z-index: 1000;
     padding: 1rem 2rem;
@@ -37,11 +24,7 @@ body {
     justify-content: center;
 }
 
-.nav-links {
-    list-style: none;
-    display: flex;
-    gap: 2rem;
-}
+.nav-links { list-style: none; display: flex; gap: 2rem; }
 
 .nav-links a {
     color: white;
@@ -62,7 +45,6 @@ body {
     transform: translateY(-2px);
 }
 
-/* ================= HERO SECTION ================= */
 .contact-header {
     position: relative;
     height: 50vh;
@@ -103,7 +85,6 @@ body {
     opacity: 0.9;
 }
 
-/* ================= MAIN CONTAINER ================= */
 .contact-main {
     background: linear-gradient(135deg, #f5f7fa 0%, #e9edf2 100%);
     padding: 4rem 2rem;
@@ -117,7 +98,6 @@ body {
     margin: 0 auto;
 }
 
-/* Single Info Card (glassmorphism) */
 .contact-info-card {
     max-width: 800px;
     margin: 0 auto;
@@ -134,7 +114,6 @@ body {
     box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
 }
 
-/* Info card typography */
 .info-title {
     font-size: 2rem;
     margin-bottom: 1.5rem;
@@ -143,9 +122,7 @@ body {
     padding-left: 1rem;
 }
 
-.info-details {
-    margin-bottom: 2rem;
-}
+.info-details { margin-bottom: 2rem; }
 
 .info-item {
     display: flex;
@@ -155,10 +132,7 @@ body {
     flex-wrap: wrap;
 }
 
-.info-icon {
-    font-size: 1.8rem;
-    min-width: 40px;
-}
+.info-icon { font-size: 1.8rem; min-width: 40px; }
 
 .info-item p {
     margin: 0;
@@ -167,7 +141,6 @@ body {
     font-size: 1.1rem;
 }
 
-/* Phone link styling */
 .contact-link {
     color: #0ea5e9;
     text-decoration: none;
@@ -175,37 +148,17 @@ body {
     transition: color 0.2s;
 }
 
-.contact-link:hover {
-    color: #0284c7;
-    text-decoration: underline;
-}
+.contact-link:hover { color: #0284c7; text-decoration: underline; }
 
-/* Email button (styled as link with icon) */
 .email-button {
     background: none;
     border: none;
-    color: #0ea5e9;
     font-size: 1.1rem;
     font-family: inherit;
-    font-weight: 500;
     cursor: pointer;
     padding: 0;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: color 0.2s;
 }
 
-.email-button:hover {
-    color: #0284c7;
-    text-decoration: underline;
-}
-
-.email-icon {
-    font-size: 1.2rem;
-}
-
-/* ========== LEaFLET MAP CONTAINER ========== */
 .contact-leaflet-map {
     width: 100%;
     height: 280px;
@@ -216,14 +169,6 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-/* Leaflet attribution subtle style */
-.leaflet-control-attribution {
-    background: rgba(255, 255, 255, 0.7);
-    font-size: 9px;
-    border-radius: 8px 0 0 0;
-}
-
-/* Partner Logos */
 .contact-logos {
     display: flex;
     justify-content: center;
@@ -239,12 +184,8 @@ body {
     transition: 0.3s;
 }
 
-.contact-logos img:hover {
-    filter: none;
-    opacity: 1;
-}
+.contact-logos img:hover { filter: none; opacity: 1; }
 
-/* Footer */
 .contact-footer {
     background: #0f172a;
     color: #94a3b8;
@@ -253,18 +194,8 @@ body {
     font-size: 0.9rem;
 }
 
-/* Responsive */
 @media (max-width: 800px) {
-    .contact-header {
-        height: 40vh;
-    }
-
-    .contact-leaflet-map {
-        height: 220px;
-    }
-
-    .info-item {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+    .contact-header { height: 40vh; }
+    .contact-leaflet-map { height: 220px; }
+    .info-item { flex-direction: column; align-items: flex-start; }
 }

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malaria Guard - Resource Center</title>
+    <link rel="stylesheet" href="../styles/theme.css">
+    <link rel="stylesheet" href="../styles/resource-center.css">
+    <script src="../scripts/theme.js"></script>
+</head>
+
+<body>
+
+    <div class="page-layout">
+
+        <header class="top-bar">
+            <div class="brand-pill">
+                <h1>Malaria Guard</h1>
+            </div>
+
+            <nav class="nav-pill">
+                <a href="malaria-page.html">Dashboard</a>
+                <a href="malaria-forecasting.html">Forecasting</a>
+                <a href="resource-center.html" class="active">Resource Center</a>
+                <a href="malaria-reports.html">Reports</a>
+            </nav>
+
+            <div class="actions-pill">
+                <button class="icon-btn">
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </button>
+                <button class="icon-btn">
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                </button>
+                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                </button>
+                <div class="avatar"></div>
+            </div>
+        </header>
+
+        <main class="content-area">
+            <div class="content-header">
+                <div>
+                    <h2>Resource Center</h2>
+                    <p class="content-subtitle">Research papers, datasets, and methodology documentation</p>
+                </div>
+            </div>
+
+            <div class="filter-bar">
+                <button class="filter-btn active" data-category="all">All</button>
+                <button class="filter-btn" data-category="research">Research</button>
+                <button class="filter-btn" data-category="data">Data</button>
+                <button class="filter-btn" data-category="methodology">Methodology</button>
+                <button class="filter-btn" data-category="tools">Tools</button>
+            </div>
+
+            <div class="resource-grid" id="resource-grid">
+
+                <article class="resource-card" data-category="research">
+                    <div class="card-top">
+                        <span class="resource-icon">📄</span>
+                        <span class="category-badge badge-research">Research</span>
+                    </div>
+                    <h3>WHO World Malaria Report 2024</h3>
+                    <p>Comprehensive annual assessment of malaria trends, interventions, and outcomes across Africa.</p>
+                    <a href="https://www.who.int/teams/global-malaria-programme/reports/world-malaria-report-2024" target="_blank" rel="noopener" class="resource-btn">View Report →</a>
+                </article>
+
+                <article class="resource-card" data-category="research">
+                    <div class="card-top">
+                        <span class="resource-icon">📄</span>
+                        <span class="category-badge badge-research">Research</span>
+                    </div>
+                    <h3>Earth Observation for Malaria Control</h3>
+                    <p>Peer-reviewed review of satellite-derived environmental indicators and their role in malaria risk modelling in sub-Saharan Africa.</p>
+                    <a href="https://www.mdpi.com/2072-4292/13/3/431" target="_blank" rel="noopener" class="resource-btn">Read Paper →</a>
+                </article>
+
+                <article class="resource-card" data-category="data">
+                    <div class="card-top">
+                        <span class="resource-icon">🛰️</span>
+                        <span class="category-badge badge-data">Data</span>
+                    </div>
+                    <h3>NASA MODIS Land Surface Temperature</h3>
+                    <p>MOD11A1 daily LST product at 1 km resolution — a key input to the EOHA malaria risk model.</p>
+                    <a href="https://lpdaac.usgs.gov/products/mod11a1v061/" target="_blank" rel="noopener" class="resource-btn">Access Data →</a>
+                </article>
+
+                <article class="resource-card" data-category="data">
+                    <div class="card-top">
+                        <span class="resource-icon">🌍</span>
+                        <span class="category-badge badge-data">Data</span>
+                    </div>
+                    <h3>Sentinel-2 Multispectral Imagery</h3>
+                    <p>ESA Copernicus Sentinel-2 surface reflectance data used to derive NDWI water indices and habitat classification.</p>
+                    <a href="https://dataspace.copernicus.eu/" target="_blank" rel="noopener" class="resource-btn">Access Data →</a>
+                </article>
+
+                <article class="resource-card" data-category="data">
+                    <div class="card-top">
+                        <span class="resource-icon">📦</span>
+                        <span class="category-badge badge-data">Data</span>
+                    </div>
+                    <h3>South Africa Ward Boundaries (GeoJSON)</h3>
+                    <p>Administrative level 3 boundaries used to aggregate risk scores at ward level across all provinces.</p>
+                    <a href="../data/South_Africa_ADM1.geojson" download class="resource-btn">Download GeoJSON →</a>
+                </article>
+
+                <article class="resource-card" data-category="methodology">
+                    <div class="card-top">
+                        <span class="resource-icon">📐</span>
+                        <span class="category-badge badge-methodology">Methodology</span>
+                    </div>
+                    <h3>EOHA Risk Scoring Methodology</h3>
+                    <p>How EOHA combines soil moisture, land surface temperature, NDWI, and population density into a composite malaria risk score.</p>
+                    <div class="method-snippet">
+                        <code>Risk = SM(40) + LST(30) + NDWI(20) + PopDensity(10)</code>
+                    </div>
+                    <span class="resource-btn resource-btn-static">Internal Document</span>
+                </article>
+
+                <article class="resource-card" data-category="methodology">
+                    <div class="card-top">
+                        <span class="resource-icon">🤖</span>
+                        <span class="category-badge badge-methodology">Methodology</span>
+                    </div>
+                    <h3>Random Forest Forecasting Model</h3>
+                    <p>The 14-month time-series forecasting model trained on Limpopo ward-level EO data (Jan 2025 – Jan 2026) with 91.4% accuracy.</p>
+                    <span class="resource-btn resource-btn-static">Internal Model</span>
+                </article>
+
+                <article class="resource-card" data-category="tools">
+                    <div class="card-top">
+                        <span class="resource-icon">🗺️</span>
+                        <span class="category-badge badge-tools">Tools</span>
+                    </div>
+                    <h3>Leaflet.js Interactive Maps</h3>
+                    <p>Open-source mapping library powering the EOHA dashboard maps and heatmap overlays.</p>
+                    <a href="https://leafletjs.com" target="_blank" rel="noopener" class="resource-btn">Documentation →</a>
+                </article>
+
+                <article class="resource-card" data-category="tools">
+                    <div class="card-top">
+                        <span class="resource-icon">📊</span>
+                        <span class="category-badge badge-tools">Tools</span>
+                    </div>
+                    <h3>Chart.js Data Visualisation</h3>
+                    <p>JavaScript charting library used in the Forecasting module to render time-series risk predictions.</p>
+                    <a href="https://www.chartjs.org/docs/latest/" target="_blank" rel="noopener" class="resource-btn">Documentation →</a>
+                </article>
+
+            </div>
+        </main>
+
+    </div>
+
+    <script>
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const cards = document.querySelectorAll('.resource-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', function () {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const cat = this.dataset.category;
+                cards.forEach(card => {
+                    card.style.display = (cat === 'all' || card.dataset.category === cat) ? '' : 'none';
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

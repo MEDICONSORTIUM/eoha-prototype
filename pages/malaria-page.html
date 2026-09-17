@@ -5,8 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Malaria Guard - Dashboard</title>
+    <link rel="stylesheet" href="../styles/theme.css">
     <link rel="stylesheet" href="../styles/malaria-page.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="../scripts/theme.js"></script>
 </head>
 
 <body>
@@ -31,10 +33,10 @@
             </div>
 
             <nav class="nav-pill">
-                <a href="#" class="active">Dashboard</a>
-                <a href="#">Forecasting</a>
-                <a href="#">Resource Center</a>
-                <a href="#">Reports</a>
+                <a href="malaria-page.html" class="active">Dashboard</a>
+                <a href="malaria-forecasting.html">Forecasting</a>
+                <a href="resource-center.html">Resource Center</a>
+                <a href="malaria-reports.html">Reports</a>
             </nav>
 
             <div class="actions-pill">
@@ -51,6 +53,10 @@
                         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
                         <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                     </svg>
+                </button>
+                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
                 </button>
                 <div class="avatar"></div>
             </div>

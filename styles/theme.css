@@ -1,0 +1,174 @@
+/* ============================================================
+   EOHA Theme — CSS custom properties + dark mode overrides
+   Load this file FIRST, before any page-specific stylesheet.
+   Theme is toggled by setting data-theme="dark" on <html>.
+   ============================================================ */
+
+/* ===== Light Mode (default) ===== */
+:root {
+  /* Landing page tokens */
+  --bg-page:        #ffffff;
+  --bg-soft:        #f8fafc;
+  --text-primary:   #0f172a;
+  --text-secondary: #475569;
+  --primary-brand:  #0ea5e9;
+
+  /* Dashboard tokens — same names used in page CSS files */
+  --bg-main:   #f4f7f9;
+  --panel-bg:  rgba(255, 255, 255, 0.95);
+  --text-dark: #1a2b4b;
+  --text-muted: #7d8da1;
+  --shadow:    0 8px 30px rgba(0,0,0,0.06);
+  --border:    #f0f2f5;
+  --primary:   #1a82ff;
+}
+
+/* ===== Dark Mode ===== */
+[data-theme="dark"] {
+  /* Landing page tokens */
+  --bg-page:        #0f172a;
+  --bg-soft:        #1e293b;
+  --text-primary:   #f1f5f9;
+  --text-secondary: #94a3b8;
+  --primary-brand:  #38bdf8;
+
+  /* Dashboard token overrides */
+  --bg-main:   #1e293b;
+  --panel-bg:  rgba(15, 23, 42, 0.95);
+  --text-dark: #f1f5f9;
+  --text-muted: #94a3b8;
+  --shadow:    0 8px 30px rgba(0,0,0,0.4);
+  --border:    rgba(255,255,255,0.08);
+  --primary:   #38bdf8;
+}
+
+/* ===== Smooth transition on theme change ===== */
+*, *::before, *::after {
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+/* But NOT on animations/transforms */
+.glow-wave span, .wheel, .reveal { transition: none; }
+.reveal { transition: opacity 0.7s ease, transform 0.7s ease; }
+
+/* ===== Theme Toggle Button ===== */
+.theme-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: background 0.2s;
+  padding: 0;
+  flex-shrink: 0;
+}
+.theme-toggle:hover { background: rgba(255,255,255,0.12); }
+.theme-toggle svg   { width: 18px; height: 18px; }
+
+/* In dashboard context (light pill backgrounds), use muted colour */
+.actions-pill .theme-toggle       { color: var(--text-muted); }
+.actions-pill .theme-toggle:hover { background: var(--bg-main); color: var(--text-dark); }
+
+/* Sun visible in dark mode, Moon visible in light mode */
+.sun-icon  { display: block; }
+.moon-icon { display: none;  }
+[data-theme="dark"] .sun-icon  { display: none;  }
+[data-theme="dark"] .moon-icon { display: block; }
+
+
+/* ============================================================
+   DARK MODE OVERRIDES — elements with hardcoded colours
+   ============================================================ */
+
+/* body fallback (covers NCD page which uses #f8f9fa hardcoded) */
+[data-theme="dark"] body {
+  background-color: var(--bg-main);
+  color: var(--text-dark);
+}
+
+/* Dashboard top-bar pills */
+[data-theme="dark"] .brand-pill,
+[data-theme="dark"] .actions-pill {
+  background: #1e293b;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+[data-theme="dark"] .nav-pill { background: #0f172a; border: 1px solid rgba(255,255,255,0.06); }
+[data-theme="dark"] .nav-pill a.active,
+[data-theme="dark"] .nav-pill a:hover  { background: #1e293b; color: #f1f5f9; box-shadow: none; }
+[data-theme="dark"] .brand-pill h1     { color: #f1f5f9; }
+
+/* Selects & inputs */
+[data-theme="dark"] select {
+  background-color: #1e293b;
+  color: #f1f5f9;
+  border-color: rgba(255,255,255,0.1);
+}
+[data-theme="dark"] select:disabled { background-color: #0f172a; color: #475569; }
+
+/* Dashboard widget backgrounds (hardcoded #fff / #f8fafc / #eef2f6) */
+[data-theme="dark"] .insight-box        { background: #0f172a; border-color: rgba(255,255,255,0.06); }
+[data-theme="dark"] .play-btn           { background: #0f172a; }
+[data-theme="dark"] .badge              { background: #0f172a; }
+[data-theme="dark"] .hidden-reset:hover { background: #0f172a; }
+[data-theme="dark"] .target-icon:hover  { background: #0f172a; }
+[data-theme="dark"] input[type=range]::-webkit-slider-runnable-track { background: rgba(255,255,255,0.1); }
+
+/* Forecasting range buttons */
+[data-theme="dark"] .range-btn {
+  background: #1e293b;
+  border-color: rgba(255,255,255,0.08);
+  color: var(--text-muted);
+}
+
+/* Reports filter elements */
+[data-theme="dark"] .filter-bar    { background: #0f172a; }
+[data-theme="dark"] .filter-select,
+[data-theme="dark"] .filter-input,
+[data-theme="dark"] .reset-btn     { background: #1e293b; color: #f1f5f9; border-color: rgba(255,255,255,0.08); }
+[data-theme="dark"] .risk-toggle   { background: #1e293b; border-color: rgba(255,255,255,0.08); }
+[data-theme="dark"] .risk-btn      { color: #94a3b8; }
+[data-theme="dark"] td             { color: #f1f5f9; }
+[data-theme="dark"] th             { background: #0f172a; color: #94a3b8; border-bottom-color: rgba(255,255,255,0.08); }
+[data-theme="dark"] tr:hover td    { background: #1e293b; }
+
+/* Resource center filter buttons */
+[data-theme="dark"] .filter-btn { background: #1e293b; border-color: rgba(255,255,255,0.08); }
+
+/* Map (just set fallback bg, leave tiles unchanged — they're functional) */
+[data-theme="dark"] #map { background: #1e293b; }
+
+/* ─── NCD page (Google-style hardcoded colours) ─── */
+[data-theme="dark"] .ncd-header { border-bottom-color: rgba(255,255,255,0.08); }
+[data-theme="dark"] .ncd-heading { color: #f1f5f9; }
+[data-theme="dark"] .ncd-heading-section p { color: #94a3b8; }
+[data-theme="dark"] .region-selector,
+[data-theme="dark"] .ncd-metrics,
+[data-theme="dark"] .enviro-factors,
+[data-theme="dark"] .risk-prediction {
+  background: #1e293b;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  color: #f1f5f9;
+}
+[data-theme="dark"] .ncd-page h2  { color: #f1f5f9; }
+[data-theme="dark"] .text-value    { color: #f1f5f9; }
+[data-theme="dark"] .btn-link      { background: #1e293b; color: #f1f5f9; border-color: rgba(255,255,255,0.1); }
+[data-theme="dark"] .btn-link:hover { background: #0f172a; }
+[data-theme="dark"] .risk-prediction h4 { background: rgba(255,255,255,0.08); color: #f1f5f9; }
+[data-theme="dark"] .region-selector p,
+[data-theme="dark"] .enviro-factors p,
+[data-theme="dark"] .risk-prediction p { color: #94a3b8; }
+[data-theme="dark"] .region-selector h2,
+[data-theme="dark"] .enviro-factors h2,
+[data-theme="dark"] .risk-prediction h2 { border-bottom-color: rgba(255,255,255,0.08); color: #f1f5f9; }
+[data-theme="dark"] progress { background-color: rgba(255,255,255,0.1); }
+[data-theme="dark"] .region-selector select { background-color: #1e293b; color: #f1f5f9; border-color: rgba(255,255,255,0.1); }
+
+/* ─── Contact page ─── */
+[data-theme="dark"] .contact-main      { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+[data-theme="dark"] .contact-info-card { background: rgba(30,41,59,0.95); }
+[data-theme="dark"] .info-title        { color: #f1f5f9; }
+[data-theme="dark"] .info-item p       { color: #94a3b8; }
