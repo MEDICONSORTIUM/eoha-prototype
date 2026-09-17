@@ -6,8 +6,8 @@ A prototype public-health surveillance platform developed by the **Medical Conso
 
 ## Live Demo
 
-```
-https://main.d1jko0jkg4m7f.amplifyapp.com/
+```text
+https://eoha.co.za/
 ```
 
 ---
