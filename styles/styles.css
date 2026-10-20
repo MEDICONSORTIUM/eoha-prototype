@@ -34,10 +34,20 @@ body {
 }
 
 .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     color: #fff;
     font-size: 1.25rem;
     font-weight: 800;
     letter-spacing: 0.05em;
+}
+
+.nav-brand-logo {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
 .nav-links {
@@ -605,10 +615,20 @@ body {
 }
 
 .footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
     font-size: 1.4rem;
     font-weight: 800;
     color: #fff;
     letter-spacing: 0.06em;
+}
+
+.footer-brand-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
 .footer-nav {

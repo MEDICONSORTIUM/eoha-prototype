@@ -3,8 +3,8 @@ const map = L.map('map', { zoomControl: false }).setView(
   DEFAULT_VIEW.zoom,
 );
 
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
-  attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 }).addTo(map);
 
 const city_layer = L.layerGroup().addTo(map);
@@ -22,9 +22,7 @@ map.createPane('labels');
 map.getPane('labels').style.zIndex = 650;
 map.getPane('labels').style.pointerEvents = 'none';
 
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
-  pane: 'labels',
-}).addTo(map);
+
 
 /**
  * get_visible_wards()
@@ -194,3 +192,4 @@ function open_marker_popup_for_ward(ward_data) {
     }
   });
 }
+new ResizeObserver(() => map.invalidateSize()).observe(document.getElementById('map'));

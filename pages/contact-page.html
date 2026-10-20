@@ -5,10 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EOHA - Contact Us</title>
+    <link rel="icon" href="../favicon.svg?v=eoha-1" type="image/svg+xml">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="../styles/theme.css">
     <link rel="stylesheet" href="../styles/contact.css">
     <script src="../scripts/theme.js"></script>
+<link rel="stylesheet" href="../styles/mobile.css?v=20261020-3">
 </head>
 
 <body>
@@ -58,14 +60,16 @@
                         <span class="info-icon">✉️</span>
                         <p>
                             <button id="email_btn" class="email-button">
-                                <a href="mailto:kmontjaneconsortium@gmail.com" class="contact-link">kmontjaneconsortium@gmail.com</a>
+                                <a href="mailto:info@medicalconsortiumofafrica.co.za" class="contact-link">info@medicalconsortiumofafrica.co.za</a>
                             </button>
                         </p>
                     </div>
 
                 </div>
 
-                <div id="contact_map" class="contact-leaflet-map"></div>
+                <div id="contact_map" class="contact-leaflet-map" aria-label="Medical Consortium of Africa location map"></div>
+                <p id="contact-map-status" role="status" aria-live="polite"></p>
+                <p><a class="contact-link" href="https://www.openstreetmap.org/?mlat=-25.7549&amp;mlon=28.2326#map=17/-25.7549/28.2326" target="_blank" rel="noopener">Open location in OpenStreetMap ↗</a></p>
 
                 <div class="contact-logos">
                     <img src="../images/SANSA_Logo_small-1-1.jpg" alt="SANSA">
@@ -82,7 +86,7 @@
     </footer>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="../scripts/contact.js"></script>
+    <script src="../scripts/contact.js?v=20261020-4"></script>
 </body>
 
 </html>

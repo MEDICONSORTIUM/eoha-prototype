@@ -4,6 +4,31 @@
    Theme is toggled by setting data-theme="dark" on <html>.
    ============================================================ */
 
+.brand-pill-logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.back-link {
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 20px;
+}
+
+.back-link:hover {
+  color: var(--text-dark);
+  background: #f1f5f9;
+}
+
+[data-theme="dark"] .back-link:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
 /* ===== Light Mode (default) ===== */
 :root {
   /* Landing page tokens */
@@ -108,6 +133,7 @@
   border-color: rgba(255,255,255,0.1);
 }
 [data-theme="dark"] select:disabled { background-color: #0f172a; color: #475569; }
+[data-theme="dark"] .input-group select { background-color: #1e293b; color: #f1f5f9; }
 
 /* Dashboard widget backgrounds (hardcoded #fff / #f8fafc / #eef2f6) */
 [data-theme="dark"] .insight-box        { background: #0f172a; border-color: rgba(255,255,255,0.06); }
@@ -172,3 +198,7 @@
 [data-theme="dark"] .contact-info-card { background: rgba(30,41,59,0.95); }
 [data-theme="dark"] .info-title        { color: #f1f5f9; }
 [data-theme="dark"] .info-item p       { color: #94a3b8; }
+
+/* The dashboard brand returns to the platform home page. */
+.brand-home { color: var(--text-dark); text-decoration: none; }
+.brand-home:focus-visible { outline: 3px solid var(--primary); outline-offset: 3px; }

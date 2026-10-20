@@ -29,15 +29,24 @@ if (hamburger && navLinks) {
     hamburger.addEventListener('click', function () {
         this.classList.toggle('open');
         navLinks.classList.toggle('open');
+        this.setAttribute('aria-expanded', String(navLinks.classList.contains('open')));
     });
 
     navLinks.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', () => {
             hamburger.classList.remove('open');
             navLinks.classList.remove('open');
+            hamburger.setAttribute('aria-expanded', 'false');
         });
     });
 }
+
+document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && hamburger && navLinks?.classList.contains('open')) {
+        hamburger.classList.remove('open'); navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false'); hamburger.focus();
+    }
+});
 
 // ===== Scroll indicator hide =====
 const indicator = document.getElementById('scrollIndicator');

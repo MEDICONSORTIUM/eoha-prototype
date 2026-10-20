@@ -1,0 +1,462 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EOHA NCD environmental exposure record",
+  "description": "Draft v0.1.0: separate ward exposure components. Scoring disabled pending review; no disease probability or combined NCD score.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "0.1.0"
+    },
+    "scoring_enabled": {
+      "const": false
+    },
+    "ward": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "country_code": {
+          "const": "ZA"
+        },
+        "province": {
+          "enum": [
+            "Eastern Cape",
+            "Free State",
+            "Gauteng",
+            "KwaZulu-Natal",
+            "Limpopo",
+            "Mpumalanga",
+            "North West",
+            "Northern Cape",
+            "Western Cape"
+          ]
+        },
+        "municipality_code": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ward_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "boundary_version": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "country_code",
+        "province",
+        "municipality_code",
+        "ward_id",
+        "boundary_version"
+      ]
+    },
+    "period": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "start": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "end": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "timezone": {
+          "const": "Africa/Johannesburg"
+        },
+        "resolution": {
+          "enum": [
+            "daily",
+            "monthly",
+            "rolling_annual"
+          ]
+        }
+      },
+      "required": [
+        "start",
+        "end",
+        "timezone",
+        "resolution"
+      ]
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "components": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pollution": {
+          "$ref": "#/$defs/component"
+        },
+        "heat": {
+          "$ref": "#/$defs/component"
+        },
+        "cold": {
+          "$ref": "#/$defs/component"
+        }
+      },
+      "required": [
+        "pollution",
+        "heat",
+        "cold"
+      ]
+    },
+    "combined_ncd_score": {
+      "type": "null"
+    }
+  },
+  "required": [
+    "schema_version",
+    "scoring_enabled",
+    "ward",
+    "period",
+    "generated_at",
+    "components",
+    "combined_ncd_score"
+  ],
+  "$defs": {
+    "component": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "const": "disabled_pending_review"
+        },
+        "score": {
+          "type": "null"
+        },
+        "reference_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/observation"
+          }
+        }
+      },
+      "required": [
+        "status",
+        "score",
+        "reference_id",
+        "observations"
+      ]
+    },
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "variable": {
+          "enum": [
+            "pm25_ug_m3",
+            "air_temp_mean_c",
+            "air_temp_max_c",
+            "air_temp_min_c",
+            "relative_humidity_pct"
+          ]
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "dataset_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "band": {
+              "type": "string",
+              "minLength": 1
+            },
+            "product_version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "kind": {
+              "enum": [
+                "historical",
+                "forecast"
+              ]
+            },
+            "issue_time": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "lead_hours": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "dataset_id",
+            "band",
+            "product_version",
+            "kind",
+            "issue_time",
+            "lead_hours"
+          ]
+        },
+        "aggregation": {
+          "enum": [
+            "area_weighted",
+            "population_weighted"
+          ]
+        },
+        "population_reference": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "spatial_coverage": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "temporal_coverage": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "quality_flags": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "missing_value",
+              "invalid_value",
+              "missing_coverage",
+              "insufficient_spatial_coverage",
+              "insufficient_temporal_coverage",
+              "stale",
+              "partial_period",
+              "unverified_source"
+            ]
+          }
+        },
+        "eligible_for_reference": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "variable",
+        "value",
+        "source",
+        "aggregation",
+        "population_reference",
+        "spatial_coverage",
+        "temporal_coverage",
+        "quality_flags",
+        "eligible_for_reference"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "variable": {
+                "const": "pm25_ug_m3"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "variable": {
+                "const": "relative_humidity_pct"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "aggregation": {
+                "const": "population_weighted"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "population_reference": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "source": {
+                "properties": {
+                  "kind": {
+                    "const": "forecast"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "source": {
+                "properties": {
+                  "issue_time": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "lead_hours": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "source": {
+                "properties": {
+                  "kind": {
+                    "const": "historical"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "source": {
+                "properties": {
+                  "issue_time": {
+                    "type": "null"
+                  },
+                  "lead_hours": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "eligible_for_reference": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "type": "number"
+              },
+              "spatial_coverage": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "temporal_coverage": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "quality_flags": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -5,13 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Malaria Guard - Dashboard</title>
+    <link rel="icon" href="../favicon.svg?v=eoha-1" type="image/svg+xml">
     <link rel="stylesheet" href="../styles/theme.css">
     <link rel="stylesheet" href="../styles/malaria-page.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="../scripts/theme.js"></script>
+<link rel="stylesheet" href="../styles/mobile.css?v=20261020-3">
 </head>
 
-<body>
+<body class="map-dashboard">
 
     <div id="orientation-lock">
         <div class="lock-content">
@@ -28,9 +30,10 @@
     <div class="dashboard-layout">
 
         <header class="top-bar">
-            <div class="brand-pill">
-                <h1></h1>
-            </div>
+            <a class="brand-pill brand-home" href="../index.html" aria-label="EOHA home">
+                <img src="../images/mca-logo.jpg" alt="MCA logo" class="brand-pill-logo">
+                <h1>Malaria Guard</h1>
+            </a>
 
             <nav class="nav-pill">
                 <a href="malaria-page.html" class="active">Dashboard</a>
@@ -40,6 +43,8 @@
             </nav>
 
             <div class="actions-pill">
+                <a href="../index.html" class="back-link">Back</a>
+
                 <button class="icon-btn">
                     <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -58,7 +63,6 @@
                     <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
                     <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
                 </button>
-                <div class="avatar"></div>
             </div>
         </header>
 
@@ -257,7 +261,7 @@
     <script src="../scripts/malaria/config.js"></script>
     <script src="../scripts/malaria/risk.js"></script>
     <script src="../scripts/malaria/ui.js"></script>
-    <script src="../scripts/malaria/map.js"></script>
+    <script src="../scripts/malaria/map.js?v=20261020-3"></script>
     <script src="../scripts/malaria/dropdowns.js"></script>
     <script src="../scripts/malaria/data.js"></script>
     <script src="../scripts/malaria/events.js"></script>
