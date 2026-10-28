@@ -8,10 +8,7 @@ function initContactMap() {
     }
     const location = [-25.7549, 28.2326];
     const map = L.map(mapContainer, {scrollWheelZoom:false}).setView(location, 15);
-    const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom:19,
-        attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+    const tiles = EOHAMap.addBasemap(map);
     tiles.on('tileerror', () => { mapStatus.textContent = 'Map tiles are unavailable. Use the location link below.'; });
     tiles.on('load', () => { mapStatus.textContent = ''; });
     L.marker(location).addTo(map).bindPopup('<strong>Medical Consortium of Africa</strong><br>1225 Pretoria Street, Hatfield<br>Pretoria, 0028, South Africa');

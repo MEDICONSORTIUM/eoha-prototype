@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NCD Risk Prediction</title>
+    <title>NCD Exposure Demonstration</title>
 <link rel="icon" href="../favicon.svg?v=eoha-1" type="image/svg+xml">
 
 <!-- Leaflet -->
@@ -14,9 +14,11 @@
 <link rel="stylesheet" href="../styles/malaria-page.css">
 <link rel="stylesheet" href="../styles/ncd-page.css?v=20261020-4">
 <script src="../scripts/theme.js"></script>
+<script src="../scripts/theme-map.js"></script>
 
 
 <link rel="stylesheet" href="../styles/mobile.css?v=20261020-4">
+    <link rel="stylesheet" href="../styles/re-theme.css">
 </head>
 <body class="map-dashboard ncd-dashboard">
 
@@ -27,14 +29,14 @@
         <header class="top-bar">
             <a class="brand-pill brand-home" href="../index.html" aria-label="EOHA home">
                 <img src="../images/mca-logo.jpg" alt="MCA logo" class="brand-pill-logo">
-                <h1>NCD Risk Prediction</h1>
+                <div class="brand-copy"><h1>NCD Exposure</h1><small id="source-badge">Synthetic demo | 2025-2026</small></div>
             </a>
 
             <nav class="nav-pill" aria-label="NCD navigation">
                 <a href="ncd-page.html" class="active" aria-current="page">Dashboard</a>
-                <span class="nav-unavailable" aria-disabled="true" title="NCD forecasts are not available yet">Forecasting</span>
+                <a href="ncd-forecasting.html">Forecasting</a>
                 <a href="ncd-resource-center.html">Resource Center</a>
-                <span class="nav-unavailable" aria-disabled="true" title="NCD reports are not available yet">Reports</span>
+                <a href="ncd-reports.html">Reports</a>
             </nav>
 
             <div class="actions-pill">
@@ -54,10 +56,11 @@
                         <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                     </svg>
                 </button>
-                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
-                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-                </button>
+                <div class="theme-picker" role="group" aria-label="Color theme">
+                    <button type="button" data-theme-choice="system" aria-pressed="false">System</button>
+                    <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+                    <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+                </div>
             </div>
         </header>
 
@@ -90,7 +93,7 @@
                     </select>
                 </div>
 
-<select id="province-select" hidden aria-label="Province filter"><option value="">All provinces</option></select>
+<div class="input-group"><label for="province-select">Province</label><select id="province-select" aria-label="Province filter"><option value="">All provinces</option></select></div>
 
                 <div class="input-group">
                     <label for="city-select">Municipality</label>
@@ -123,11 +126,17 @@
                     <h2>Environmental Exposure</h2>
                 </div>
 
-                <p class="subtitle" id="dataset-summary" role="status">Loading the shared malaria CSV…</p>
+                <p class="subtitle" id="demo-notice" role="status">SYNTHETIC DEMO | Jan 2025-Dec 2026 | Not observed data or disease probabilities.</p>
+                <div class="input-group"><label for="data-source">Data source</label><select id="data-source"><option value="mock">Synthetic 2025-2026 demo</option><option value="real">Real historical measurements</option></select></div>
+                <div class="input-group"><label for="exposure-component">Exposure component</label><select id="exposure-component"><option value="pollution">Pollution</option><option value="heat">Heat</option><option value="cold">Cold</option></select></div>
+                <p class="subtitle" id="dataset-summary" role="status">Loading synthetic CSV...</p>
+                <p id="pm25-summary">PM2.5: unavailable</p>
+                <p id="components-summary" aria-live="polite">Demo scores loading...</p>
+                <a href="../data/ncd-mock-monthly-2025-2026.csv" download class="view-link">Download mock CSV</a>
                 <div class="factor-row"><div class="factor-labels"><span>Air temperature</span><span class="val" id="air-temp-value">—</span></div><div class="track" title="Share of selected wards with valid air temperature"><div class="fill" id="air-temp-bar"></div></div></div>
                 <div class="factor-row"><div class="factor-labels"><span>Surface temperature</span><span class="val" id="surface-temp-value">—</span></div><div class="track" title="Share of selected wards with valid surface temperature"><div class="fill" id="surface-temp-bar"></div></div></div>
                 <div class="factor-row"><div class="factor-labels"><span>Population density</span><span class="val" id="density-value">—</span></div><div class="track" title="Share of selected wards with valid population density"><div class="fill" id="density-bar"></div></div></div>
-                <div class="insight-box">Bars show data completeness. Regional measurements are unweighted ward means. Pollution and daily heat/cold inputs are unavailable; scoring remains disabled.</div>
+                <div class="insight-box">Bars show completeness. Demo scores use synthetic monthly references and unweighted ward means. No combined NCD score. Real-data scoring remains disabled.</div>
             </section>
 
         </aside>
@@ -135,7 +144,7 @@
         <aside class="sidebar-right">
 
             <section class="card risk-card">
-                <p class="risk-label">Current ward exposure</p>
+                <p class="risk-label">Selected exposure component</p>
 
                 <div class="donut-container">
                     <svg viewBox="0 0 100 100">
@@ -150,11 +159,11 @@
                 </div>
 
                 <h4 id="selected-region-name">Select a Region</h4>
-                <a href="../docs/ncd-risk-scoring.md" download class="view-link">View scoring specification &rsaquo;</a>
+                <a href="../docs/ncd-mock-data.md" download class="view-link">View demo methodology &rsaquo;</a>
             </section>
 
             <section class="card risk-card">
-                <p class="risk-label">Municipality exposure</p>
+                <p class="risk-label">Municipality component mean</p>
 
                 <div class="donut-container">
                     <svg viewBox="0 0 100 100">
@@ -178,7 +187,7 @@
                     <span class="info-icon">i</span>
                 </div>
 
-                <ul class="legend-list"><li><span class="dot blue"></span> Selected region</li><li><span class="dot neutral"></span> Administrative boundaries</li><li><span class="dot blue"></span> Ward observation locations</li><li>Exposure scores unavailable</li></ul>
+                <ul class="legend-list" id="ncd-legend"><li><span class="dot blue"></span> Selected region</li><li><span class="dot neutral"></span> Administrative boundaries</li><li><span class="dot blue"></span> Ward locations · synthetic exposure scores</li><li>Red: ≥50 points; yellow: 25–&lt;50; green: &lt;25. Grey: unavailable. Synthetic exposure scores only.</li></ul>
 <p id="map-status" role="status" aria-live="polite">Loading regional boundaries…</p>
             </section>
 
@@ -197,8 +206,9 @@
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="../scripts/vendor/papaparse.min.js"></script>
     <script src="../scripts/ncd-data.js?v=20261020-4"></script>
-    <script src="../scripts/ncd-page.js?v=20261020-4"></script>
+    <script src="../scripts/ncd-demo.js?v=20261028-risk-colors"></script>
+    <script src="../scripts/ncd-page.js?v=20261028-risk-colors"></script>
 </body>
 </html>

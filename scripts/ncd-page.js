@@ -65,6 +65,19 @@ const countryLayers = new Map();
 const provinceLayers = new Map();
 const neutralStyle = { color: '#64748b', weight: 1.5, fillColor: '#94a3b8', fillOpacity: 0.12 };
 const selectedStyle = { color: '#1a82ff', weight: 3, fillColor: '#1a82ff', fillOpacity: 0.2 };
+let mockReference = null, loadVersion = 0;
+const sourceSelect = document.getElementById('data-source');
+const componentSelect = document.getElementById('exposure-component');
+function isDemo() { return sourceSelect.value === 'mock'; }
+function scoreColor(value) { return NcdDemo.scoreBand(value).color; }
+function showScore(prefix, item) {
+    document.getElementById(prefix + '-text').textContent = item.value === null ? '—' : item.value.toFixed(1);
+    document.getElementById(prefix + '-percentage').textContent = item.value === null ? 'Unavailable' : 'points / 100';
+    const ring = document.getElementById(prefix + '-ring');
+    ring.style.strokeDasharray = '251.33';
+    ring.style.strokeDashoffset = String(251.33 * (1 - (item.value || 0) / 100));
+    ring.style.stroke = scoreColor(item.value);
+}
 let observations = [], wardMarkers = null, wardRenderer = null;
 const wardSelect = document.getElementById('ward-select');
 const monthSelect = document.getElementById('month-select');
@@ -102,7 +115,6 @@ function updateTimeline() {
     document.getElementById('timeline-current').textContent = monthSelect.value;
 }
 function refreshObservations(zoom = false) {
-    if (!observations.length) return;
     updateTimeline();
     document.getElementById('selected-municipality-name').textContent = citySelect.value || 'All municipalities';
     const rows = NcdData.filter(observations, selection());
@@ -113,8 +125,21 @@ function refreshObservations(zoom = false) {
         document.getElementById(id).title = item.count + ' wards with valid measurements';
         document.getElementById(id.replace('-value','-bar')).style.width = (rows.length ? 100 * item.count / rows.length : 0) + '%';
     }
-    document.getElementById('dataset-summary').textContent = rows.length ? monthSelect.value + ' · ' + rows.length + (rows.length === 1 ? ' ward observation' : ' ward observations') + ' · historical monthly data' : 'No CSV observations for this region and month.';
+    document.getElementById('dataset-summary').textContent = rows.length ? monthSelect.value + ' · ' + rows.length + (rows.length === 1 ? ' ward observation' : ' ward observations') + (isDemo() ? ' | SYNTHETIC monthly demo' : ' | historical monthly data') : 'No CSV observations for this region and month.';
     regionName.textContent = (wardSelect.value ? wardSelect.selectedOptions[0].textContent : '') || citySelect.value || provinceSelect.value || countrySelect.value || 'Select a Region';
+    const component = componentSelect.value;
+    const empty = {value: null, count: 0};
+    const selectedScore = isDemo() ? NcdDemo.average(rows, component, mockReference) : empty;
+    const municipalityRows = citySelect.value ? NcdData.filter(observations, {...selection(), ward: ''}) : [];
+    showScore('risk', selectedScore);
+    showScore('avg-risk', isDemo() ? NcdDemo.average(municipalityRows, component, mockReference) : empty);
+    document.getElementById('selected-municipality-name').textContent = citySelect.value || 'Select a municipality';
+    document.getElementById('components-summary').textContent = isDemo() ? ['pollution','heat','cold'].map(key => {
+        const item = NcdDemo.average(rows, key, mockReference);
+        return key + ': ' + (item.value === null ? 'unavailable' : item.value.toFixed(1) + ' points (' + item.count + ' wards)');
+    }).join(' · ') : 'Real-data scoring is disabled.';
+    const pmValues = rows.map(r => NcdData.number(r.PM25_ug_m3)).filter(v => v !== null && v >= 0);
+    document.getElementById('pm25-summary').textContent = 'PM2.5 monthly mean: ' + (pmValues.length ? (pmValues.reduce((a,b)=>a+b,0)/pmValues.length).toFixed(1) + ' µg/m³' : 'unavailable');
     if (!map) return;
     if (!wardMarkers) wardMarkers = L.layerGroup().addTo(map);
     wardMarkers.clearLayers();
@@ -124,8 +149,9 @@ function refreshObservations(zoom = false) {
         const lat = NcdData.number(row.latitude), lng = NcdData.number(row.longitude);
         if (lat === null || lng === null || Math.abs(lat) > 90 || Math.abs(lng) > 180) return;
         const label = document.createElement('span');
-        label.textContent = row.WardLabel + ' · ' + row.Municipali + ' · ' + row.Month;
-        L.circleMarker([lat,lng], {radius: wardSelect.value ? 8 : 4, color: '#1a82ff', weight: 1, fillOpacity: .6, renderer})
+        const score = isDemo() ? NcdDemo.scores(row, mockReference)[component] : null;
+        label.textContent = row.WardLabel + ' | ' + row.Municipali + ' | ' + row.Month + (isDemo() ? ' | SYNTHETIC ' + component + ': ' + (score === null ? 'unavailable' : score.toFixed(1) + ' points · ' + NcdDemo.scoreBand(score).label + ' exposure') : ' | observed measurements');
+        L.circleMarker([lat,lng], {radius: wardSelect.value ? 8 : 4, color: isDemo() ? scoreColor(score) : '#1a82ff', fillColor: isDemo() ? scoreColor(score) : '#1a82ff', weight: 1, fillOpacity: .8, renderer})
             .bindTooltip(label).on('click', () => {
                 provinceSelect.value = row.Province; populateMunicipalities(); citySelect.value = row.Municipali; populateWards(); wardSelect.value = String(row.WardID); refreshObservations(true);
             }).addTo(wardMarkers);
@@ -134,12 +160,48 @@ function refreshObservations(zoom = false) {
     if (zoom && points.length) frame({getBounds: () => L.latLngBounds(points)});
 }
 async function loadObservations() {
+    const version = ++loadVersion;
+    stopPlayback();
+    observations = []; mockReference = null;
+    timelineMonths = []; monthSelect.disabled = true; timeSlider.disabled = true;
+    document.getElementById('play-months-btn').disabled = true;
+    componentSelect.disabled = !isDemo();
+    document.getElementById('source-badge').textContent = isDemo() ? 'Synthetic demo | 2025-2026' : 'Real historical measurements';
+    const legend = document.getElementById('ncd-legend');
+    legend.replaceChildren();
+    const entries = isDemo() ? [
+        ['#d93025', 'High exposure: 50–100 points'],
+        ['#f9bb06', 'Moderate exposure: 25–<50 points'],
+        ['#34a853', 'Low exposure: 0–<25 points'],
+        ['#94a3b8', 'Score unavailable']
+    ] : [['#1a82ff', 'Real observation locations · scoring disabled']];
+    entries.forEach(([color, text]) => {
+        const item = document.createElement('li');
+        const swatch = document.createElement('span');
+        swatch.className = 'dot'; swatch.style.backgroundColor = color;
+        swatch.setAttribute('aria-hidden', 'true');
+        item.append(swatch, document.createTextNode(text)); legend.append(item);
+    });
+    const note = document.createElement('li');
+    note.textContent = isDemo() ? 'Synthetic component scores · prototype bands, not disease probabilities. Boundaries show geography only.' : 'Boundaries show geography only.';
+    legend.append(note);
+    document.getElementById('demo-notice').textContent = isDemo() ? 'SYNTHETIC DEMO · Jan 2025-Dec 2026 · Not observed data or disease probabilities.' : 'REAL HISTORICAL MEASUREMENTS · Exposure scoring disabled.';
+    refreshObservations();
+    document.getElementById('dataset-summary').textContent = 'Loading selected dataset…';
     try {
         if (typeof Papa === 'undefined') throw new Error('CSV parser unavailable');
-        const response = await fetch('../data/Limpopo_Risk_Jan25_Jan26_Safe.csv');
+        const response = await fetch(isDemo() ? '../data/ncd-mock-monthly-2025-2026.csv' : '../data/Limpopo_Risk_Jan25_Jan26_Safe.csv');
         if (!response.ok) throw new Error('CSV request failed');
         const parsed = Papa.parse(await response.text(), {header:true, skipEmptyLines:true});
         if (parsed.errors.length) throw new Error('Invalid CSV');
+        let reference = null;
+        if (isDemo()) {
+            const referenceResponse = await fetch('../data/ncd-mock-reference-2026.json');
+            if (!referenceResponse.ok) throw new Error('Reference request failed');
+            reference = await referenceResponse.json();
+        }
+        if (version !== loadVersion) return;
+        mockReference = reference;
         observations = parsed.data.filter(row => row.Month && row.WardID && row.Province);
         const months = [...new Set(observations.map(row => row.Month))].sort((a,b) => Date.parse('1 '+a)-Date.parse('1 '+b));
         if (!months.length) throw new Error('No observations');
@@ -148,11 +210,13 @@ async function loadObservations() {
         document.getElementById('play-months-btn').disabled = false;
         document.getElementById('timeline-start').textContent = months[0];
         document.getElementById('timeline-end').textContent = months[months.length-1];
-        options(monthSelect, months); monthSelect.options[0].textContent = '-- Select Month --'; monthSelect.options[0].disabled = true; monthSelect.value = months[months.length-1]; monthSelect.disabled = false;
+        options(monthSelect, months); monthSelect.options[0].textContent = '-- Select Month --'; monthSelect.options[0].disabled = true; monthSelect.value = isDemo() ? months[0] : months[months.length-1]; monthSelect.disabled = false;
         countrySelect.value = 'South Africa'; countryChanged();
         populateMunicipalities(); refreshObservations(true);
     } catch (error) {
-        document.getElementById('dataset-summary').textContent = 'The shared CSV could not load. Check the connection and reload.';
+        if (version !== loadVersion) return;
+        observations = []; refreshObservations();
+        document.getElementById('dataset-summary').textContent = 'The selected dataset or reference could not load. Switch data source to retry.';
     }
 }
 function options(select, values) {
@@ -176,7 +240,7 @@ function selectRegion() {
     const layer = (country === 'South Africa' && province ? provinceLayers.get(province) : null) || countryLayers.get(country);
     if (layer) { layer.setStyle(selectedStyle); frame(layer); }
     regionName.textContent = province || country || 'Select a Region';
-    status.textContent = country ? 'Showing regional boundaries. Exposure scoring is disabled.' : 'Select a country or click a boundary to explore.';
+    status.textContent = country ? (isDemo() ? 'Synthetic monthly demo scores; no disease probabilities.' : 'Real measurements; scoring disabled.') : 'Select a country or click a boundary to explore.';
     refreshObservations();
 }
 function countryChanged() {
@@ -218,7 +282,7 @@ async function initializeMap() {
     map = L.map('map', {zoomControl: false});
     L.control.zoom({position: 'bottomleft'}).addTo(map);
     recenter();
-    const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
+    const tiles = EOHAMap.addBasemap(map);
     tiles.on('tileerror', () => { status.textContent = 'Basemap tiles are unavailable. Local boundaries remain usable.'; });
     const results = await Promise.allSettled([loadGeojson('../data/africa-countries.geo.json'), loadGeojson('../data/South_Africa_ADM1.geojson')]);
     if (results[0].status === 'fulfilled') {
@@ -254,6 +318,8 @@ async function initializeMap() {
 }
 initializeMap().catch(() => { status.textContent = 'The map could not initialize. Reload the page to try again.'; });
 
+sourceSelect.addEventListener('change', loadObservations);
+componentSelect.addEventListener('change', () => refreshObservations());
 loadObservations();
 
 timeSlider.addEventListener('input', () => {
@@ -280,3 +346,10 @@ document.getElementById('dataset-info-btn').addEventListener('click', () => {
     const summary = document.getElementById('dataset-summary');
     summary.scrollIntoView({block:'center'}); summary.setAttribute('tabindex','-1'); summary.focus({preventScroll:true});
 });
+
+for (const link of document.querySelectorAll('a[href="ncd-forecasting.html"],a[href="ncd-reports.html"]')) {
+ link.addEventListener('click', () => {
+  const params = new URLSearchParams({province:provinceSelect.value,municipality:citySelect.value,component:componentSelect.value,month:monthSelect.value});
+  link.href = link.getAttribute('href').split('?')[0] + '?' + params;
+ });
+}

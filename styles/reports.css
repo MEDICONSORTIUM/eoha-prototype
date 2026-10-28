@@ -1,9 +1,3 @@
-:root {
-  --risk-high: #d93025;
-  --risk-mod: #f9bb06;
-  --risk-low: #34a853;
-}
-
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {

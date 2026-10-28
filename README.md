@@ -67,23 +67,11 @@ index.html  (Landing Page)
 ### Landing Page
 
 **File:** `index.html`  
-**Script:** `scripts/script.js`  
 **Style:** `styles/styles.css` + `styles/theme.css`
 
-The entry point to the platform. Features a full-screen background video with an animated glow-wave title and a scroll-reveal content layout with structured sections. All sections below the hero animate in using the `IntersectionObserver` API as the user scrolls.
+A static Earth observation hero introduces the platform, followed by four module cards, a Collect → Analyse → Act overview, a satellite-image gallery, and footer navigation. The page uses existing local imagery without downloading or playing the background video. Its content is visible without JavaScript; JavaScript enables the shared theme controls.
 
-Page structure (top to bottom):
-- **Hero** — full-viewport satellite video backdrop, animated "Earth Observation" glow-wave title, live stat counters (560+ wards, 13 months, 2 modules), platform description card, CTA buttons
-- **Feature Strip** — dark section with four module cards: Malaria Dashboard, NCD Prediction, Forecasting, Reports
-- **Malaria Section** — alternating layout (text left, satellite image right) with scroll-reveal entrance
-- **NCD Section** — alternating layout (image left, text right) with scroll-reveal entrance
-- **How It Works** — three-step pipeline (Collect → Analyse → Act) with staggered animations
-- **Powered by EO** — three-image satellite gallery with staggered fade-in
-- **Africa Section** — alternating layout describing the African-context focus
-- **Partners Bar** — dark section with five partner logos (greyscale, colorise on hover)
-- **Footer** — brand name, nav links, copyright
-
-Navigation links: Malaria Prediction · NCD Prediction · Contact Us
+Navigation links: Home · Malaria · NCD · Contact.
 
 ---
 
@@ -309,7 +297,7 @@ eoha-prototype/
 │
 ├── scripts/
 │   ├── script.js                       # Landing page: counters, hamburger, IntersectionObserver
-│   ├── theme.js                        # Global light/dark mode toggle (loads in <head>)
+│   ├── theme.js                        # System / Light / Dark preference (loads in <head>)
 │   ├── malaria-page.js                 # Malaria dashboard map + risk logic
 │   ├── malaria-forecasting.js          # Forecasting chart logic
 │   ├── malaria-reports.js              # Reports table + CSV export
@@ -317,7 +305,7 @@ eoha-prototype/
 │   └── ncd-page.js                     # NCD map + dropdown logic
 │
 ├── styles/
-│   ├── theme.css                       # CSS custom properties + dark mode overrides (global)
+│   ├── theme.css                       # Semantic light/dark palette (global)
 │   ├── styles.css                      # Landing page styles
 │   ├── malaria-page.css                # Malaria dashboard styles
 │   ├── forecasting.css                 # Forecasting page styles
@@ -396,7 +384,7 @@ Install the Live Server extension, right-click `index.html`, and select "Open wi
 
 > Note: Leaflet map tiles and the PapaParse CDN require an internet connection. The GeoJSON and CSV data files are served locally.
 
-**Dark mode:** The platform supports light and dark mode via a sun/moon toggle button in the navbar on every page. The chosen theme is saved to `localStorage` under the key `eoha-theme`. On first visit, the browser's `prefers-color-scheme` system preference is used as the default.
+**Themes:** Every page offers System / Light / Dark. The preference is stored under `eoha-theme`, applied before first paint, and synchronized across tabs. System follows OS changes live; controls remain usable when storage is blocked. Semantic colors live in `styles/theme.css`; `styles/re-theme.css` applies shared application components after route and mobile styles. Map styling affects basemap tiles only, leaving risk overlays intact. Forecast charts use the same theme tokens. Reduced-motion preferences and visible keyboard focus are respected.
 
 ---
 
@@ -414,3 +402,23 @@ Install the Live Server extension, right-click `index.html`, and select "Open wi
 ---
 
 &copy; 2026 Medical Consortium of Africa. All rights reserved.
+
+## Theme validation
+
+With Playwright available in your Node environment, start a static server and run:
+
+```bash
+python3 -m http.server 8766 --bind 127.0.0.1
+# In another terminal:
+node tests/theme-browser.cjs
+node --test tests/test_ncd_data.cjs
+```
+
+The browser suite checks all eight routes at 1440, 900, and 390 pixels in both themes, OS preference changes, persistence across navigation, blocked storage, chart colors, timeline controls, resource filters, and report pagination/export. Optional environment variables: `EOHA_URL` for another preview URL, `BROWSER_EXECUTABLE` for a local Chromium executable, and `EOHA_SCREENSHOTS` for rendered screenshots.
+
+Reports display 25 rows per page; CSV export includes every matching filtered record. Forecast values remain illustrative, and NCD exposure scoring remains disabled.
+## NCD synthetic scoring demonstration
+
+The NCD dashboard now defaults to a clearly labelled synthetic January 2025 through December 2026 dataset (107,232 ward-month records across nine provinces). Separate pollution, heat and cold exposure scores use fixed synthetic monthly references. The Data source selector returns to real historical measurements with scoring disabled. Download the CSV from the dashboard; see [demo methodology](docs/ncd-mock-data.md). Production NCD scoring remains disabled.
+
+NCD Forecasting and Reports are now available from the NCD navigation. Forecasting demonstrates a seasonal baseline over 3, 6 or 12 months with an explicit as-of date. Reports provide region/month/ward filters, sortable component scores, pagination and full filtered CSV export. Both use clearly labelled synthetic data.

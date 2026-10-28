@@ -54,3 +54,7 @@ The current repository extractor exports monthly malaria-oriented fields and doe
 ## Shared CSV dashboard integration
 
 The NCD dashboard reads `data/Limpopo_Risk_Jan25_Jan26_Safe.csv`, the same source as the malaria dashboard. Despite its filename, the checked dataset contains 58,084 records across all nine provinces; January 2026 contains 4,468 wards. Month, province, municipality and ward filters select historical records. Leaflet markers represent observation locations, not disease risk. Available air temperature, surface temperature and population density are displayed in their original units; regional values are unweighted means with valid-value counts. Blank and invalid values remain unavailable. These monthly measurements do not meet the daily pollution/heat/cold scoring contract, so scores remain null and no reference eligibility is inferred.
+
+## Synthetic monthly demo added October 2026
+
+A separately labelled monthly demonstration is now available using invented January 2025 through December 2026 data. See [NCD mock data](ncd-mock-data.md) for the CSV contract and formula interpretation. This does not enable production scoring or change the daily schema above. The real-data dashboard view still displays measurements without scores.

@@ -1,298 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EOHA - Health Analytics Platform</title>
+    <meta name="description" content="Explore Earth observation and environmental health analytics for Africa with EOHA.">
+    <title>EOHA — Earth Observation Health Analytics</title>
     <link rel="icon" href="./favicon.svg?v=eoha-1" type="image/svg+xml">
+    <script src="./scripts/theme.js"></script>
     <link rel="stylesheet" href="./styles/theme.css">
     <link rel="stylesheet" href="./styles/styles.css">
-    <script src="./scripts/theme.js"></script>
-<link rel="stylesheet" href="./styles/mobile.css?v=20261020-3">
 </head>
-
 <body class="landing-page">
-
-    <!-- ===== NAVBAR ===== -->
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <span class="nav-brand"><img src="./images/mca-logo.jpg" alt="MCA logo" class="nav-brand-logo">EOHA</span>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="./pages/malaria-page.html">Malaria Prediction</a></li>
-                <li><a href="./pages/ncd-page.html">NCD Prediction</a></li>
-                <li><a href="./pages/contact-page.html">Contact Us</a></li>
-            </ul>
-            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
-                <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-            </button>
-            <button class="hamburger" id="hamburger" aria-label="Toggle navigation" aria-controls="navLinks" aria-expanded="false">
-                <span></span><span></span><span></span>
-            </button>
-        </div>
-    </nav>
-
-    <!-- ===== HERO ===== -->
-    <header class="header-landing">
-
-        <video autoplay muted loop playsinline class="bg-video">
-            <source src="./data/8947-215890483.mp4" type="video/mp4">
-        </video>
-
-
-        <div class="video-overlay"></div>
-
-        <!-- Main title -->
-        <div class="header-content">
-            <section class="name">
-                <h1 class="glow-wave">
-                    <span>E</span><span>a</span><span>r</span><span>t</span><span>h</span>
-                    <span>&nbsp;</span>
-                    <span>O</span><span>b</span><span>s</span><span>e</span><span>r</span><span>v</span><span>a</span><span>t</span><span>i</span><span>o</span><span>n</span>
-                </h1>
-                <h3>Medical Consortium of Africa</h3>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="home-shell">
+        <header class="home-header">
+            <a class="public-brand" href="./index.html" aria-label="EOHA home"><img src="./images/mca-logo.jpg" alt=""><span>EOHA<small>Medical Consortium of Africa</small></span></a>
+            <nav class="home-nav" aria-label="Main navigation">
+                <a href="./index.html" aria-current="page">Home</a>
+                <a href="./pages/malaria-page.html">Malaria</a>
+                <a href="./pages/ncd-page.html">NCD</a>
+                <a href="./pages/contact-page.html">Contact</a>
+            </nav>
+            <div class="theme-picker" role="group" aria-label="Color theme">
+                <button type="button" data-theme-choice="system" aria-pressed="false">System</button>
+                <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+                <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+            </div>
+        </header>
+        <main id="main">
+            <section class="home-hero" aria-labelledby="hero-title">
+                <div class="hero-copy">
+                    <p class="eyebrow">Medical Consortium of Africa</p>
+                    <h1 id="hero-title">Earth Observation<br>Health Analytics</h1>
+                    <p class="hero-tagline">Satellite insight. Better health decisions.</p>
+                    <p class="hero-description">Explore the connections between our environment and our health, with geospatial intelligence built for Africa.</p>
+                    <div class="hero-actions">
+                        <a href="./pages/malaria-page.html" class="home-button">Explore malaria <span aria-hidden="true">→</span></a>
+                        <a href="./pages/ncd-page.html" class="home-button ghost">Explore NCD <span aria-hidden="true">→</span></a>
+                    </div>
+                </div>
+                <span class="hero-caption">Earth observation · A different perspective</span>
             </section>
-
-            <div class="stats-bar">
-                <div class="stat-item">
-                    <span class="stat-num" data-target="560">0</span><span class="stat-plus">+</span>
-                    <p class="stat-label">Wards Monitored</p>
+            <section class="home-modules" aria-label="Platform modules">
+                <a class="module-card" href="./pages/malaria-page.html">
+                    <span class="module-icon blue" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3C9 7 5 10 5 14a7 7 0 0 0 14 0c0-4-4-7-7-11Z"/><path d="M9 15a3 3 0 0 0 3 3"/></svg></span>
+                    <h2>Malaria Dashboard</h2><p>Explore ward-level risk, environmental factors and regional patterns.</p><span class="module-action">Open dashboard <span aria-hidden="true">→</span></span>
+                </a>
+                <a class="module-card" href="./pages/ncd-page.html">
+                    <span class="module-icon green" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/><path d="M3 12h5l2-4 3 8 2-4h6"/></svg></span>
+                    <h2>NCD Exposure</h2><p>Explore environmental observations and the developing exposure framework.</p><span class="module-action">Explore observations <span aria-hidden="true">→</span></span>
+                </a>
+                <a class="module-card" href="./pages/malaria-forecasting.html">
+                    <span class="module-icon purple" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20V10h4v10M10 20V6h4v14M16 20V3h4v17M2 20h20"/></svg></span>
+                    <h2>Forecasting</h2><p>Explore illustrative risk forecasts and uncertainty across time horizons.</p><span class="module-action">View forecasts <span aria-hidden="true">→</span></span>
+                </a>
+                <a class="module-card" href="./pages/malaria-reports.html">
+                    <span class="module-icon amber" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 3H5v18h14V8l-5-5ZM14 3v5h5M8 12h8M8 16h8"/></svg></span>
+                    <h2>Reports</h2><p>Filter regional risk summaries and download data for closer analysis.</p><span class="module-action">Browse reports <span aria-hidden="true">→</span></span>
+                </a>
+            </section>
+            <section class="home-pipeline" aria-labelledby="pipeline-title">
+                <p class="eyebrow">From satellite to health intelligence</p>
+                <h2 id="pipeline-title">Turning Earth observation into<br>healthier communities</h2>
+                <p class="section-intro">Connecting satellite data, environmental observations and health analytics to support informed decisions across Africa.</p>
+                <div class="pipeline-steps">
+                    <article><span class="step-number">01</span><div><h3>Collect</h3><p>Bring together satellite imagery, environmental observations and regional data.</p></div></article>
+                    <article><span class="step-number">02</span><div><h3>Analyse</h3><p>Explore spatial patterns and the environmental factors associated with health risks.</p></div></article>
+                    <article><span class="step-number">03</span><div><h3>Act</h3><p>Use accessible maps and reports to support research and public health planning.</p></div></article>
                 </div>
-                <div class="stat-divider"></div>
-                <div class="stat-item">
-                    <span class="stat-num" data-target="13">0</span>
-                    <p class="stat-label">Months of Data</p>
-                </div>
-                <div class="stat-divider"></div>
-                <div class="stat-item">
-                    <span class="stat-num" data-target="2">0</span>
-                    <p class="stat-label">Disease Modules</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Floating about panel -->
-        <article class="about-floating">
-            <h1>Earth Observation Health Analytics Platform</h1>
-            <p>
-                A first-of-its-kind platform using real-time Earth observation and health data
-                to deliver actionable insights on Malaria and NCDs across Africa.
-            </p>
-            <div class="hero-cta">
-                <a href="./pages/malaria-page.html" class="btn-hero-primary">Malaria Dashboard &rarr;</a>
-                <a href="./pages/ncd-page.html" class="btn-hero-ghost">NCD Dashboard &rarr;</a>
-            </div>
-        </article>
-
-        <!-- Scroll indicator (mouse wheel animation) -->
-        <div class="scroll-indicator" id="scrollIndicator">
-            <div class="mouse">
-                <div class="wheel"></div>
-            </div>
-        </div>
-    </header>
-
-    <!-- ===== MAIN CONTENT ===== -->
-    <main>
-
-        <!-- 1. FEATURE STRIP -->
-        <section class="feature-strip">
-            <div class="section-inner">
-                <p class="strip-label reveal">Platform Modules</p>
-                <div class="feature-grid reveal">
-
-                    <a href="./pages/malaria-page.html" class="feature-card">
-                        <div class="fc-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
-                            </svg>
-                        </div>
-                        <h3>Malaria Dashboard</h3>
-                        <p>Live heatmap, ward-level risk scores, and environmental factor tracking.</p>
-                        <span class="fc-link">Explore &rarr;</span>
-                    </a>
-
-                    <a href="./pages/ncd-page.html" class="feature-card">
-                        <div class="fc-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-                            </svg>
-                        </div>
-                        <h3>NCD Prediction</h3>
-                        <p>Africa-wide NCD risk mapping integrating air quality, population density, and lifestyle data.</p>
-                        <span class="fc-link">Explore &rarr;</span>
-                    </a>
-
-                    <a href="./pages/malaria-forecasting.html" class="feature-card">
-                        <div class="fc-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                <line x1="16" y1="2" x2="16" y2="6"></line>
-                                <line x1="8" y1="2" x2="8" y2="6"></line>
-                                <line x1="3" y1="10" x2="21" y2="10"></line>
-                            </svg>
-                        </div>
-                        <h3>Forecasting</h3>
-                        <p>90-day risk forecasts using a Random Forest model trained on 13 months of EO data.</p>
-                        <span class="fc-link">Explore &rarr;</span>
-                    </a>
-
-                    <a href="./pages/malaria-reports.html" class="feature-card">
-                        <div class="fc-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                <polyline points="14 2 14 8 20 8"></polyline>
-                                <line x1="16" y1="13" x2="8" y2="13"></line>
-                                <line x1="16" y1="17" x2="8" y2="17"></line>
-                                <polyline points="10 9 9 9 8 9"></polyline>
-                            </svg>
-                        </div>
-                        <h3>Reports</h3>
-                        <p>Sortable ward-level risk tables with CSV export for health teams and policy makers.</p>
-                        <span class="fc-link">Explore &rarr;</span>
-                    </a>
-
-                </div>
-            </div>
-        </section>
-
-        <!-- 2. MALARIA SECTION (text left, image right) -->
-        <section class="alt-section bg-white">
-            <div class="section-inner alt-layout">
-                <div class="alt-text reveal reveal-left">
-                    <span class="section-chip">Malaria Surveillance</span>
-                    <h2>Real-time vector risk at ward level</h2>
-                    <p>By combining land surface temperature, soil moisture, and NDWI water index from Sentinel-2 and MODIS satellites, EOHA models mosquito vector suitability down to individual ward boundaries across Limpopo.</p>
-                    <a href="./pages/malaria-page.html" class="btn-section">Open Dashboard &rarr;</a>
-                </div>
-                <div class="alt-visual reveal reveal-right">
-                    <img src="./images/hartbeesdam_oli2_20220810_lrg.jpg" alt="Satellite view used in malaria risk modelling" class="alt-img">
-                </div>
-            </div>
-        </section>
-
-        <!-- 3. NCD SECTION (image left, text right) -->
-        <section class="alt-section bg-light">
-            <div class="section-inner alt-layout alt-reverse">
-                <div class="alt-visual reveal reveal-left">
-                    <img src="./images/image-01-ncd-wheel-hie_hires.jpg" alt="NCD risk wheel" class="alt-img">
-                </div>
-                <div class="alt-text reveal reveal-right">
-                    <span class="section-chip">NCD Prediction</span>
-                    <h2>Modelling non-communicable disease trajectories</h2>
-                    <p>EOHA integrates geospatial demographics, urban sprawl indicators, NO₂ and PM2.5 air quality data, and population density to forecast NCD risk across African countries and provinces.</p>
-                    <a href="./pages/ncd-page.html" class="btn-section">Open Dashboard &rarr;</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- 4. HOW IT WORKS -->
-        <section class="how-section bg-white">
-            <div class="section-inner">
-                <p class="section-chip reveal" style="text-align:center; margin: 0 auto 0.8rem;">The Pipeline</p>
-                <h2 class="section-heading reveal">From satellite to health intelligence</h2>
-                <p class="section-sub reveal">Three steps between raw EO data and actionable public health decisions.</p>
-                <div class="steps">
-                    <div class="step reveal" style="transition-delay:0ms">
-                        <div class="step-badge">1</div>
-                        <div class="step-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <line x1="2" y1="12" x2="22" y2="12"></line>
-                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                            </svg>
-                        </div>
-                        <h3 class="step-title">Collect</h3>
-                        <p class="step-desc">Sentinel-2 and MODIS satellites capture LST, soil moisture, NDWI, and vegetation index at ward level.</p>
-                    </div>
-                    <div class="step-connector reveal" style="transition-delay:100ms"></div>
-                    <div class="step reveal" style="transition-delay:150ms">
-                        <div class="step-badge">2</div>
-                        <div class="step-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-                            </svg>
-                        </div>
-                        <h3 class="step-title">Analyse</h3>
-                        <p class="step-desc">A Random Forest model scores each ward against malaria vector suitability and NCD risk thresholds with 91% accuracy.</p>
-                    </div>
-                    <div class="step-connector reveal" style="transition-delay:200ms"></div>
-                    <div class="step reveal" style="transition-delay:300ms">
-                        <div class="step-badge">3</div>
-                        <div class="step-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
-                            </svg>
-                        </div>
-                        <h3 class="step-title">Act</h3>
-                        <p class="step-desc">Health teams receive ward-level risk maps, 90-day forecasts, and exportable reports to guide resource allocation.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 5. POWERED BY EO -->
-        <section class="eo-section bg-light">
-            <div class="section-inner">
-                <p class="section-chip reveal" style="text-align:center; margin: 0 auto 0.8rem;">Earth Observation</p>
-                <h2 class="section-heading reveal">Powered by satellite data</h2>
-                <p class="section-sub reveal">Our machine surveillance platform draws from Sentinel-2, MODIS, and SANSA satellite archives to deliver real-time environmental intelligence.</p>
-                <div class="eo-gallery">
-                    <img src="./images/hartbeesdam_oli2_20220810_lrg.jpg" alt="Dam satellite view" class="reveal" style="transition-delay:0ms">
-                    <img src="./images/iss072e807123_lrg.jpg" alt="ISS imagery" class="reveal" style="transition-delay:120ms">
-                    <img src="./images/northatlantic_tmo_2017197_lrg.jpg" alt="North Atlantic view" class="reveal" style="transition-delay:240ms">
-                </div>
-            </div>
-        </section>
-
-        <!-- 6. AFRICA SECTION -->
-        <section class="alt-section bg-white">
-            <div class="section-inner alt-layout">
-                <div class="alt-text reveal reveal-left">
-                    <span class="section-chip">Built for Africa</span>
-                    <h2>Purpose-built for the African context</h2>
-                    <p>Leveraging local geospatial demographics and ward-level administrative boundaries, EOHA enables real-time disease surveillance and evidence-based policy formulation across the continent.</p>
-                </div>
-                <div class="alt-visual reveal reveal-right">
-                    <img src="./images/PIA04965.jpg" alt="Africa satellite view" class="alt-img">
-                </div>
-            </div>
-        </section>
-
-        <!-- 7. PARTNERS BAR -->
-        <section class="partners-section">
-            <div class="section-inner">
-                <p class="partners-label reveal">Supported by</p>
-                <div class="partners-logos">
-                    <img src="./images/Science-Technology_-and-Innovation-1024x382.jpg" alt="Department of Science, Technology and Innovation" class="reveal" style="transition-delay:0ms">
-                    <img src="./images/SANSA_Logo_small-1-1.jpg" alt="SANSA" class="reveal" style="transition-delay:80ms">
-                    <img src="./images/Partner_0010_Layer-1.jpg" alt="Partner" class="reveal" style="transition-delay:160ms">
-                    <img src="./images/TuksNovation-logo-2-menu-1.png" alt="TuksNovation" class="reveal" style="transition-delay:240ms">
-                    <img src="./images/uct-research-support-hub-navigator-funder-nrf_0.png" alt="NRF" class="reveal" style="transition-delay:320ms">
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- ===== FOOTER ===== -->
-    <footer class="site-footer">
-        <div class="footer-inner">
-            <div class="footer-top">
-                <span class="footer-brand"><img src="./images/mca-logo.jpg" alt="MCA logo" class="footer-brand-logo">EOHA</span>
-                <nav class="footer-nav">
-                    <a href="./pages/malaria-page.html">Malaria Prediction</a>
-                    <a href="./pages/ncd-page.html">NCD Prediction</a>
-                    <a href="./pages/contact-page.html">Contact Us</a>
-                </nav>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 Medical Consortium of Africa. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="./scripts/script.js?v=20261020-3"></script>
+            </section>
+            <section class="home-satellites" aria-labelledby="satellite-title">
+                <div><p class="eyebrow">Powered by satellite data</p><h2 id="satellite-title">A wider view.<br>A local impact.</h2><p>Explore the world through Earth observation.</p><a href="./pages/resource-center.html">Explore data resources <span aria-hidden="true">→</span></a></div>
+                <figure><img src="./images/hartbeesdam_oli2_20220810_lrg.jpg" alt="Satellite view of Hartbeespoort Dam" loading="lazy"><figcaption>Land &amp; water</figcaption></figure>
+                <figure><img src="./images/siljan_oli_2020176_lrg.jpg" alt="Satellite view of land and vegetation around Lake Siljan" loading="lazy"><figcaption>Environment</figcaption></figure>
+                <figure><img src="./images/northatlantic_tmo_2017197_lrg.jpg" alt="Satellite view of the North Atlantic" loading="lazy"><figcaption>Climate</figcaption></figure>
+            </section>
+        </main>
+        <footer class="home-footer"><span>© 2026 Medical Consortium of Africa</span><nav aria-label="Footer"><a href="./pages/resource-center.html">Resources</a><a href="./pages/contact-page.html">Get in touch <span aria-hidden="true">↗</span></a></nav></footer>
+    </div>
 </body>
 </html>
