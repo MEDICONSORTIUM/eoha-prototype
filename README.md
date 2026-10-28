@@ -237,7 +237,7 @@ Contact information page for the Medical Consortium of Africa.
 - Glass-morphism contact info card containing:
   - Physical address: 1225 Pretoria Street, Hatfield, Pretoria, 0028
   - Phone: +27 (0)76 712 0362
-  - Email: kmontjaneconsortium@gmail.com (opens default mail client)
+  - Email: info@medicalconsortiumofafrica.co.za (opens default mail client)
   - Leaflet map centred on Hatfield, Pretoria with a popup marker
   - Partner logos: SANSA, TuksNovation, NRF
 - Footer with copyright

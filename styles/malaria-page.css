@@ -1,12 +1,4 @@
 :root {
-  --primary: #1a82ff;
-  --bg-main: #f4f7f9;
-  --panel-bg: rgba(255, 255, 255, 0.95);
-  --text-dark: #1a2b4b;
-  --text-muted: #7d8da1;
-  --shadow: 0 8px 30px rgba(0,0,0,0.06);
-  --border: #f0f2f5;
-  
   --risk-high: #d93025;
   --risk-mod: #f9bb06;
   --risk-low: #34a853;
@@ -66,7 +58,6 @@ body {
     display: flex; align-items: center; justify-content: center; padding: 4px; transition: color 0.2s;
 }
 .icon-btn:hover { color: var(--text-dark); }
-.avatar { width: 28px; height: 28px; background: #ffc107; border-radius: 50%; }
 
 .sidebar-left { 
     grid-column: 1; 

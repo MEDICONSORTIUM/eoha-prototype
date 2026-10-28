@@ -1,31 +1,21 @@
-const email_btn = document.getElementById('email_btn');
-const map_container = document.getElementById('contact_map');
-
-function init_leaflet_map() {
-    const lat = -25.7549;
-    const lng = 28.2326;
-
-    const map = L.map(map_container, { zoomControl: false }).setView([lat, lng], 15);
-
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+const mapContainer = document.getElementById('contact_map');
+const mapStatus = document.getElementById('contact-map-status');
+function initContactMap() {
+    if (!mapContainer) return;
+    if (typeof L === 'undefined') {
+        mapStatus.textContent = 'Map could not load. Use the address above or open the location link below.';
+        return;
+    }
+    const location = [-25.7549, 28.2326];
+    const map = L.map(mapContainer, {scrollWheelZoom:false}).setView(location, 15);
+    const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom:19,
+        attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
-
-    const marker = L.marker([lat, lng]).addTo(map);
-    marker.bindPopup('<strong>Medical Consortium of Africa</strong><br>1225 Pretoria Street, Hatfield<br>Pretoria, 0028, South Africa').openPopup();
-
-    map.createPane('labels');
-    map.getPane('labels').style.zIndex = 650;
-    map.getPane('labels').style.pointerEvents = 'none';
-
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
-        pane: 'labels',
-        attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
-    }).addTo(map);
-
-    L.control.zoom({ position: 'topright' }).addTo(map);
+    tiles.on('tileerror', () => { mapStatus.textContent = 'Map tiles are unavailable. Use the location link below.'; });
+    tiles.on('load', () => { mapStatus.textContent = ''; });
+    L.marker(location).addTo(map).bindPopup('<strong>Medical Consortium of Africa</strong><br>1225 Pretoria Street, Hatfield<br>Pretoria, 0028, South Africa');
+    new ResizeObserver(() => map.invalidateSize()).observe(mapContainer);
 }
-
-document.addEventListener('DOMContentLoaded', function () {
-    if (map_container) init_leaflet_map();
-});
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initContactMap);
+else initContactMap();

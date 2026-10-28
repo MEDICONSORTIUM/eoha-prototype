@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="EOHA">
+  <rect width="64" height="64" rx="14" fill="#0f172a"/>
+  <circle cx="32" cy="24" r="17" fill="#0ea5e9"/>
+  <g fill="none" stroke="#fff" stroke-width="1.7">
+    <circle cx="32" cy="24" r="17"/>
+    <ellipse cx="32" cy="24" rx="7" ry="17"/>
+    <path d="M15 24h34M18 15h28M18 33h28"/>
+  </g>
+  <text x="32" y="57" text-anchor="middle" font-family="Arial, sans-serif" font-weight="800" font-size="15" fill="#fff">EOHA</text>
+</svg>

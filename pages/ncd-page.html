@@ -4,96 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NCD Risk Prediction</title>
+<link rel="icon" href="../favicon.svg?v=eoha-1" type="image/svg+xml">
 
 <!-- Leaflet -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <!-- Theme + page CSS -->
 <link rel="stylesheet" href="../styles/theme.css">
-<link rel="stylesheet" href="../styles/ncd-page.css">
+<link rel="stylesheet" href="../styles/malaria-page.css">
+<link rel="stylesheet" href="../styles/ncd-page.css?v=20261020-4">
 <script src="../scripts/theme.js"></script>
 
-<style>
-/* ================= MAP BACKGROUND ================= */
-#map {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-}
 
-/* ================= FOREGROUND UI ================= */
-body {
-  position: relative;
-  z-index: 1;
-}
-
-header,
-.region-metrics,
-.env-risk-article {
-  position: relative;
-  z-index: 2;
-}
-
-/* Optional glass effect */
-.region-selector,
-.enviro-factors,
-.risk-prediction {
-  backdrop-filter: blur(6px);
-  background: rgba(255, 255, 255, 0.92);
-}
-</style>
+<link rel="stylesheet" href="../styles/mobile.css?v=20261020-4">
 </head>
-<body>
+<body class="map-dashboard ncd-dashboard">
 
-    <div id="orientation-lock">
-        <div class="lock-content">
-            <svg class="phone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
-                <path d="M12 18h.01"></path>
-            </svg>
-            <p>Please rotate your device<br>to view the dashboard</p>
-        </div>
-    </div>
-
-    <div id="map"></div>
+    <div id="map" aria-label="Interactive regional map"></div>
 
     <div class="dashboard-layout">
 
         <header class="top-bar">
-            <div class="brand-pill">
+            <a class="brand-pill brand-home" href="../index.html" aria-label="EOHA home">
+                <img src="../images/mca-logo.jpg" alt="MCA logo" class="brand-pill-logo">
                 <h1>NCD Risk Prediction</h1>
-            </div>
+            </a>
 
-            <nav class="nav-pill">
-                <a href="#" class="active">Dashboard</a>
-                <a href="#">Forecasting</a>
-                <a href="#">Reports</a>
-                <a href="#">Resource Center</a>
+            <nav class="nav-pill" aria-label="NCD navigation">
+                <a href="ncd-page.html" class="active" aria-current="page">Dashboard</a>
+                <span class="nav-unavailable" aria-disabled="true" title="NCD forecasts are not available yet">Forecasting</span>
+                <a href="ncd-resource-center.html">Resource Center</a>
+                <span class="nav-unavailable" aria-disabled="true" title="NCD reports are not available yet">Reports</span>
             </nav>
 
             <div class="actions-pill">
                 <a href="../index.html" class="back-link">Back</a>
 
-                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
-                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-                </button>
-
-                <button class="icon-btn">
-                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<button type="button" class="icon-btn" id="find-region-btn" aria-label="Find a region">
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="11" cy="11" r="8"></circle>
                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                     </svg>
                 </button>
-
-                <button class="icon-btn">
-                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<button type="button" class="icon-btn" id="dataset-info-btn" aria-label="Show dataset information">
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
                         <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                     </svg>
                 </button>
-
-                <div class="avatar"></div>
+                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                </button>
             </div>
         </header>
 
@@ -120,26 +84,23 @@ header,
                 <p class="subtitle">Refine your spatial analysis</p>
 
                 <div class="input-group">
-                    <label>Country</label>
+                    <label for="country-select">Country</label>
                     <select id="country-select" class="countries-select">
                         <option value="">-- Select Country --</option>
                     </select>
                 </div>
 
-                <div class="input-group">
-                    <label>Province / Region</label>
-                    <select id="province-select" class="provinces-select" disabled>
-                        <option value="">-- Select Province --</option>
-                    </select>
-                </div>
+<select id="province-select" hidden aria-label="Province filter"><option value="">All provinces</option></select>
 
                 <div class="input-group">
-                    <label>City / Municipality</label>
+                    <label for="city-select">Municipality</label>
                     <select id="city-select" disabled>
-                        <option value="">-- Select City --</option>
+                        <option value="">-- All Municipalities --</option>
                     </select>
                 </div>
 
+                <div class="input-group"><label for="ward-select">Ward</label><select id="ward-select" disabled><option value="">-- All Wards --</option></select></div>
+<select id="month-select" hidden aria-label="Observation month"><option value="">Loading months…</option></select>
                 <button id="apply-btn" class="btn-primary" disabled>
                     <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="23 4 23 10 17 10"></polyline>
@@ -159,52 +120,14 @@ header,
                             <line x1="6" y1="20" x2="6" y2="14"></line>
                         </svg>
                     </span>
-                    <h2>Environmental & Lifestyle Factors</h2>
+                    <h2>Environmental Exposure</h2>
                 </div>
 
-                <div class="factor-row">
-                    <div class="factor-labels">
-                        <span>Lifestyle Type</span>
-                        <span class="val">Urban</span>
-                    </div>
-                    <div class="track"><div class="fill" style="width: 70%;"></div></div>
-                </div>
-
-                <div class="factor-row">
-                    <div class="factor-labels">
-                        <span>Population Density</span>
-                        <span class="val">62%</span>
-                    </div>
-                    <div class="track"><div class="fill" style="width: 62%;"></div></div>
-                </div>
-
-                <div class="factor-row">
-                    <div class="factor-labels">
-                        <span>Access to Healthcare</span>
-                        <span class="val">60%</span>
-                    </div>
-                    <div class="track"><div class="fill" style="width: 60%;"></div></div>
-                </div>
-
-                <div class="factor-row">
-                    <div class="factor-labels">
-                        <span>Air Quality Index</span>
-                        <span class="val">75 AQI</span>
-                    </div>
-                    <div class="track"><div class="fill warning" style="width: 75%;"></div></div>
-                </div>
-
-                <div class="factor-row">
-                    <div class="factor-labels">
-                        <span>Obesity Prevalence</span>
-                        <span class="val">28%</span>
-                    </div>
-                    <div class="track"><div class="fill success" style="width: 28%;"></div></div>
-                </div>
-
-                <div class="insight-box">
-                    "Lifestyle, access to healthcare, air quality and population density are shown here as presentation placeholders."
-                </div>
+                <p class="subtitle" id="dataset-summary" role="status">Loading the shared malaria CSV…</p>
+                <div class="factor-row"><div class="factor-labels"><span>Air temperature</span><span class="val" id="air-temp-value">—</span></div><div class="track" title="Share of selected wards with valid air temperature"><div class="fill" id="air-temp-bar"></div></div></div>
+                <div class="factor-row"><div class="factor-labels"><span>Surface temperature</span><span class="val" id="surface-temp-value">—</span></div><div class="track" title="Share of selected wards with valid surface temperature"><div class="fill" id="surface-temp-bar"></div></div></div>
+                <div class="factor-row"><div class="factor-labels"><span>Population density</span><span class="val" id="density-value">—</span></div><div class="track" title="Share of selected wards with valid population density"><div class="fill" id="density-bar"></div></div></div>
+                <div class="insight-box">Bars show data completeness. Regional measurements are unweighted ward means. Pollution and daily heat/cold inputs are unavailable; scoring remains disabled.</div>
             </section>
 
         </aside>
@@ -212,7 +135,7 @@ header,
         <aside class="sidebar-right">
 
             <section class="card risk-card">
-                <p class="risk-label">Current Regional Risk</p>
+                <p class="risk-label">Current ward exposure</p>
 
                 <div class="donut-container">
                     <svg viewBox="0 0 100 100">
@@ -222,16 +145,16 @@ header,
 
                     <div class="donut-center">
                         <h3 id="risk-text">--</h3>
-                        <span id="risk-percentage">0% Risk</span>
+                        <span id="risk-percentage">No score</span>
                     </div>
                 </div>
 
                 <h4 id="selected-region-name">Select a Region</h4>
-                <a href="#" class="view-link">View Full Analysis &rsaquo;</a>
+                <a href="../docs/ncd-risk-scoring.md" download class="view-link">View scoring specification &rsaquo;</a>
             </section>
 
             <section class="card risk-card">
-                <p class="risk-label">National Average</p>
+                <p class="risk-label">Municipality exposure</p>
 
                 <div class="donut-container">
                     <svg viewBox="0 0 100 100">
@@ -240,13 +163,13 @@ header,
                     </svg>
 
                     <div class="donut-center">
-                        <h3 id="avg-risk-text">58</h3>
-                        <span id="avg-risk-percentage">58% Avg</span>
+                        <h3 id="avg-risk-text">—</h3>
+                        <span id="avg-risk-percentage">Disabled</span>
                     </div>
                 </div>
 
-                <h4>Southern Africa</h4>
-                <a href="#" class="view-link">Compare Regions ⇋</a>
+<h4 id="selected-municipality-name">Select Municipality</h4>
+                <a href="ncd-resource-center.html" class="view-link">View available data &rsaquo;</a>
             </section>
 
             <section class="card map-legend">
@@ -255,55 +178,27 @@ header,
                     <span class="info-icon">i</span>
                 </div>
 
-                <ul class="legend-list">
-                    <li class="active"><span class="dot blue"></span> NCD risk overlay active</li>
-                    <li><span class="dot red"></span> High Risk</li>
-                    <li><span class="dot yellow"></span> Moderate Risk</li>
-                    <li><span class="dot green"></span> Low Risk</li>
-                </ul>
+                <ul class="legend-list"><li><span class="dot blue"></span> Selected region</li><li><span class="dot neutral"></span> Administrative boundaries</li><li><span class="dot blue"></span> Ward observation locations</li><li>Exposure scores unavailable</li></ul>
+<p id="map-status" role="status" aria-live="polite">Loading regional boundaries…</p>
             </section>
 
         </aside>
 
         <footer class="bottom-panel">
             <div class="timeline-controls">
-                <div class="title-area">
-                    <div class="play-btn">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                        </svg>
-                    </div>
-                    <h3>Risk Timeline</h3>
-                </div>
-
-                <div class="badge">NEXT 30 DAYS</div>
-
-                <div class="target-icon" title="Recenter Map">
-                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="22" y1="12" x2="18" y2="12"></line>
-                        <line x1="6" y1="12" x2="2" y2="12"></line>
-                        <line x1="12" y1="6" x2="12" y2="2"></line>
-                        <line x1="12" y1="22" x2="12" y2="18"></line>
-                    </svg>
-                </div>
+                <div class="title-area"><button type="button" id="play-months-btn" class="play-btn" aria-label="Play observation timeline" aria-pressed="false" disabled><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg></button><h3>Observation Timeline</h3></div>
+                <div class="badge" id="timeline-month">HISTORICAL DATA</div>
+                <button type="button" id="recenter-btn" class="target-icon" aria-label="Recenter map"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2v4M12 18v4M2 12h4M18 12h4"></path></svg></button>
             </div>
+            <div class="slider-wrapper"><input type="range" id="time-slider" min="0" max="0" value="0" step="1" aria-label="Observation month" disabled><div class="slider-labels"><span id="timeline-start">—</span><span class="current" id="timeline-current">Loading…</span><span id="timeline-end">—</span></div></div>
 
-            <div class="slider-wrapper">
-                <input type="range" id="time-slider" min="0" max="12" value="0" step="1">
-
-                <div class="slider-labels">
-                    <span>Week 1</span>
-                    <span class="current">Today</span>
-                    <span>Week 3</span>
-                    <span>Week 4</span>
-                </div>
-            </div>
         </footer>
 
     </div>
 
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="../scripts/ncd-page.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="../scripts/ncd-data.js?v=20261020-4"></script>
+    <script src="../scripts/ncd-page.js?v=20261020-4"></script>
 </body>
 </html>
