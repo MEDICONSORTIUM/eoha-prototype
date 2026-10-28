@@ -1,0 +1,18 @@
+.ncd-analysis-page .filter-bar { flex-wrap: wrap; }
+.ncd-analysis-page .filter-group { min-width: 0; max-width: 100%; }
+.ncd-analysis-page .filter-select { max-width: 300px; width: 100%; }
+.ncd-analysis-page .stat-val { font-size: 1.5rem; }
+.ncd-analysis-page .demo-notice { color: var(--text-primary); line-height: 1.6; }
+.ncd-analysis-page th button { border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; text-align: left; padding: 8px 0; }
+.ncd-analysis-page button:disabled { opacity: .5; cursor: default; }
+.ncd-analysis-page :is(button,select,input,a):focus-visible { outline: 3px solid var(--primary); outline-offset: 3px; }
+.ncd-chart-panel, .ncd-method { background: var(--panel-bg); color: var(--text-primary); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin: 20px 0; }
+.ncd-chart { height: 360px; position: relative; min-width: 0; }
+.ncd-method p { line-height: 1.65; margin-top: 12px; }
+.ncd-analysis-page .table-pagination { justify-content: flex-end; gap: 12px; }
+@media (max-width: 600px) {
+ .ncd-analysis-page .filter-group { flex: 1 1 100%; }
+ .ncd-analysis-page .filter-select { max-width: none; }
+ .ncd-chart { height: 280px; }
+ .ncd-chart-panel, .ncd-method { padding: 16px; }
+}

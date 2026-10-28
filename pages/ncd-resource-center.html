@@ -10,26 +10,27 @@
     <link rel="stylesheet" href="../styles/resource-center.css">
     <script src="../scripts/theme.js"></script>
 <link rel="stylesheet" href="../styles/mobile.css?v=20261020-3">
+    <link rel="stylesheet" href="../styles/re-theme.css">
 </head>
 
-<body>
+<body class="resources-page">
 
     <div class="page-layout">
 
         <header class="top-bar">
-            <div class="brand-pill">
+            <a class="brand-pill brand-home" href="../index.html" aria-label="EOHA home">
                 <img src="../images/mca-logo.jpg" alt="MCA logo" class="brand-pill-logo">
-                <h1>NCD Exposure</h1>
-            </div>
+                <div class="brand-copy"><h1>NCD Exposure</h1><small>Earth Observation Health Analytics</small></div></a>
 
-            <nav class="nav-pill" aria-label="NCD navigation"><a href="ncd-page.html">NCD Dashboard</a><a href="ncd-resource-center.html" class="active" aria-current="page">Resource Center</a></nav>
+            <nav class="nav-pill" aria-label="NCD navigation"><a href="ncd-page.html">NCD Dashboard</a><a href="ncd-forecasting.html">Forecasting</a><a href="ncd-reports.html">Reports</a><a href="ncd-resource-center.html" class="active" aria-current="page">Resource Center</a></nav>
 
             <div class="actions-pill">
                 <a href="ncd-page.html" class="back-link">Back to NCD</a>
-                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
-                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-                </button>
+                <div class="theme-picker" role="group" aria-label="Color theme">
+                    <button type="button" data-theme-choice="system" aria-pressed="false">System</button>
+                    <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+                    <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+                </div>
             </div>
         </header>
 
@@ -49,11 +50,11 @@
             </div>
 
             <div class="resource-grid" id="resource-grid">
-<article class="resource-card" data-category="methodology"><div class="card-top"><span class="category-badge badge-methodology">methodology</span></div><h3>NCD Exposure Scoring Specification</h3><p>Draft pollution, heat and cold formulas, quality rules and release gates. Scoring remains disabled.</p><a href="../docs/ncd-risk-scoring.md" download class="resource-btn">Download specification →</a></article>
-<article class="resource-card" data-category="data"><div class="card-top"><span class="category-badge badge-data">data</span></div><h3>NCD Record Schema</h3><p>Versioned contract for ward exposure records, provenance and quality flags.</p><a href="../schemas/ncd-risk-record.schema.json" download class="resource-btn">Download schema →</a></article>
-<article class="resource-card" data-category="data"><div class="card-top"><span class="category-badge badge-data">data</span></div><h3>Synthetic Example Record</h3><p>Illustrative synthetic values with null scores; not measured exposure data.</p><a href="../schemas/ncd-risk-record.example.json" download class="resource-btn">Download example →</a></article>
-<article class="resource-card" data-category="data"><div class="card-top"><span class="category-badge badge-data">data</span></div><h3>South Africa Province Boundaries</h3><p>Administrative level 1 province boundaries used by the NCD map. These are not ward boundaries.</p><a href="../data/South_Africa_ADM1.geojson" download class="resource-btn">Download GeoJSON →</a></article>
-<article class="resource-card" data-category="tools"><div class="card-top"><span class="category-badge badge-tools">tools</span></div><h3>NCD Interactive Map</h3><p>Explore countries and South African provinces. Exposure scores are not available yet.</p><a href="ncd-page.html"  class="resource-btn">Open NCD dashboard →</a></article>
+<article class="resource-card" data-category="methodology"><div class="card-top"><span class="file-icon" aria-hidden="true">MD</span><span class="category-badge badge-methodology">methodology</span></div><h3>NCD Exposure Scoring Specification</h3><p>Draft pollution, heat and cold formulas, quality rules and release gates. Production scoring remains disabled.</p><a href="../docs/ncd-risk-scoring.md" download class="resource-btn">Download specification →</a></article>
+<article class="resource-card" data-category="data"><div class="card-top"><span class="file-icon" aria-hidden="true">JSON</span><span class="category-badge badge-data">data</span></div><h3>NCD Record Schema</h3><p>Versioned contract for ward exposure records, provenance and quality flags.</p><a href="../schemas/ncd-risk-record.schema.json" download class="resource-btn">Download schema →</a></article>
+<article class="resource-card" data-category="data"><div class="card-top"><span class="file-icon" aria-hidden="true">JSON</span><span class="category-badge badge-data">data</span></div><h3>Synthetic Example Record</h3><p>Illustrative synthetic values with null scores; not measured exposure data.</p><a href="../schemas/ncd-risk-record.example.json" download class="resource-btn">Download example →</a></article>
+<article class="resource-card" data-category="data"><div class="card-top"><span class="file-icon" aria-hidden="true">GEOJSON</span><span class="category-badge badge-data">data</span></div><h3>South Africa Province Boundaries</h3><p>Administrative level 1 province boundaries used by the NCD map. These are not ward boundaries.</p><a href="../data/South_Africa_ADM1.geojson" download class="resource-btn">Download GeoJSON →</a></article>
+<article class="resource-card" data-category="tools"><div class="card-top"><span class="file-icon" aria-hidden="true">MAP</span><span class="category-badge badge-tools">tools</span></div><h3>NCD Interactive Map</h3><p>Explore countries and South African provinces. Explore synthetic exposure scores or real measurements without scoring.</p><a href="ncd-page.html"  class="resource-btn">Open NCD dashboard →</a></article>
 
             </div>
         </main>

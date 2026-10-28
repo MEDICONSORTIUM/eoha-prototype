@@ -22,11 +22,14 @@ let tableData = [];
 
 let sortCol = 'risk';
 let sortAsc = false;
+let currentPage = 1;
+const pageSize = 25;
 
 // Active filter state
 const filters = { month: 'all', muni: 'all', risk: 'all', search: '' };
 
 function applyFilters() {
+  currentPage = 1;
   const search = filters.search.trim().toLowerCase();
 
   tableData = allData.filter(r => {
@@ -57,13 +60,19 @@ function renderTable() {
   });
 
   const tbody = document.getElementById('table-body');
+  const start = (currentPage - 1) * pageSize;
+  document.getElementById('report-page-summary').textContent = sorted.length
+    ? `Showing ${start + 1}–${Math.min(start + pageSize, sorted.length)} of ${sorted.length.toLocaleString()} records`
+    : 'No matching records';
+  document.getElementById('previous-page').disabled = currentPage === 1;
+  document.getElementById('next-page').disabled = start + pageSize >= sorted.length;
 
   if (sorted.length === 0) {
     tbody.innerHTML = '<tr><td colspan="7" class="loading-row">No wards match the current filters.</td></tr>';
     return;
   }
 
-  tbody.innerHTML = sorted.map(r => {
+  tbody.innerHTML = sorted.slice(start, start + pageSize).map(r => {
     const { text, cls } = riskLabel(r.risk);
     return `<tr>
       <td>${r.ward}</td>
@@ -142,6 +151,12 @@ function populateMuniDropdown() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+  document.getElementById('previous-page').addEventListener('click', () => {
+    if (currentPage > 1) { currentPage--; renderTable(); }
+  });
+  document.getElementById('next-page').addEventListener('click', () => {
+    if (currentPage * pageSize < tableData.length) { currentPage++; renderTable(); }
+  });
   Papa.parse('../data/Limpopo_Risk_Jan25_Jan26_Safe.csv', {
     download: true,
     header: true,

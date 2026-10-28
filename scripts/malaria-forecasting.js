@@ -62,6 +62,8 @@ function buildChart(days, region) {
   document.getElementById('range-label').textContent = `Next ${days} Day${days > 1 ? 's' : ''}`;
 
   const pointColors = data.map(v => riskColor(v));
+  const styles = getComputedStyle(document.documentElement);
+  const token = name => styles.getPropertyValue(name).trim();
 
   if (chart) chart.destroy();
 
@@ -75,7 +77,7 @@ function buildChart(days, region) {
           label: 'Upper bound',
           data: upper,
           borderColor: 'transparent',
-          backgroundColor: 'rgba(26,130,255,0.12)',
+          backgroundColor: token('--chart-band'),
           fill: '+1',
           pointRadius: 0,
           tension: 0.4,
@@ -85,10 +87,10 @@ function buildChart(days, region) {
           type: 'line',
           label: 'Predicted Risk',
           data,
-          borderColor: '#1a82ff',
+          borderColor: token('--primary'),
           backgroundColor: 'transparent',
           pointBackgroundColor: pointColors,
-          pointBorderColor: '#fff',
+          pointBorderColor: token('--panel-bg'),
           pointBorderWidth: 2,
           pointRadius: days <= 7 ? 6 : days <= 30 ? 4 : 2,
           tension: 0.4,
@@ -100,7 +102,7 @@ function buildChart(days, region) {
           label: 'Lower bound',
           data: lower,
           borderColor: 'transparent',
-          backgroundColor: 'rgba(26,130,255,0.12)',
+          backgroundColor: token('--chart-band'),
           fill: '-1',
           pointRadius: 0,
           tension: 0.4,
@@ -109,12 +111,18 @@ function buildChart(days, region) {
       ]
     },
     options: {
+      animation: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? false : { duration: 300 },
       responsive: true,
       maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { display: false },
         tooltip: {
+          backgroundColor: token('--surface-raised'),
+          titleColor: token('--text-dark'),
+          bodyColor: token('--text-dark'),
+          borderColor: token('--border'),
+          borderWidth: 1,
           callbacks: {
             label: ctx => {
               if (ctx.datasetIndex === 1) return ` Risk: ${ctx.raw}%`;
@@ -126,14 +134,16 @@ function buildChart(days, region) {
       scales: {
         x: {
           grid: { display: false },
-          ticks: { color: '#7d8da1', font: { size: 11 }, maxTicksLimit: days <= 7 ? 7 : 10 }
+          border: { color: token('--border') },
+          ticks: { color: token('--text-muted'), font: { size: 11 }, maxTicksLimit: days <= 7 ? 7 : 10 }
         },
         y: {
           min: 0,
           max: 100,
-          grid: { color: '#f0f2f5' },
+          grid: { color: token('--border') },
+          border: { display: false },
           ticks: {
-            color: '#7d8da1',
+            color: token('--text-muted'),
             font: { size: 11 },
             callback: v => v + '%'
           }
@@ -148,6 +158,9 @@ document.addEventListener('DOMContentLoaded', function () {
   let currentRegion = 'limpopo';
 
   buildChart(currentDays, currentRegion);
+
+  // Update appearance without rebuilding random demo data or resetting controls.
+  window.addEventListener('eoha:themechange', () => buildChart(currentDays, currentRegion));
 
   document.querySelectorAll('.range-btn').forEach(btn => {
     btn.addEventListener('click', function () {

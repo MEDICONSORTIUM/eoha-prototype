@@ -10,7 +10,9 @@
     <link rel="stylesheet" href="../styles/malaria-page.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="../scripts/theme.js"></script>
+<script src="../scripts/theme-map.js"></script>
 <link rel="stylesheet" href="../styles/mobile.css?v=20261020-3">
+    <link rel="stylesheet" href="../styles/re-theme.css">
 </head>
 
 <body class="map-dashboard">
@@ -32,11 +34,11 @@
         <header class="top-bar">
             <a class="brand-pill brand-home" href="../index.html" aria-label="EOHA home">
                 <img src="../images/mca-logo.jpg" alt="MCA logo" class="brand-pill-logo">
-                <h1>Malaria Guard</h1>
+                <div class="brand-copy"><h1>Malaria Guard</h1><small>Earth Observation Health Analytics</small></div>
             </a>
 
             <nav class="nav-pill">
-                <a href="malaria-page.html" class="active">Dashboard</a>
+                <a href="malaria-page.html" class="active" aria-current="page">Dashboard</a>
                 <a href="malaria-forecasting.html">Forecasting</a>
                 <a href="resource-center.html">Resource Center</a>
                 <a href="malaria-reports.html">Reports</a>
@@ -44,25 +46,11 @@
 
             <div class="actions-pill">
                 <a href="../index.html" class="back-link">Back</a>
-
-                <button class="icon-btn">
-                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                </button>
-                <button class="icon-btn">
-                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                    </svg>
-                </button>
-                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
-                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-                </button>
+                <div class="theme-picker" role="group" aria-label="Color theme">
+                    <button type="button" data-theme-choice="system" aria-pressed="false">System</button>
+                    <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+                    <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+                </div>
             </div>
         </header>
 
@@ -88,20 +76,17 @@
                 <p class="subtitle">Refine your spatial analysis</p>
 
                 <div class="input-group">
-                    <label>COUNTRY</label>
-                    <select id="country-select">
+                    <label for="country-select">COUNTRY</label><select id="country-select">
                         <option value="">-- Select Country --</option>
                     </select>
                 </div>
                 <div class="input-group">
-                    <label>Municipality</label>
-                    <select id="province-select" disabled>
+                    <label for="province-select">Municipality</label><select id="province-select" disabled>
                         <option value="">-- Select Municipality --</option>
                     </select>
                 </div>
                 <div class="input-group">
-                    <label>WARD</label>
-                    <select id="city-select" disabled>
+                    <label for="city-select">WARD</label><select id="city-select" disabled>
                         <option value="">-- Select Ward --</option>
                     </select>
                 </div>
@@ -180,7 +165,7 @@
                     </div>
                 </div>
                 <h4 id="selected-ward-name">Select a Ward</h4>
-                <a href="#" class="view-link">View Full Analysis &rsaquo;</a>
+                <a href="malaria-reports.html" class="view-link">View Full Analysis &rsaquo;</a>
             </section>
 
             <section class="card risk-card" id="avg-risk-container">
@@ -196,7 +181,7 @@
                     </div>
                 </div>
                 <h4 id="selected-muni-name">Select Municipality</h4>
-                <a href="#" class="view-link">Compare Regions ⇋</a>
+                <a href="malaria-reports.html" class="view-link">Compare Regions ⇋</a>
             </section>
 
             <section class="card map-legend">
@@ -205,7 +190,7 @@
                     <span class="info-icon">i</span>
                 </div>
                 <ul class="legend-list">
-                    <li class="active"><span class="dot blue"></span> LIVE HEATMAP OVERLAY ACTIVE</li>
+                    <li class="active" aria-current="page"><span class="dot blue"></span> LIVE HEATMAP OVERLAY ACTIVE</li>
                     <li><span class="dot red"></span> High Risk (Red)</li>
                     <li><span class="dot yellow"></span> Moderate (Yellow)</li>
                     <li><span class="dot green"></span> Low Risk (Green)</li>
@@ -219,15 +204,14 @@
         <footer class="bottom-panel">
             <div class="timeline-controls">
                 <div class="title-area">
-                    <div class="play-btn">
+                    <button type="button" class="play-btn" id="play-months" aria-label="Play observation timeline" aria-pressed="false">
                         <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
                             <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                        </svg>
-                    </div>
-                    <h3>Forecasting Timeline</h3>
+                        </svg></button>
+                    <h3>Observation Timeline</h3>
                 </div>
-                <div class="badge">NEXT 30 DAYS</div>
-                <div class="target-icon" title="Recenter Map">
+                <div class="badge" id="active-month">January 2025</div>
+                <button type="button" class="target-icon" id="recenter-map" aria-label="Recenter map">
                     <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="10"></circle>
@@ -235,18 +219,12 @@
                         <line x1="6" y1="12" x2="2" y2="12"></line>
                         <line x1="12" y1="6" x2="12" y2="2"></line>
                         <line x1="12" y1="22" x2="12" y2="18"></line>
-                    </svg>
-                </div>
+                    </svg></button>
             </div>
 
             <div class="slider-wrapper">
-                <input type="range" id="time-slider" min="0" max="12" value="0" step="1">
-                <div class="slider-labels">
-                    <span>Oct 12</span>
-                    <span class="current">Today</span>
-                    <span>Oct 26</span>
-                    <span>Nov 11</span>
-                </div>
+                <input type="range" id="time-slider" min="0" max="12" value="0" step="1" aria-label="Observation month">
+                <div class="slider-labels"><span>Jan 2025</span><span>Jul 2025</span><span>Jan 2026</span></div>
             </div>
             <span id="month-label" style="display:none;"></span>
             <span class="year-label" style="display:none;"></span>
@@ -256,7 +234,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script> 
+    <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
 
     <script src="../scripts/malaria/config.js"></script>
     <script src="../scripts/malaria/risk.js"></script>

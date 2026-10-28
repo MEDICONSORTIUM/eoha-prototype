@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NCD Exposure - Reports</title>
+    <link rel="icon" href="../favicon.svg?v=eoha-1" type="image/svg+xml">
+    <link rel="stylesheet" href="../styles/theme.css">
+    <link rel="stylesheet" href="../styles/reports.css">
+    <script src="../scripts/theme.js"></script>
+<link rel="stylesheet" href="../styles/mobile.css?v=20261020-3">
+    <link rel="stylesheet" href="../styles/re-theme.css">
+</head>
+
+<body class="reports-page">
+
+    <div class="page-layout">
+
+        <header class="top-bar">
+            <a class="brand-pill brand-home" href="../index.html" aria-label="EOHA home">
+                <img src="../images/mca-logo.jpg" alt="MCA logo" class="brand-pill-logo">
+                <div class="brand-copy"><h1>NCD Exposure</h1><small>Earth Observation Health Analytics</small></div>
+            </a>
+
+            <nav class="nav-pill">
+                <a href="ncd-page.html">Dashboard</a>
+                <a href="ncd-forecasting.html">Forecasting</a>
+                <a href="ncd-resource-center.html">Resource Center</a>
+                <a href="ncd-reports.html" class="active" aria-current="page">Reports</a>
+            </nav>
+
+            <div class="actions-pill">
+                <a href="../index.html" class="back-link">Back</a>
+
+                <button class="icon-btn" id="export-btn" title="Export to CSV">
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                </button>
+                <div class="theme-picker" role="group" aria-label="Color theme">
+                    <button type="button" data-theme-choice="system" aria-pressed="false">System</button>
+                    <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+                    <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="content-area">
+
+            <div class="content-header">
+                <div>
+                    <h2>NCD Exposure Reports</h2>
+                    <p class="content-subtitle">Synthetic monthly exposure summary · <span id="report-month">Loading…</span></p>
+                </div>
+                <button class="export-btn-main" id="export-report" disabled>⬇ Export CSV</button>
+            </div>
+
+            <p class="demo-notice">SYNTHETIC DEMO · Exposure points are not disease probabilities.</p><div class="filter-bar"><div class="filter-group"><label for="province" class="filter-label">Province</label><select id="province" class="filter-select" disabled></select></div><div class="filter-group"><label for="component" class="filter-label">Component</label><select id="component" class="filter-select"><option value="pollution">Pollution</option><option value="heat">Heat</option><option value="cold">Cold</option></select></div>
+                <div class="filter-group">
+                    <label class="filter-label" for="month">Month</label>
+                    <select id="month" disabled class="filter-select">
+                        <option value="all">All Months</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label" for="municipality">Municipality</label>
+                    <select id="municipality" disabled class="filter-select">
+                        <option value="all">All Municipalities</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Risk Level</label>
+                    <div class="risk-toggle">
+                        <button class="risk-btn active" data-risk="all">All</button>
+                        <button class="risk-btn risk-btn-high" data-risk="high">High</button>
+                        <button class="risk-btn risk-btn-mod" data-risk="moderate">Moderate</button>
+                        <button class="risk-btn risk-btn-low" data-risk="low">Low</button>
+                    </div>
+                </div>
+
+                <div class="filter-group filter-group-search">
+                    <label class="filter-label" for="ward-search">Search Ward</label>
+                    <div class="search-wrap">
+                        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <input type="text" id="ward-search" class="filter-input" placeholder="e.g. LIM331_1">
+                    </div>
+                </div>
+
+                <button class="reset-btn" id="reset-filters" title="Clear all filters">✕ Reset</button>
+            </div>
+
+            <div class="stat-row" id="stat-row">
+                <div class="stat-card">
+                    <p class="stat-label">Ward-month records</p>
+                    <h3 class="stat-val" id="records-total">—</h3>
+                </div>
+                <div class="stat-card stat-danger">
+                    <p class="stat-label">High exposure</p>
+                    <h3 class="stat-val" id="stat-high">—</h3>
+                </div>
+                <div class="stat-card stat-warn">
+                    <p class="stat-label">Moderate exposure</p>
+                    <h3 class="stat-val" id="stat-mod">—</h3>
+                </div>
+                <div class="stat-card stat-ok">
+                    <p class="stat-label">Low exposure</p>
+                    <h3 class="stat-val" id="stat-low">—</h3>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-label">Mean exposure</p>
+                    <h3 class="stat-val" id="mean-selected">—</h3>
+                </div>
+            </div>
+
+            <p><span id="wards-total">—</span> unique wards · Pollution: <span id="mean-pollution">—</span> · Heat: <span id="mean-heat">—</span> · Cold: <span id="mean-cold">—</span></p><button id="retry" hidden>Retry loading</button><div class="table-wrapper">
+                <table id="report-table">
+                    <thead><tr><th scope="col"><button data-sort="Period_Start" disabled>Month <span aria-hidden="true">&#8597;</span></button></th><th scope="col"><button data-sort="WardLabel" disabled>Ward <span aria-hidden="true">&#8597;</span></button></th><th scope="col"><button data-sort="Municipali" disabled>Municipality <span aria-hidden="true">&#8597;</span></button></th><th scope="col"><button data-sort="Province" disabled>Province <span aria-hidden="true">&#8597;</span></button></th><th scope="col"><button data-sort="PM25_ug_m3" disabled>PM2.5 (ug/m3) <span aria-hidden="true">&#8597;</span></button></th><th scope="col"><button data-sort="pollution" disabled>Pollution points <span aria-hidden="true">&#8597;</span></button></th><th scope="col"><button data-sort="heat" disabled>Heat points <span aria-hidden="true">&#8597;</span></button></th><th scope="col"><button data-sort="cold" disabled>Cold points <span aria-hidden="true">&#8597;</span></button></th></tr></thead>
+                    <tbody id="report-body">
+                        <tr><td colspan="8" class="loading-row">Loading data…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+        <nav class="table-pagination" aria-label="Report pages">
+                    <p id="report-status" role="status">Loading records…</p>
+                    <div><button type="button" id="previous-page" disabled>← Previous</button><button type="button" id="next-page" disabled>Next →</button></div>
+                </nav>
+</main>
+    </div>
+
+
+    <script src="../scripts/vendor/papaparse.min.js"></script><script src="../scripts/ncd-data.js"></script><script src="../scripts/ncd-demo.js?v=20261028-risk-colors"></script><script src="../scripts/ncd-analysis.js?v=20261028-working"></script>
+<script src="../scripts/ncd-reports.js?v=20261028-layout"></script>
+</body>
+
+</html>

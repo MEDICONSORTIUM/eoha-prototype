@@ -35,7 +35,7 @@ function update_risk_donut({
   ring.style.stroke = color;
 
   label_element.innerText = label;
-  label_element.style.color = color;
+  label_element.style.color = 'var(--text-dark)';
   percentage_element.innerText = `${Math.round(score)}% ${suffix}`;
 }
 
@@ -113,7 +113,7 @@ function set_metric_bar({
 }) {
   const bar = document.getElementById(bar_id);
   const value_element = document.getElementById(value_id);
-  const numeric_value = Number(value);
+  const numeric_value = value === null || value === '' ? NaN : Number(value);
   const has_value = Number.isFinite(numeric_value);
 
   if (bar) {
@@ -191,7 +191,7 @@ function update_municipality_average_risk() {
   if (!average_container || !municipality_name) return;
 
   if (!selected_municipality) {
-    average_container.style.opacity = '0.4';
+    average_container.style.opacity = '1';
     municipality_name.innerText = 'Select Municipality';
     reset_average_risk_donut();
     return;
@@ -201,7 +201,7 @@ function update_municipality_average_risk() {
   const average_score = calculate_average_risk_score(wards);
 
   if (average_score === null) {
-    average_container.style.opacity = '0.4';
+    average_container.style.opacity = '1';
     municipality_name.innerText = format_municipality_name(selected_municipality);
     reset_average_risk_donut();
     return;

@@ -3,9 +3,7 @@ const map = L.map('map', { zoomControl: false }).setView(
   DEFAULT_VIEW.zoom,
 );
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-}).addTo(map);
+EOHAMap.addBasemap(map);
 
 const city_layer = L.layerGroup().addTo(map);
 

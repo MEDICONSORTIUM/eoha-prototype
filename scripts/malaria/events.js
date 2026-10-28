@@ -150,6 +150,7 @@ function handle_reset_click() {
  */
 function handle_time_slider_input(event) {
   current_month_index = Number(event.target.value);
+  update_observation_label();
 
   render_hotspots(false);
   reset_dashboard_panels();
@@ -186,4 +187,34 @@ function bind_event_handlers() {
   reset_button.addEventListener('click', handle_reset_click);
   time_slider.addEventListener('input', handle_time_slider_input);
   risk_filter.addEventListener('change', () => render_hotspots());
+  update_observation_label();
+  document.getElementById('recenter-map').addEventListener('click', () => {
+    map.setView([DEFAULT_VIEW.lat, DEFAULT_VIEW.lng], DEFAULT_VIEW.zoom);
+  });
+  let playback = null;
+  const play = document.getElementById('play-months');
+  function pause() {
+    clearInterval(playback);
+    playback = null;
+    play.setAttribute('aria-pressed', 'false');
+    play.setAttribute('aria-label', 'Play observation timeline');
+  }
+  play.addEventListener('click', () => {
+    if (playback) return pause();
+    play.setAttribute('aria-pressed', 'true');
+    play.setAttribute('aria-label', 'Pause observation timeline');
+    playback = setInterval(() => {
+      time_slider.value = (Number(time_slider.value) + 1) % MONTH_DATA.length;
+      time_slider.dispatchEvent(new Event('input'));
+    }, 1600);
+  });
+  time_slider.addEventListener('pointerdown', pause);
+  time_slider.addEventListener('keydown', pause);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
+}
+
+function update_observation_label() {
+  const period = MONTH_DATA[current_month_index];
+  document.getElementById('active-month').textContent = period.month + ' ' + period.year;
+  time_slider.setAttribute('aria-valuetext', period.month + ' ' + period.year);
 }

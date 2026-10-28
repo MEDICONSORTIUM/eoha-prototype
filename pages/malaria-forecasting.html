@@ -11,6 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../scripts/theme.js"></script>
 <link rel="stylesheet" href="../styles/mobile.css?v=20261020-3">
+    <link rel="stylesheet" href="../styles/re-theme.css">
 </head>
 
 <body class="forecast-page">
@@ -20,35 +21,23 @@
         <header class="top-bar">
             <a class="brand-pill brand-home" href="../index.html" aria-label="EOHA home">
                 <img src="../images/mca-logo.jpg" alt="MCA logo" class="brand-pill-logo">
-                <h1>Malaria Guard</h1>
+                <div class="brand-copy"><h1>Malaria Guard</h1><small>Earth Observation Health Analytics</small></div>
             </a>
 
             <nav class="nav-pill">
                 <a href="malaria-page.html">Dashboard</a>
-                <a href="malaria-forecasting.html" class="active">Forecasting</a>
+                <a href="malaria-forecasting.html" class="active" aria-current="page">Forecasting</a>
                 <a href="resource-center.html">Resource Center</a>
                 <a href="malaria-reports.html">Reports</a>
             </nav>
 
             <div class="actions-pill">
                 <a href="../index.html" class="back-link">Back</a>
-
-                <button class="icon-btn">
-                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                </button>
-                <button class="icon-btn">
-                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                    </svg>
-                </button>
-                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
-                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-                </button>
+                <div class="theme-picker" role="group" aria-label="Color theme">
+                    <button type="button" data-theme-choice="system" aria-pressed="false">System</button>
+                    <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+                    <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+                </div>
             </div>
         </header>
 
@@ -85,8 +74,7 @@
                 </div>
                 <p class="subtitle">Filter by region</p>
                 <div class="input-group">
-                    <label>Province</label>
-                    <select id="region-select">
+                    <label for="region-select">Province</label><select id="region-select">
                         <option value="limpopo">Limpopo</option>
                         <option value="mpumalanga">Mpumalanga</option>
                         <option value="kwazulu-natal">KwaZulu-Natal</option>
@@ -103,10 +91,10 @@
                     </span>
                     <h2>Model Info</h2>
                 </div>
-                <div class="model-detail"><span class="model-label">Algorithm</span><span class="model-val">Random Forest</span></div>
-                <div class="model-detail"><span class="model-label">Accuracy</span><span class="model-val">91.4%</span></div>
-                <div class="model-detail"><span class="model-label">Last trained</span><span class="model-val">Jan 2026</span></div>
-                <div class="model-detail"><span class="model-label">Data source</span><span class="model-val">Sentinel-2 / MODIS</span></div>
+                <div class="model-detail"><span class="model-label">Status</span><span class="model-val">Demonstration</span></div>
+                <p class="demo-notice">Illustrative forecast data. Values and uncertainty bands demonstrate the interface.</p>
+
+                <div class="model-detail"><span class="model-label">Data source</span><span class="model-val">Illustrative series</span></div>
             </section>
         </aside>
 
@@ -115,8 +103,8 @@
                 <h2>Malaria Risk Forecast</h2>
                 <span class="chart-badge" id="range-label">Next 7 Days</span>
             </div>
-            <div class="chart-wrapper">
-                <canvas id="forecastChart"></canvas>
+            <p class="demo-notice">Illustrative data · Not a live forecast</p><div class="chart-wrapper">
+                <canvas id="forecastChart" role="img" aria-label="Illustrative malaria risk forecast with upper and lower bounds. Summary values are shown in the cards below."></canvas>
             </div>
         </main>
 
