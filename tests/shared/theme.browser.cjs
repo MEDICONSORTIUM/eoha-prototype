@@ -1,4 +1,4 @@
-/* Run against tools/serve.py with Playwright available. */
+/* Run against tools/serve.cjs with Playwright available. */
 const assert = require("node:assert/strict");
 const { chromium } = require("playwright");
 const base = process.env.EOHA_URL || "http://127.0.0.1:8766/";

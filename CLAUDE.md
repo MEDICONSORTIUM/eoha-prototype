@@ -8,10 +8,10 @@ commands, API flow, function-comment format and checks.
 - Styles: `styles/<feature>/`, with shared theme/layout styles in `styles/shared/`.
 - Assets: `assets/images/`, `assets/icons/`, `assets/video/`.
 - Data: retained real observations in `data/malaria/`; shared geographic boundaries in `data/shared/`.
-- Tools: `tools/serve.py` and the real extraction utility in `tools/data-pipeline/`.
+- Tools: `tools/serve.cjs` and the real extraction utility in `tools/data-pipeline/`.
 - Tests: feature subfolders under `tests/`.
 
-Serve the repository with `python3 tools/serve.py`; plain static serving needs an
+Serve the repository with `node tools/serve.cjs`; plain static serving needs an
 API reverse proxy. Keep credentials in the sibling backend's ignored `.env.local`.
 Malaria dashboard/reports use the same formula in `scripts/malaria/api.js`.
 Do not restore fabricated forecast values or synthetic NCD data. Unsupported

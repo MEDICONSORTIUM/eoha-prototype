@@ -22,7 +22,7 @@ JavaScript or commit the local file.
 From the prototype root:
 
 ```bash
-python3 tools/serve.py
+node tools/serve.cjs
 ```
 
 Open `http://localhost:8766/pages/malaria/dashboard.html` or
