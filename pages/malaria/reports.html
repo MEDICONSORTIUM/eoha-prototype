@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Malaria Guard - Reports</title>
+    <link rel="icon" href="../../assets/icons/favicon.svg?v=eoha-1" type="image/svg+xml" />
+    <link rel="stylesheet" href="../../styles/shared/theme.css" />
+    <link rel="stylesheet" href="../../styles/malaria/reports.css" />
+    <script src="../../scripts/shared/theme.js"></script>
+    <link rel="stylesheet" href="../../styles/shared/mobile.css?v=20261020-3" />
+    <link rel="stylesheet" href="../../styles/shared/components.css" />
+  </head>
+
+  <body class="reports-page">
+    <div class="page-layout">
+      <header class="top-bar">
+        <a class="brand-pill brand-home" href="../../index.html" aria-label="EOHA home">
+          <img src="../../assets/images/mca-logo.jpg" alt="MCA logo" class="brand-pill-logo" />
+          <div class="brand-copy">
+            <h1>Malaria Guard</h1>
+            <small>Earth Observation Health Analytics</small>
+          </div>
+        </a>
+
+        <nav class="nav-pill">
+          <a href="dashboard.html">Dashboard</a>
+          <a href="forecasting.html">Forecasting</a>
+          <a href="resources.html">Resource Center</a>
+          <a href="reports.html" class="active" aria-current="page">Reports</a>
+        </nav>
+
+        <div class="actions-pill">
+          <a href="../../index.html" class="back-link">Back</a>
+
+          <button class="icon-btn" id="export-btn" title="Export to CSV">
+            <svg
+              class="icon-svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+          </button>
+          <div class="theme-picker" role="group" aria-label="Color theme">
+            <button type="button" data-theme-choice="system" aria-pressed="false">System</button>
+            <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+            <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+          </div>
+        </div>
+      </header>
+
+      <main class="content-area">
+        <div class="content-header">
+          <div>
+            <h2>Malaria Risk Reports</h2>
+            <p class="content-subtitle">
+              Regional ward risk summary · <span id="report-month">Loading…</span>
+            </p>
+          </div>
+          <button class="export-btn-main" id="export-btn-main">⬇ Export CSV</button>
+        </div>
+
+        <div class="filter-bar">
+          <div class="filter-group">
+            <label class="filter-label" for="month-filter">Month</label>
+            <select id="month-filter" class="filter-select">
+              <option value="all">All Months</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label" for="muni-filter">Municipality</label>
+            <select id="muni-filter" class="filter-select">
+              <option value="all">All Municipalities</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label">Risk Level</label>
+            <div class="risk-toggle">
+              <button class="risk-btn active" data-risk="all">All</button>
+              <button class="risk-btn risk-btn-high" data-risk="high">High</button>
+              <button class="risk-btn risk-btn-mod" data-risk="moderate">Moderate</button>
+              <button class="risk-btn risk-btn-low" data-risk="low">Low</button>
+            </div>
+          </div>
+
+          <div class="filter-group filter-group-search">
+            <label class="filter-label" for="ward-search">Search Ward</label>
+            <div class="search-wrap">
+              <svg
+                class="search-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input
+                type="text"
+                id="ward-search"
+                class="filter-input"
+                placeholder="e.g. LIM331_1"
+              />
+            </div>
+          </div>
+
+          <button class="reset-btn" id="reset-filters" title="Clear all filters">✕ Reset</button>
+        </div>
+
+        <p id="api-status" role="status">Loading risk observations from the API…</p>
+        <div class="stat-row" id="stat-row">
+          <div class="stat-card">
+            <p class="stat-label">Wards Monitored</p>
+            <h3 class="stat-val" id="stat-total">—</h3>
+          </div>
+          <div class="stat-card stat-danger">
+            <p class="stat-label">High Risk Wards</p>
+            <h3 class="stat-val" id="stat-high">—</h3>
+          </div>
+          <div class="stat-card stat-warn">
+            <p class="stat-label">Moderate Risk Wards</p>
+            <h3 class="stat-val" id="stat-mod">—</h3>
+          </div>
+          <div class="stat-card stat-ok">
+            <p class="stat-label">Low Risk Wards</p>
+            <h3 class="stat-val" id="stat-low">—</h3>
+          </div>
+          <div class="stat-card">
+            <p class="stat-label">Average Risk</p>
+            <h3 class="stat-val" id="stat-avg">—</h3>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table id="report-table">
+            <thead>
+              <tr>
+                <th class="sortable" data-col="ward">Ward <span class="sort-icon">⇅</span></th>
+                <th class="sortable" data-col="muni">
+                  Municipality <span class="sort-icon">⇅</span>
+                </th>
+                <th class="sortable" data-col="province">
+                  Province <span class="sort-icon">⇅</span>
+                </th>
+                <th class="sortable" data-col="lst">LST (°C) <span class="sort-icon">⇅</span></th>
+                <th class="sortable" data-col="sm">
+                  Soil Moisture <span class="sort-icon">⇅</span>
+                </th>
+                <th class="sortable" data-col="risk">Risk % <span class="sort-icon">⇅</span></th>
+                <th>Risk Level</th>
+              </tr>
+            </thead>
+            <tbody id="table-body">
+              <tr>
+                <td colspan="7" class="loading-row">Loading data…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <nav class="table-pagination" aria-label="Report pages">
+          <p id="report-page-summary" role="status">Loading records…</p>
+          <div>
+            <button type="button" id="previous-page" disabled>← Previous</button
+            ><button type="button" id="next-page" disabled>Next →</button>
+          </div>
+        </nav>
+      </main>
+    </div>
+
+    <script src="../../scripts/shared/api-config.js"></script>
+    <script src="../../scripts/malaria/api.js"></script>
+    <script src="../../scripts/malaria/reports.js"></script>
+  </body>
+</html>

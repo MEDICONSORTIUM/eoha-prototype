@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NCD Exposure - Resource Center</title>
+    <link rel="icon" href="../../assets/icons/favicon.svg?v=eoha-1" type="image/svg+xml" />
+    <link rel="stylesheet" href="../../styles/shared/theme.css" />
+    <link rel="stylesheet" href="../../styles/shared/resources.css" />
+    <script src="../../scripts/shared/theme.js"></script>
+    <link rel="stylesheet" href="../../styles/shared/mobile.css?v=20261020-3" />
+    <link rel="stylesheet" href="../../styles/shared/components.css" />
+  </head>
+
+  <body class="resources-page">
+    <div class="page-layout">
+      <header class="top-bar">
+        <a class="brand-pill brand-home" href="../../index.html" aria-label="EOHA home">
+          <img src="../../assets/images/mca-logo.jpg" alt="MCA logo" class="brand-pill-logo" />
+          <div class="brand-copy">
+            <h1>NCD Exposure</h1>
+            <small>Earth Observation Health Analytics</small>
+          </div></a
+        >
+
+        <nav class="nav-pill" aria-label="NCD navigation">
+          <a href="dashboard.html">NCD Dashboard</a><a href="forecasting.html">Forecasting</a
+          ><a href="reports.html">Reports</a
+          ><a href="resources.html" class="active" aria-current="page">Resource Center</a>
+        </nav>
+
+        <div class="actions-pill">
+          <a href="dashboard.html" class="back-link">Back to NCD</a>
+          <div class="theme-picker" role="group" aria-label="Color theme">
+            <button type="button" data-theme-choice="system" aria-pressed="false">System</button>
+            <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+            <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+          </div>
+        </div>
+      </header>
+
+      <main class="content-area">
+        <div class="content-header">
+          <div>
+            <h2>Resource Center</h2>
+            <p class="content-subtitle">
+              NCD exposure specifications, schemas and geographic reference data
+            </p>
+          </div>
+        </div>
+
+        <div class="filter-bar">
+          <button class="filter-btn active" data-category="all">All</button>
+          <button class="filter-btn" data-category="data">Data</button>
+          <button class="filter-btn" data-category="methodology">Methodology</button>
+          <button class="filter-btn" data-category="tools">Tools</button>
+        </div>
+
+        <div class="resource-grid" id="resource-grid">
+          <article class="resource-card" data-category="methodology">
+            <div class="card-top">
+              <span class="file-icon" aria-hidden="true">MD</span
+              ><span class="category-badge badge-methodology">methodology</span>
+            </div>
+            <h3>NCD Exposure Scoring Specification</h3>
+            <p>
+              Draft pollution, heat and cold formulas, quality rules and release gates. Production
+              scoring remains disabled.
+            </p>
+            <a href="../../docs/ncd/risk-scoring.md" download class="resource-btn"
+              >Download specification →</a
+            >
+          </article>
+          <article class="resource-card" data-category="data">
+            <div class="card-top">
+              <span class="file-icon" aria-hidden="true">JSON</span
+              ><span class="category-badge badge-data">data</span>
+            </div>
+            <h3>NCD Record Schema</h3>
+            <p>Versioned contract for ward exposure records, provenance and quality flags.</p>
+            <a href="../../schemas/ncd/risk-record.schema.json" download class="resource-btn"
+              >Download schema →</a
+            >
+          </article>
+
+          <article class="resource-card" data-category="data">
+            <div class="card-top">
+              <span class="file-icon" aria-hidden="true">GEOJSON</span
+              ><span class="category-badge badge-data">data</span>
+            </div>
+            <h3>South Africa Province Boundaries</h3>
+            <p>
+              Administrative level 1 province boundaries used by the NCD map. These are not ward
+              boundaries.
+            </p>
+            <a href="../../data/shared/South_Africa_ADM1.geojson" download class="resource-btn"
+              >Download GeoJSON →</a
+            >
+          </article>
+          <article class="resource-card" data-category="tools">
+            <div class="card-top">
+              <span class="file-icon" aria-hidden="true">MAP</span
+              ><span class="category-badge badge-tools">tools</span>
+            </div>
+            <h3>NCD Interactive Map</h3>
+            <p>
+              Explore countries and South African provinces. Explore historical environmental
+              measurements. NCD scoring is unavailable.
+            </p>
+            <a href="dashboard.html" class="resource-btn">Open NCD dashboard →</a>
+          </article>
+        </div>
+      </main>
+    </div>
+
+    <script src="../../scripts/shared/resources.js"></script>
+  </body>
+</html>
