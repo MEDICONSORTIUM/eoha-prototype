@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biosecurity | EOHA</title>
+    <link rel="icon" href="../favicon.svg?v=eoha-1" type="image/svg+xml">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link rel="stylesheet" href="../styles/theme.css">
+    <link rel="stylesheet" href="../styles/malaria-page.css">
+    <link rel="stylesheet" href="../styles/biosecurity-page.css">
+    <script src="../scripts/theme.js"></script>
+    <script src="../scripts/theme-map.js"></script>
+    <link rel="stylesheet" href="../styles/mobile.css?v=20261020-4">
+    <link rel="stylesheet" href="../styles/re-theme.css">
+</head>
+<body class="map-dashboard biosecurity-dashboard">
+    <div id="map" aria-label="Interactive biosecurity map"></div>
+    <div class="dashboard-layout">
+        <header class="top-bar">
+            <a class="brand-pill brand-home" href="../index.html" aria-label="EOHA home">
+                <img src="../images/mca-logo.jpg" alt="MCA logo" class="brand-pill-logo">
+                <div class="brand-copy"><h1>Biosecurity</h1><small id="source-badge">Connecting to EOHA data…</small></div>
+            </a>
+            <nav class="nav-pill" aria-label="EOHA modules">
+                <a href="malaria-page.html">Malaria</a>
+                <a href="ncd-page.html">NCD</a>
+                <a href="biosecurity-page.html" class="active" aria-current="page">Biosecurity</a>
+            </nav>
+            <div class="actions-pill">
+                <a href="../index.html" class="back-link">Back</a>
+                <div class="theme-picker" role="group" aria-label="Color theme">
+                    <button type="button" data-theme-choice="system" aria-pressed="false">System</button>
+                    <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+                    <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+                </div>
+            </div>
+        </header>
+
+        <aside class="sidebar-left">
+            <section class="card region-selector">
+                <div class="card-header">
+                    <span class="icon text-primary">
+                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                    </span>
+                    <h2>Region Selector</h2>
+                    <button type="button" id="reset-btn" class="hidden-reset" title="Reset filters" aria-label="Reset filters">
+                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                            <polyline points="3 3 3 8 8 8"></polyline>
+                        </svg>
+                    </button>
+                </div>
+                <p class="subtitle">Refine your spatial analysis</p>
+                <div class="input-group"><label for="province-select">Province</label><select id="province-select" disabled><option value="">All provinces</option></select></div>
+                <div class="input-group"><label for="city-select">Municipality</label><select id="city-select" disabled><option value="">All municipalities</option></select></div>
+                <div class="input-group"><label for="ward-select">Ward</label><select id="ward-select" disabled><option value="">All wards</option></select></div>
+            </section>
+
+            <section class="card enviro-factors">
+                <div class="card-header">
+                    <span class="icon text-primary">
+                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                    </span>
+                    <h2>Indicator and Timeframe</h2>
+                </div>
+                <div class="input-group"><label for="indicator-select">Indicator</label><select id="indicator-select" disabled><option value="">No indicators yet</option></select></div>
+                <div class="input-group">
+                    <label for="timeframe-select">Timeframe</label>
+                    <select id="timeframe-select" disabled>
+                        <option value="latest">Latest month</option>
+                        <option value="last3">Last 3 months</option>
+                        <option value="last6">Last 6 months</option>
+                        <option value="last12">Last 12 months</option>
+                        <option value="all">All available</option>
+                        <option value="custom">Choose year and month</option>
+                    </select>
+                </div>
+                <div class="input-group"><label for="year-select">Year</label><select id="year-select" disabled><option value="">All years</option></select></div>
+                <div class="input-group">
+                    <label for="month-select">Month</label>
+                    <select id="month-select" disabled>
+                        <option value="">All months</option>
+                        <option value="01">January</option><option value="02">February</option><option value="03">March</option>
+                        <option value="04">April</option><option value="05">May</option><option value="06">June</option>
+                        <option value="07">July</option><option value="08">August</option><option value="09">September</option>
+                        <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+                    </select>
+                </div>
+                <p id="data-status" class="data-status" role="status" aria-live="polite">Loading biosecurity data…</p>
+            </section>
+        </aside>
+
+        <aside class="sidebar-right">
+            <section class="card risk-card">
+                <p class="risk-label" id="sel-label">Selected ward</p>
+                <div class="donut-container">
+                    <svg viewBox="0 0 100 100">
+                        <circle class="donut-bg" cx="50" cy="50" r="40"></circle>
+                        <circle class="donut-prog" id="sel-ring" cx="50" cy="50" r="40"></circle>
+                    </svg>
+                    <div class="donut-center"><h3 id="sel-text">--</h3><span id="sel-sub">No ward selected</span></div>
+                </div>
+                <h4 id="sel-name">Select a Ward</h4>
+            </section>
+            <section class="card risk-card">
+                <p class="risk-label" id="mean-label">Area mean</p>
+                <div class="donut-container">
+                    <svg viewBox="0 0 100 100">
+                        <circle class="donut-bg" cx="50" cy="50" r="40"></circle>
+                        <circle class="donut-prog avg-prog" id="mean-ring" cx="50" cy="50" r="40"></circle>
+                    </svg>
+                    <div class="donut-center"><h3 id="mean-text">--</h3><span id="mean-sub">No data</span></div>
+                </div>
+                <h4 id="mean-name">All wards</h4>
+            </section>
+            <section class="card trend-card">
+                <div class="card-header"><h2>Trend</h2></div>
+                <p class="subtitle" id="trend-subtitle">Monthly mean for the current selection</p>
+                <div class="trend-canvas"><canvas id="trend-chart" aria-label="Monthly trend for the current selection" role="img"></canvas></div>
+            </section>
+            <section class="card map-legend">
+                <div class="legend-header"><h2>Map Legend</h2><span class="info-icon">i</span></div>
+                <div class="ramp" aria-hidden="true"></div>
+                <div class="ramp-labels"><span id="ramp-min">Lowest</span><span id="ramp-max">Highest</span></div>
+                <ul class="legend-list">
+                    <li><span class="dot neutral"></span> Ward with no value in this period</li>
+                </ul>
+                <p class="legend-note">Colours are relative to the values in the selected period. Risk thresholds will be added when they are defined.</p>
+            </section>
+        </aside>
+
+        <footer class="bottom-panel">
+            <div class="timeline-controls">
+                <div class="title-area">
+                    <button type="button" id="play-btn" class="play-btn" aria-label="Play monthly timeline" aria-pressed="false" disabled>
+                        <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    </button>
+                    <h3>Timeline</h3>
+                </div>
+                <div class="badge" id="timeline-month">NO DATA</div>
+                <button type="button" id="recenter-btn" class="target-icon" aria-label="Recenter map">
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2v4M12 18v4M2 12h4M18 12h4"></path></svg>
+                </button>
+            </div>
+            <div class="slider-wrapper">
+                <input type="range" id="time-slider" min="0" max="0" value="0" step="1" aria-label="Observation month" disabled>
+                <div class="slider-labels"><span id="timeline-start">—</span><span class="current" id="timeline-current">—</span><span id="timeline-end">—</span></div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="../scripts/vendor/chart.umd.min.js"></script>
+    <script src="../scripts/biosecurity/data.js"></script>
+    <script src="../scripts/biosecurity/api.js"></script>
+    <script src="../scripts/biosecurity/preview.js"></script>
+    <script src="../scripts/biosecurity/page.js"></script>
+</body>
+</html>
