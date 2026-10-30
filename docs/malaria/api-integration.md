@@ -5,9 +5,10 @@ of the Limpopo CSV. Both use the existing four-factor risk formula and exclude
 records with missing required inputs. NCD historical observation browsing remains
 separate. Synthetic data and fabricated forecasting have been removed.
 
-## Hosted API by default; local API optional
+## Hosted-first Auto mode; removable browser selection
 
-Start the frontend with `npm start` or `npm run start:hosted`. Node forwards
+Start with `npm start` or `npm run start:auto` for hosted-first Auto, or
+`npm run start:hosted` / `npm run start:local` for an explicit process default. Node forwards
 same-origin `/api/*` requests to `https://eoha-backend.onrender.com`; no local
 Spring Boot process or database credentials are required for hosted mode.
 
@@ -18,8 +19,9 @@ ignored `.env.local` database settings. The browser still uses relative `/api`.
 Profiles and the default are in `config/api.json`. CLI equivalents are
 `node tools/serve.cjs --api hosted` and `node tools/serve.cjs --api local`.
 An explicit `--backend URL` overrides the profile origin; `--port PORT` changes
-the frontend port. Stop/restart the frontend to switch sources. There is no
-failure-triggered switch to local data or CSV.
+the frontend port. Use the browser selector to switch sources and reload the dataset, or restart
+the frontend to change its process default. Auto retries network failures, timeouts and HTTP 502/503/504 on Local before
+forwarding a body. Manual modes never fail over; there is no CSV fallback.
 
 Open `http://localhost:8766/pages/malaria/dashboard.html` or
 `http://localhost:8766/pages/malaria/reports.html`. Direct browser requests to
@@ -92,3 +94,11 @@ unit tests and desktop/mobile browser checks.
 
 Both repositories use `API-integration`; backend work starts from GitHub `main`
 commit `e6c79ee`. Database access is read-only; no database records were modified.
+
+## Removing optional selection
+
+Set `defaultTarget` to `hosted` and `browserSelectionEnabled` to `false` in
+`config/api.json`, then restart Node. The server ignores old browser preferences
+and overrides. The unused local target can be removed. The selector script, CSS
+and markup can then be deleted without changing API loading or scoring. Source
+policy lives in `tools/api-source.cjs`; the browser helper is optional.

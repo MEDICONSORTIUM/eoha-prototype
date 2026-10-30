@@ -190,5 +190,199 @@ test('local API selection remains explicit and optional', () => {
 });
 
 test('unknown API profiles fail instead of silently selecting another backend', () => {
-  assert.throws(() => resolve_backend({ api_target: 'unknown' }), /hosted or local/);
+  assert.throws(() => resolve_backend({ api_target: 'unknown' }), /hosted.*local/);
+  assert.throws(
+    () =>
+      resolve_backend({
+        api_target: 'auto',
+        api_config: {
+          defaultTarget: 'hosted',
+          browserSelectionEnabled: false,
+          targets: { hosted: 'https://example.com' },
+        },
+      }),
+    /Auto requires/,
+  );
+});
+
+test('Auto tries hosted before local and reports the source actually used', async (context) => {
+  const calls = [];
+  const hosted = await start_server(
+    context,
+    http.createServer((req, res) => {
+      calls.push('hosted');
+      res.writeHead(503);
+      res.end('unavailable');
+    }),
+  );
+  const local = await start_server(
+    context,
+    http.createServer((req, res) => {
+      calls.push('local');
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ success: true, data: ['local'] }));
+    }),
+  );
+  const api_config = {
+    defaultTarget: 'auto',
+    browserSelectionEnabled: true,
+    autoOrder: ['hosted', 'local'],
+    targets: { hosted, local },
+  };
+  const base = await start_server(
+    context,
+    create_preview_server({ root: fixture_root(context), api_config }),
+  );
+  const response = await fetch(base + '/api/regions');
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get('x-eoha-api-source'), 'local');
+  assert.deepEqual((await response.json()).data, ['local']);
+  assert.deepEqual(calls, ['hosted', 'local']);
+});
+
+test('Auto keeps hosted success and does not mask missing endpoints', async (context) => {
+  let status = 200;
+  let localCalls = 0;
+  const hosted = await start_server(
+    context,
+    http.createServer((req, res) => {
+      res.writeHead(status);
+      res.end('hosted');
+    }),
+  );
+  const local = await start_server(
+    context,
+    http.createServer((req, res) => {
+      localCalls++;
+      res.end('local');
+    }),
+  );
+  const api_config = {
+    defaultTarget: 'auto',
+    browserSelectionEnabled: true,
+    targets: { hosted, local },
+  };
+  const base = await start_server(
+    context,
+    create_preview_server({ root: fixture_root(context), api_config }),
+  );
+  assert.equal((await fetch(base + '/api/regions')).headers.get('x-eoha-api-source'), 'hosted');
+  status = 404;
+  assert.equal((await fetch(base + '/api/regions')).status, 404);
+  assert.equal(localCalls, 0);
+});
+
+test('manual browser modes do not fail over or accept arbitrary URLs', async (context) => {
+  const calls = [];
+  const hosted = await start_server(
+    context,
+    http.createServer((req, res) => {
+      calls.push('hosted');
+      res.writeHead(503);
+      res.end('hosted failure');
+    }),
+  );
+  const local = await start_server(
+    context,
+    http.createServer((req, res) => {
+      calls.push('local');
+      res.end('local');
+    }),
+  );
+  const api_config = {
+    defaultTarget: 'auto',
+    browserSelectionEnabled: true,
+    targets: { hosted, local },
+  };
+  const base = await start_server(
+    context,
+    create_preview_server({ root: fixture_root(context), api_config }),
+  );
+  assert.equal(
+    (await fetch(base + '/api/regions', { headers: { 'X-EOHA-API-Target': 'hosted' } })).status,
+    503,
+  );
+  assert.deepEqual(calls, ['hosted']);
+  const selected = await fetch(base + '/api/regions', {
+    headers: { 'X-EOHA-API-Target': 'local' },
+  });
+  assert.equal(selected.headers.get('x-eoha-api-source'), 'local');
+  assert.equal(
+    (
+      await fetch(base + '/api/regions', {
+        headers: { 'X-EOHA-API-Target': 'https://example.com' },
+      })
+    ).status,
+    400,
+  );
+});
+
+test('disabling browser selection enforces the configured default despite stale overrides', async (context) => {
+  const calls = [];
+  const hosted = await start_server(
+    context,
+    http.createServer((req, res) => {
+      calls.push('hosted');
+      res.end('hosted');
+    }),
+  );
+  const local = await start_server(
+    context,
+    http.createServer((req, res) => {
+      calls.push('local');
+      res.end('local');
+    }),
+  );
+  const api_config = {
+    defaultTarget: 'hosted',
+    browserSelectionEnabled: false,
+    targets: { hosted },
+  };
+  const base = await start_server(
+    context,
+    create_preview_server({ root: fixture_root(context), api_config }),
+  );
+  const settings = await (await fetch(base + '/api-settings')).json();
+  assert.equal(settings.browserSelectionEnabled, false);
+  const response = await fetch(base + '/api/regions', {
+    headers: { 'X-EOHA-API-Target': 'local' },
+  });
+  assert.equal(response.headers.get('x-eoha-api-source'), 'hosted');
+  assert.deepEqual(calls, ['hosted']);
+});
+
+test('Auto falls back on connection failure and timeout, with hosted-first order enforced', async (context) => {
+  const local = await start_server(
+    context,
+    http.createServer((req, res) => res.end('local')),
+  );
+  const stalled = await start_server(
+    context,
+    http.createServer(() => {}),
+  );
+  for (const hosted of ['http://127.0.0.1:1', stalled]) {
+    const api_config = {
+      defaultTarget: 'auto',
+      browserSelectionEnabled: true,
+      targets: { hosted, local },
+    };
+    const base = await start_server(
+      context,
+      create_preview_server({ root: fixture_root(context), api_config, timeout_ms: 30 }),
+    );
+    const response = await fetch(base + '/api/regions');
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get('x-eoha-api-source'), 'local');
+  }
+  assert.throws(
+    () =>
+      create_preview_server({
+        api_config: {
+          defaultTarget: 'auto',
+          targets: { hosted: local, local },
+          autoOrder: ['local', 'hosted'],
+        },
+      }),
+    /hosted first/,
+  );
 });

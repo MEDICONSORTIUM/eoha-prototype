@@ -10,6 +10,8 @@
     <script src="../../scripts/shared/theme.js"></script>
     <link rel="stylesheet" href="../../styles/shared/mobile.css?v=20261020-3" />
     <link rel="stylesheet" href="../../styles/shared/components.css" />
+    <link rel="stylesheet" href="../../styles/shared/api-selector.css" />
+    <script src="../../scripts/shared/api-selector.js"></script>
   </head>
 
   <body class="reports-page">
@@ -57,6 +59,11 @@
       </header>
 
       <main class="content-area">
+        <section class="api-source-panel" data-api-selector hidden aria-label="API data source">
+          <label for="api-source-choice">API source</label
+          ><select id="api-source-choice" data-api-choice aria-label="API source"></select
+          ><output data-api-active role="status" aria-live="polite">Connecting…</output>
+        </section>
         <div class="content-header">
           <div>
             <h2>Malaria Risk Reports</h2>

@@ -9,27 +9,30 @@ There is no frontend build step or Python requirement to run the frontend.
 
 ## Choose a hosted or local API
 
-The **hosted Render API is the default**. The browser still calls relative
+The default mode is **Auto: hosted first, then local on a temporary outage**. The browser still calls relative
 `/api/...` URLs on the frontend server; Node forwards those requests to the
 selected backend. This avoids depending on browser CORS permission from Render.
 
 | Mode | Frontend command | API origin used by Node | Local Java/RDS configuration needed? |
 | --- | --- | --- | --- |
-| Hosted (default) | `npm start` | `https://eoha-backend.onrender.com` | No |
+| Auto (default) | `npm start` / `npm run start:auto` | Hosted first, then local on an outage | Local is needed only if fallback is used |
 | Hosted (explicit) | `npm run start:hosted` | `https://eoha-backend.onrender.com` | No |
 | Local (optional) | `npm run start:local` | `http://127.0.0.1:8080` | Yes, on the local backend |
 
 Run one frontend server at a time on port 8766. Stop it with Ctrl+C before changing
 modes. Each new page load uses the source selected when that server started;
-there is no automatic switch to another backend or CSV if that source fails.
+manual Hosted/Local modes never switch sources. Auto falls back only for connection
+failures, timeouts and HTTP 502/503/504, never to CSV.
 
-### Hosted API: no local backend required
+### Start the frontend; choose the source in the browser
 
 From this repository's root with Node.js 18 or newer:
 
 ```bash
 npm start
-# Equivalent explicit hosted profile:
+# Auto explicitly: hosted → local if the hosted service is unavailable
+npm run start:auto
+# Explicit hosted-only process default:
 npm run start:hosted
 # Equivalent without npm:
 node tools/serve.cjs --api hosted
@@ -37,7 +40,7 @@ node tools/serve.cjs --api hosted
 
 Open [the prototype](http://localhost:8766). Its Node.js server uses only built-in
 modules; no `npm install`, local Java process or local database credentials are
-needed to serve the frontend against Render. The API must already be running and
+needed to use the hosted API. Auto can fall back to local only if that backend is running. The API must already be running and
 correctly configured on Render.
 
 ### Local API: optional development setup
@@ -65,7 +68,9 @@ node tools/serve.cjs --api local
 
 ```json
 {
-  "defaultTarget": "hosted",
+  "defaultTarget": "auto",
+  "browserSelectionEnabled": true,
+  "autoOrder": ["hosted", "local"],
   "targets": {
     "hosted": "https://eoha-backend.onrender.com",
     "local": "http://127.0.0.1:8080"
@@ -73,7 +78,7 @@ node tools/serve.cjs --api local
 }
 ```
 
-`--api hosted|local` selects a profile. An explicit `--backend URL` overrides
+`--api hosted|local|auto` selects the process default. An explicit `--backend URL` overrides
 that profile's origin for the current process. The URL must be an HTTP(S) origin,
 without credentials, a path or query. Unknown profile names fail at startup.
 
@@ -84,11 +89,68 @@ node tools/serve.cjs --backend http://127.0.0.1:8080
 node tools/serve.cjs --help
 ```
 
-The startup log prints the selected upstream. `scripts/shared/api-config.js`
+The startup log prints the process default and first upstream. `scripts/shared/api-config.js`
 keeps `baseUrl: '/api'` for both modes; do not put an absolute Render origin
 there unless the deployed backend has enabled CORS for your frontend origin.
 Plain static hosting does not run this proxy: configure a hosting reverse proxy
 or run this Node.js service alongside the static pages.
+
+### Optional browser selector and future removal
+
+The malaria dashboard and reports show an **API source** selector with Hosted,
+Local and Auto. Auto always starts with Hosted. The adjacent source label shows
+which backend actually returned the response, including a Local fallback.
+Changing the selector saves the named choice under `eoha-api-target`, updates the
+page's `?api=hosted|local|auto` preference and reloads the whole page. This discards
+the previous source's dataset. Storage-blocked browsers still work using the query
+parameter for the current page.
+
+Browser choices override the process default only when
+`browserSelectionEnabled: true`. An explicit custom `--backend URL` pins that
+origin and hides the selector. The server accepts only configured named modes,
+never an arbitrary browser-provided upstream URL.
+
+To retire selection later, set `config/api.json` to:
+
+```json
+{
+  "defaultTarget": "hosted",
+  "browserSelectionEnabled": false,
+  "targets": {
+    "hosted": "https://eoha-backend.onrender.com"
+  }
+}
+```
+
+Restart the Node.js server. It hides the selector and ignores stale saved choices,
+query preferences and browser source headers. All requests use the configured
+process default. No scoring, normalization, map or report changes are needed.
+You may then delete the optional selector markup, stylesheet and
+`scripts/shared/api-selector.js` script tags; the normal loader still uses
+`/api/...`. `tools/api-source.cjs` isolates the server-side routing policy from
+static serving and page/data code.
+
+Auto retries only before forwarding a response body, so one dataset never combines
+hosted and local records. A hosted timeout/network failure or HTTP 502/503/504 can
+trigger Local; 400/401/403/404, invalid JSON and incomplete data stay visible rather
+than being hidden by source switching. Auto allows 25 seconds of upstream socket
+inactivity per attempt; manual modes retain 60 seconds. The browser data-load limit
+is 60 seconds. Localhost refers to the machine running Node, not a visitor's laptop
+when Node is deployed online.
+
+The frontend-only `GET /api-settings` route supplies this policy to the selector;
+it is not a Render backend endpoint. Browser selection is sent as
+`X-EOHA-API-Target: hosted|local|auto`; response headers
+`X-EOHA-API-Source` and `X-EOHA-API-Mode` report the resolved source and mode.
+Direct API tabs and plain `fetch()` requests use the process default. To respect
+the browser's selected mode in custom browser code, use the optional wrapper:
+
+```js
+const apiFetch = window.EOHA_API_SOURCE?.fetch || window.fetch.bind(window);
+const response = await apiFetch('/api/environmental-variables');
+const body = await response.json();
+console.table(body.data.items);
+```
 
 ### Hosted deployment requirement
 
@@ -98,8 +160,8 @@ succeeded after an initial transient database error, but
 Malaria scoring needs that joined endpoint; the variables catalogue alone cannot
 supply scored ward records. Deploy the backend implementation containing
 `MalariaRiskInputController` and `MalariaRiskInputService`, then restart/redeploy
-Render. Until it exists, the frontend shows deployment guidance rather than using
-a local backend or fabricating records. These classes are present in the local
+Render. Until it exists, the frontend shows deployment guidance rather than silently hiding a missing endpoint. Select Local manually if a
+working local backend is available; a 404 deliberately does not trigger Auto fallback. These classes are present in the local
 backend integration changes described below; updating frontend configuration does
 not deploy them to Render.
 
@@ -153,10 +215,11 @@ eoha-prototype/
 │   └── shared/                      # Country and province GeoJSON boundaries
 ├── schemas/ncd/risk-record.schema.json
 ├── config/
-│   ├── api.json                     # Hosted/local origins and default source
+│   ├── api.json                     # Sources, default mode and optional selector
 │   └── routes.json                  # Old page URL → canonical page URL
 ├── tools/
-│   ├── serve.cjs                    # Node.js static server, API proxy and redirects
+│   ├── serve.cjs                    # Static server, settings and redirects
+│   ├── api-source.cjs               # Isolated source selection and Auto failover
 │   └── data-pipeline/               # Real Earth Engine extraction utility
 ├── tests/
 │   ├── malaria/                     # API unit, browser and live RDS checks
@@ -450,7 +513,7 @@ The application receives and uses that response here:
 | File / function | Responsibility and data access |
 | --- | --- |
 | `scripts/shared/api-config.js` | `/api` base URL, `/malaria-risk-inputs` endpoint and 60-second browser timeout; the server selects the hosted/local upstream |
-| `tools/serve.cjs` → `forward_api_request()` | Forward the path/query to the hosted/default or explicit local/custom backend; stream its status and JSON back |
+| `tools/api-source.cjs` → `forward()` | Forward the path/query to the hosted/default or explicit local/custom backend; stream its status and JSON back |
 | `scripts/malaria/api.js` → `load()` | `fetch()`, HTTP/envelope validation, normalization and `{ rows, excluded }` result |
 | `scripts/malaria/api.js` → `normalize()` | Map fields, validate dates/numbers and exclude incomplete required inputs |
 | `scripts/malaria/api.js` → `score()` | Apply the existing four-factor formula in browser JavaScript |
@@ -477,7 +540,7 @@ link above in a browser tab, or use `fetch()` and `console.table()`.
 Records are held in page memory, not persisted in localStorage or a frontend
 database. Each page loads on opening. Changing month, municipality, risk filters,
 sorting or report pagination uses the loaded data without another API request.
-There is no polling: reload/reopen to request data again. The backend's 60-second
+There is no polling: reload/reopen or change the source selector to request data again. The backend's 60-second
 cache can reuse measurements until it expires; the Node.js proxy itself does not
 cache API responses. Cold queries over the full dataset can take several seconds.
 
@@ -526,7 +589,8 @@ can have a different body. Always check HTTP status before assuming a success sh
 The proxy preserves backend status codes and does not turn a database failure into
 a successful empty response. The UI displays a load error and does not fall back to CSV.
 
-The selected backend is never changed automatically after an API failure.
+Manual modes never switch automatically. Auto can retry temporary hosted failures
+on local; the source label and response header identify the backend used.
 The frontend server reads no database credentials and sends no browser Authorization
 header or cookies to the backend. The current local API has no application login
 flow. Production authentication/access policy is a separate backend/deployment
@@ -583,7 +647,7 @@ Run from the repository root:
 npm test
 ```
 
-The test command runs 28 JavaScript checks for API mapping, historical data, local
+The test command runs 33 JavaScript checks for API mapping, historical data, local
 references, redirects, proxy responses, failure/timeout handling and static serving.
 For browser checks, install the pinned development dependency and Chromium once,
 then keep the Node.js preview running in another terminal:

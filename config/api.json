@@ -1,5 +1,10 @@
 {
-  "defaultTarget": "hosted",
+  "defaultTarget": "auto",
+  "browserSelectionEnabled": true,
+  "autoOrder": [
+    "hosted",
+    "local"
+  ],
   "targets": {
     "hosted": "https://eoha-backend.onrender.com",
     "local": "http://127.0.0.1:8080"

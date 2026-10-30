@@ -12,7 +12,8 @@ commands, API flow, function-comment format and checks.
 - Tests: feature subfolders under `tests/`.
 
 Serve the repository with `node tools/serve.cjs`; plain static serving needs an
-API reverse proxy. Render is the default upstream in `config/api.json`; use
+API reverse proxy. Auto starts with Render and falls back to local only on temporary outages.
+The optional browser selector is controlled by `config/api.json`; use
 `npm run start:local` for the optional local API. Keep local database credentials
 in the sibling backend's ignored `.env.local`.
 Malaria dashboard/reports use the same formula in `scripts/malaria/api.js`.
@@ -24,3 +25,7 @@ Keep markup in HTML, styles in CSS and behavior in feature/shared scripts.
 Preserve the theme's semantic tokens and load its script before first paint.
 Update `config/routes.json` when moving a previously published page; the preview
 implements these redirects, while deployment hosts require their own redirect rules.
+
+Disable browser selection with `browserSelectionEnabled: false` and an explicit
+`defaultTarget`; stale browser overrides must then be ignored. Keep source policy
+in `tools/api-source.cjs` and optional UI in `scripts/shared/api-selector.js`.

@@ -140,7 +140,10 @@
    * --------
    * Promise<object>
    */
-  async function load(config = root.EOHA_API_CONFIG, fetcher = root.fetch.bind(root)) {
+  async function load(
+    config = root.EOHA_API_CONFIG,
+    fetcher = root.EOHA_API_SOURCE?.fetch || root.fetch.bind(root),
+  ) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), config.timeoutMs || 60000);
     try {

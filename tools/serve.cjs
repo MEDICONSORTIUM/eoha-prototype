@@ -1,11 +1,11 @@
 'use strict';
 const http = require('node:http');
-const https = require('node:https');
 const fs = require('node:fs');
 const path = require('node:path');
 const { pipeline } = require('node:stream');
 const PROJECT_ROOT = path.resolve(__dirname, '..');
 const API_TARGETS = require('../config/api.json');
+const { create_api_router, resolve_backend } = require('./api-source.cjs');
 const CONTENT_TYPES = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
@@ -48,66 +48,6 @@ function send_error(response, status, message, head_only = false) {
     'Cache-Control': 'no-store',
   });
   response.end(head_only ? undefined : body);
-}
-
-/**
- * forward_api_request()
- * ---------------------
- * Stream a read-only request to the configured backend and preserve its HTTP status.
- *
- * Parameters:
- * -----------
- * request: http.IncomingMessage — The browser request.
- * response: http.ServerResponse — The browser response.
- * backend: URL — The trusted backend origin.
- * timeout_ms: number — Maximum upstream socket inactivity in milliseconds.
- *
- * Returns:
- * --------
- * void
- */
-function forward_api_request(request, response, backend, timeout_ms) {
-  const transport = backend.protocol === 'https:' ? https : http;
-  const upstream = transport.request(
-    {
-      protocol: backend.protocol,
-      hostname: backend.hostname,
-      port: backend.port || undefined,
-      path: request.url,
-      method: request.method,
-      headers: { Accept: 'application/json' },
-    },
-    (incoming) => {
-      response.writeHead(incoming.statusCode, {
-        'Content-Type': incoming.headers['content-type'] || 'application/json',
-        'Cache-Control': 'no-store',
-      });
-      pipeline(incoming, response, () => {});
-    },
-  );
-  upstream.setTimeout(timeout_ms, () => {
-    const error = new Error('Backend timeout');
-    error.code = 'UPSTREAM_TIMEOUT';
-    upstream.destroy(error);
-  });
-  upstream.on('error', (error) => {
-    if (response.destroyed) return;
-    if (response.headersSent) {
-      response.destroy();
-      return;
-    }
-    const timed_out = error.code === 'UPSTREAM_TIMEOUT';
-    send_error(
-      response,
-      timed_out ? 504 : 502,
-      timed_out ? 'EOHA backend timed out' : 'EOHA backend unavailable',
-      request.method === 'HEAD',
-    );
-  });
-  response.on('close', () => {
-    if (!response.writableFinished) upstream.destroy();
-  });
-  upstream.end();
 }
 
 /**
@@ -193,39 +133,6 @@ async function serve_static_file(request, response, root, pathname) {
 }
 
 /**
- * resolve_backend()
- * -----------------
- * Select the hosted API by default, an explicit local profile or a custom origin.
- * Validate the origin before any browser request can be forwarded to it.
- *
- * Parameters:
- * -----------
- * options: object — Optional api_target profile or explicit backend origin.
- *
- * Returns:
- * --------
- * URL
- */
-function resolve_backend(options = {}) {
-  const target = options.api_target || API_TARGETS.defaultTarget;
-  if (!Object.hasOwn(API_TARGETS.targets, target)) {
-    throw new Error('API target must be hosted or local.');
-  }
-  const backend = new URL(options.backend || API_TARGETS.targets[target]);
-  if (
-    !['http:', 'https:'].includes(backend.protocol) ||
-    backend.username ||
-    backend.password ||
-    backend.pathname !== '/' ||
-    backend.search ||
-    backend.hash
-  ) {
-    throw new Error('Backend must be an HTTP(S) origin without a path or credentials.');
-  }
-  return backend;
-}
-
-/**
  * create_preview_server()
  * -----------------------
  * Create the JavaScript static server, API proxy and legacy page redirects.
@@ -241,7 +148,7 @@ function resolve_backend(options = {}) {
  */
 function create_preview_server(options = {}) {
   const root = fs.realpathSync(options.root || PROJECT_ROOT);
-  const backend = resolve_backend(options);
+  const api_router = create_api_router(options, send_error);
   const routes =
     options.routes || JSON.parse(fs.readFileSync(path.join(root, 'config/routes.json'), 'utf8'));
   return http.createServer((request, response) => {
@@ -262,6 +169,12 @@ function create_preview_server(options = {}) {
       send_error(response, 400, 'Invalid request path', request.method === 'HEAD');
       return;
     }
+    if (pathname === '/api-settings') {
+      const body = JSON.stringify(api_router.settings);
+      response.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
+      response.end(request.method === 'HEAD' ? undefined : body);
+      return;
+    }
     if (Object.hasOwn(routes, pathname)) {
       const query = request.url.includes('?') ? request.url.slice(request.url.indexOf('?')) : '';
       response.writeHead(308, {
@@ -272,7 +185,7 @@ function create_preview_server(options = {}) {
       return;
     }
     if (pathname === '/api' || pathname.startsWith('/api/')) {
-      forward_api_request(request, response, backend, options.timeout_ms || 60000);
+      api_router.forward(request, response);
       return;
     }
     serve_static_file(request, response, root, pathname);
@@ -295,8 +208,9 @@ function create_preview_server(options = {}) {
 function main(args = process.argv.slice(2)) {
   if (args.includes('--help') || args.includes('-h')) {
     console.log(
-      'Usage: node tools/serve.cjs [--port 8766] [--api hosted|local] [--backend URL]\nDefault API: ' +
-        API_TARGETS.targets[API_TARGETS.defaultTarget],
+      'Usage: node tools/serve.cjs [--port 8766] [--api hosted|local|auto] [--backend URL]\nDefault API: ' +
+        API_TARGETS.defaultTarget +
+        ' (Auto: hosted → local)',
     );
     return;
   }
