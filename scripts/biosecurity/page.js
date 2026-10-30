@@ -4,7 +4,6 @@
   const $ = id => document.getElementById(id);
   const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const RING_LENGTH = 251.33;
-  const PREVIEW = new URLSearchParams(location.search).get('preview') === '1';
 
   const els = {
     province: $('province-select'),
@@ -314,22 +313,11 @@
 
   async function init() {
     ensureMap();
-    if (PREVIEW) {
-      const preview = window.BiosecPreview.build();
-      state.variables = preview.variables;
-      fill(els.indicator, ['0'], 'Indicator', new Map([['0', preview.variables[0].variable_name]]));
-      els.indicator.value = '0';
-      els.indicator.disabled = true;
-      const byId = new Map(preview.regions.map(r => [r.region_id, r]));
-      useData(preview.variables[0], D.toRows(preview.observations, byId));
-      setStatus('preview', 'PREVIEW: layout test data generated in this browser. These are not real observations.', 'Preview data · not real');
-      return;
-    }
     try {
       const result = await API.variables();
       state.variables = result.items.filter(D.isBiosecurityVariable);
       if (!state.variables.length) {
-        showUnavailable('empty', 'No biosecurity indicators have been published to the EOHA database yet (' + result.items.length + ' other variables exist). This page will fill in automatically once biosecurity data is available.', 'No biosecurity data yet');
+        showUnavailable('empty', 'No data available.', 'No data available');
         return;
       }
       fill(els.indicator, state.variables.map((v, i) => String(i)), 'Indicator', new Map(state.variables.map((v, i) => [String(i), v.variable_name])));
@@ -347,7 +335,7 @@
   els.timeframe.addEventListener('change', () => { stopPlayback(); refresh(false); });
   els.year.addEventListener('change', () => refresh(false));
   els.month.addEventListener('change', () => refresh(false));
-  els.indicator.addEventListener('change', () => { if (!PREVIEW) loadVariable(state.variables[Number(els.indicator.value)]); });
+  els.indicator.addEventListener('change', () => loadVariable(state.variables[Number(els.indicator.value)]));
   els.slider.addEventListener('input', () => { stopPlayback(); showMonth(state.months[Number(els.slider.value)]); });
   els.play.addEventListener('click', togglePlayback);
   $('reset-btn').addEventListener('click', resetFilters);
