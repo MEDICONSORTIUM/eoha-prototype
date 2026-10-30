@@ -5,34 +5,33 @@ of the Limpopo CSV. Both use the existing four-factor risk formula and exclude
 records with missing required inputs. NCD historical observation browsing remains
 separate. Synthetic data and fabricated forecasting have been removed.
 
-## Run locally
+## Hosted API by default; local API optional
 
-From `eoha_backend`, with Java 21:
+Start the frontend with `npm start` or `npm run start:hosted`. Node forwards
+same-origin `/api/*` requests to `https://eoha-backend.onrender.com`; no local
+Spring Boot process or database credentials are required for hosted mode.
 
-```bash
-bash mvnw spring-boot:run
-```
+For local development, start the sibling backend with `bash mvnw spring-boot:run`,
+then run `npm run start:local` in the prototype. Only local mode needs the backend's
+ignored `.env.local` database settings. The browser still uses relative `/api`.
 
-Spring automatically loads the backend's Git-ignored `.env.local`. That file
-contains exactly `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, and
-`DB_SSLMODE`, with owner-only permissions. `DB_URL` and `DB_USERNAME` are also
-supported as environment overrides. Do not put database credentials in frontend
-JavaScript or commit the local file.
-
-From the prototype root:
-
-```bash
-node tools/serve.cjs
-```
+Profiles and the default are in `config/api.json`. CLI equivalents are
+`node tools/serve.cjs --api hosted` and `node tools/serve.cjs --api local`.
+An explicit `--backend URL` overrides the profile origin; `--port PORT` changes
+the frontend port. Stop/restart the frontend to switch sources. There is no
+failure-triggered switch to local data or CSV.
 
 Open `http://localhost:8766/pages/malaria/dashboard.html` or
-`http://localhost:8766/pages/malaria/reports.html`. The local preview forwards
-read-only `/api/*` requests to `http://127.0.0.1:8080`. Use `--backend URL` or
-`--port PORT` to change those defaults. This is a local development server.
+`http://localhost:8766/pages/malaria/reports.html`. Direct browser requests to
+Render require backend CORS, which the deployed API did not advertise in testing.
+The JavaScript same-origin proxy works without that browser CORS permission.
 
-For deployment, proxy `/api` to the backend, or set `baseUrl` in
-`scripts/shared/api-config.js` to an HTTPS backend origin and configure backend CORS.
-A plain static server alone does not forward `/api`.
+On 30 October 2026, hosted database readiness and environmental variables returned
+200, but the required `/api/malaria-risk-inputs` route returned 404. The backend
+integration's scoring-input controller/service must be deployed on Render before
+hosted malaria scoring can load. The frontend now gives an actionable error.
+See the [README](../../README.md) for both startup options, all endpoints and
+JavaScript consumption examples.
 
 ## API contract and data conversion
 
@@ -84,7 +83,7 @@ pagination, export and failures using controlled API fixtures.
 `tests/malaria/api.live.cjs` uses the running backend and real RDS data without mocking.
 `EOHA_URL` and `BROWSER_EXECUTABLE` override the preview and browser paths.
 
-Live verification on 28 October 2026 confirmed database readiness, 44,680 projected
+Earlier local-backend verification on 28 October 2026 confirmed database readiness, 44,680 projected
 ward-month records across January–October 2026, and 44,480 complete scoring records.
 The other 200 records were excluded for missing required inputs. The live browser
 check confirmed ward scoring, timeline changes, report totals, zero CSV reads and

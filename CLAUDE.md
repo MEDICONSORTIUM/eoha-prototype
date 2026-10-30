@@ -12,7 +12,9 @@ commands, API flow, function-comment format and checks.
 - Tests: feature subfolders under `tests/`.
 
 Serve the repository with `node tools/serve.cjs`; plain static serving needs an
-API reverse proxy. Keep credentials in the sibling backend's ignored `.env.local`.
+API reverse proxy. Render is the default upstream in `config/api.json`; use
+`npm run start:local` for the optional local API. Keep local database credentials
+in the sibling backend's ignored `.env.local`.
 Malaria dashboard/reports use the same formula in `scripts/malaria/api.js`.
 Do not restore fabricated forecast values or synthetic NCD data. Unsupported
 forecasts and NCD scoring have explicit unavailable states.

@@ -147,10 +147,21 @@
       const response = await fetcher(config.baseUrl.replace(/\/$/, '') + config.riskEndpoint, {
         signal: controller.signal,
       });
-      if (!response.ok)
+      if (response.status === 404) {
+        throw new Error(
+          'Malaria API endpoint unavailable (404). Deploy /api/malaria-risk-inputs to the selected backend.',
+        );
+      }
+      if (response.status === 503) {
+        throw new Error(
+          'Backend database unavailable (503). Check /api/health/database on the selected backend.',
+        );
+      }
+      if (!response.ok) {
         throw new Error(
           `Backend request failed (${response.status}). Check API and database health.`,
         );
+      }
       const body = await response.json();
       if (body.success !== true)
         throw new Error(body.message || 'Backend returned an unsuccessful response.');

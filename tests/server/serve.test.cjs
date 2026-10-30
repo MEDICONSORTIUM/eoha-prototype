@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const http = require('node:http');
-const { create_preview_server } = require('../../tools/serve.cjs');
+const { create_preview_server, resolve_backend } = require('../../tools/serve.cjs');
 
 /**
  * start_server()
@@ -171,4 +171,24 @@ test('upstream must be an explicit HTTP(S) origin', () => {
   ]) {
     assert.throws(() => create_preview_server({ backend }), /Backend must/);
   }
+});
+
+test('defaults to the hosted Render API without a local backend dependency', () => {
+  assert.equal(resolve_backend().origin, 'https://eoha-backend.onrender.com');
+  assert.equal(
+    resolve_backend({ api_target: 'hosted' }).origin,
+    'https://eoha-backend.onrender.com',
+  );
+});
+
+test('local API selection remains explicit and optional', () => {
+  assert.equal(resolve_backend({ api_target: 'local' }).origin, 'http://127.0.0.1:8080');
+  assert.equal(
+    resolve_backend({ api_target: 'hosted', backend: 'https://example.com' }).origin,
+    'https://example.com',
+  );
+});
+
+test('unknown API profiles fail instead of silently selecting another backend', () => {
+  assert.throws(() => resolve_backend({ api_target: 'unknown' }), /hosted or local/);
 });

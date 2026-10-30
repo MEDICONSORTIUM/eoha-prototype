@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { pipeline } = require('node:stream');
 const PROJECT_ROOT = path.resolve(__dirname, '..');
+const API_TARGETS = require('../config/api.json');
 const CONTENT_TYPES = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
@@ -192,22 +193,25 @@ async function serve_static_file(request, response, root, pathname) {
 }
 
 /**
- * create_preview_server()
- * -----------------------
- * Create the JavaScript static server, API proxy and legacy page redirects.
- * The caller starts listening, which allows tests to use temporary ports.
+ * resolve_backend()
+ * -----------------
+ * Select the hosted API by default, an explicit local profile or a custom origin.
+ * Validate the origin before any browser request can be forwarded to it.
  *
  * Parameters:
  * -----------
- * options: object — Optional root, backend origin, routes and timeout_ms overrides.
+ * options: object — Optional api_target profile or explicit backend origin.
  *
  * Returns:
  * --------
- * http.Server
+ * URL
  */
-function create_preview_server(options = {}) {
-  const root = fs.realpathSync(options.root || PROJECT_ROOT);
-  const backend = new URL(options.backend || 'http://127.0.0.1:8080');
+function resolve_backend(options = {}) {
+  const target = options.api_target || API_TARGETS.defaultTarget;
+  if (!Object.hasOwn(API_TARGETS.targets, target)) {
+    throw new Error('API target must be hosted or local.');
+  }
+  const backend = new URL(options.backend || API_TARGETS.targets[target]);
   if (
     !['http:', 'https:'].includes(backend.protocol) ||
     backend.username ||
@@ -215,8 +219,29 @@ function create_preview_server(options = {}) {
     backend.pathname !== '/' ||
     backend.search ||
     backend.hash
-  )
+  ) {
     throw new Error('Backend must be an HTTP(S) origin without a path or credentials.');
+  }
+  return backend;
+}
+
+/**
+ * create_preview_server()
+ * -----------------------
+ * Create the JavaScript static server, API proxy and legacy page redirects.
+ * The caller starts listening, which allows tests to use temporary ports.
+ *
+ * Parameters:
+ * -----------
+ * options: object — Optional root, api_target, backend origin, routes and timeout_ms overrides.
+ *
+ * Returns:
+ * --------
+ * http.Server
+ */
+function create_preview_server(options = {}) {
+  const root = fs.realpathSync(options.root || PROJECT_ROOT);
+  const backend = resolve_backend(options);
   const routes =
     options.routes || JSON.parse(fs.readFileSync(path.join(root, 'config/routes.json'), 'utf8'));
   return http.createServer((request, response) => {
@@ -257,7 +282,7 @@ function create_preview_server(options = {}) {
 /**
  * main()
  * ------
- * Parse the local port/backend options and start the Node.js preview server.
+ * Select the hosted/local API profile, parse overrides and start the Node.js preview server.
  *
  * Parameters:
  * -----------
@@ -269,25 +294,32 @@ function create_preview_server(options = {}) {
  */
 function main(args = process.argv.slice(2)) {
   if (args.includes('--help') || args.includes('-h')) {
-    console.log('Usage: node tools/serve.cjs [--port 8766] [--backend http://127.0.0.1:8080]');
+    console.log(
+      'Usage: node tools/serve.cjs [--port 8766] [--api hosted|local] [--backend URL]\nDefault API: ' +
+        API_TARGETS.targets[API_TARGETS.defaultTarget],
+    );
     return;
   }
   let port = 8766,
-    backend = 'http://127.0.0.1:8080';
+    api_target = API_TARGETS.defaultTarget,
+    backend;
   for (let index = 0; index < args.length; index += 2) {
     if (args[index] === '--port' && args[index + 1]) port = Number(args[index + 1]);
+    else if (args[index] === '--api' && args[index + 1]) api_target = args[index + 1];
     else if (args[index] === '--backend' && args[index + 1]) backend = args[index + 1];
     else throw new Error('Unknown or incomplete option. Use --help.');
   }
   if (!Number.isInteger(port) || port < 1 || port > 65535)
     throw new Error('Port must be an integer from 1 to 65535.');
-  const server = create_preview_server({ backend });
+  const selection = { api_target, backend };
+  const server = create_preview_server(selection);
+  const selected_origin = resolve_backend(selection).origin;
   server.on('error', (error) => {
     console.error('Preview server failed:', error.code || 'configuration error');
     process.exitCode = 1;
   });
   server.listen(port, '127.0.0.1', () =>
-    console.log(`EOHA preview: http://localhost:${port}\nAPI backend: ${backend}`),
+    console.log(`EOHA preview: http://localhost:${port}\nAPI backend: ${selected_origin}`),
   );
   for (const signal of ['SIGINT', 'SIGTERM'])
     process.once(signal, () => {
@@ -296,7 +328,7 @@ function main(args = process.argv.slice(2)) {
     });
 }
 
-module.exports = { create_preview_server };
+module.exports = { create_preview_server, resolve_backend };
 if (require.main === module) {
   try {
     main();

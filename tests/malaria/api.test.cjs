@@ -89,3 +89,15 @@ test('API failure and empty/incomplete datasets are errors without fallback', as
 test('escapes database strings before HTML rendering', () => {
   assert.equal(api.escapeHtml('<img src=x>'), '&lt;img src=x&gt;');
 });
+
+test('a missing hosted scoring endpoint gives deployment guidance without fallback', async () => {
+  let requests = 0;
+  await assert.rejects(
+    api.load(config, async () => {
+      requests++;
+      return { ok: false, status: 404 };
+    }),
+    /Deploy \/api\/malaria-risk-inputs/,
+  );
+  assert.equal(requests, 1);
+});
