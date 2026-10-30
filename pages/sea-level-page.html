@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sea Level Monitoring</title>
+
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+    <!-- Theme + shared dashboard layout (reused from NCD) + sea level additions -->
+    <link rel="stylesheet" href="../styles/theme.css">
+    <link rel="stylesheet" href="../styles/ncd-page.css">
+    <link rel="stylesheet" href="../styles/sea-level-page.css">
+    <script src="../scripts/theme.js"></script>
+</head>
+<body>
+
+    <div id="orientation-lock">
+        <div class="lock-content">
+            <svg class="phone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                <path d="M12 18h.01"></path>
+            </svg>
+            <p>Please rotate your device<br>to view the map</p>
+        </div>
+    </div>
+
+    <div id="map"></div>
+
+    <div class="dashboard-layout">
+
+        <header class="top-bar">
+            <div class="brand-pill">
+                <h1>Sea Level Monitoring</h1>
+            </div>
+
+            <nav class="nav-pill">
+                <a href="sea-level-page.html" class="active">Dashboard</a>
+                <a href="malaria-forecasting.html">Forecasting</a>
+                <a href="reports.html">Reports</a>
+                <a href="resource-center.html">Resource Center</a>
+            </nav>
+
+            <div class="actions-pill">
+                <a href="../index.html" class="back-link">Back</a>
+
+                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                </button>
+
+                <div class="avatar"></div>
+            </div>
+        </header>
+
+        <aside class="sidebar-left">
+
+            <section class="card region-selector">
+                <div class="card-header">
+                    <span class="icon text-primary">
+                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                    </span>
+                    <h2>Station Selector</h2>
+
+                    <button id="reset-btn" class="hidden-reset" title="Reset Filters">
+                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                            <polyline points="3 3 3 8 8 8"></polyline>
+                        </svg>
+                    </button>
+                </div>
+
+                <p class="subtitle">Choose a tide gauge station</p>
+
+                <div class="input-group">
+                    <label>Country</label>
+                    <select id="country-select" disabled>
+                        <option value="ZA" selected>South Africa</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Coastal province</label>
+                    <select id="province-select" disabled>
+                        <option value="">-- Select Province --</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Station</label>
+                    <select id="station-select" disabled>
+                        <option value="">-- Select Station --</option>
+                    </select>
+                </div>
+
+                <button id="apply-btn" class="btn-primary" disabled>
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <polyline points="1 20 1 14 7 14"></polyline>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
+                    Update View
+                </button>
+
+                <p id="sl-status" class="sl-status" role="status">Loading sea level data…</p>
+            </section>
+
+            <section class="card enviro-factors">
+                <div class="card-header">
+                    <span class="icon text-primary">
+                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="20" x2="18" y2="10"></line>
+                            <line x1="12" y1="20" x2="12" y2="4"></line>
+                            <line x1="6" y1="20" x2="6" y2="14"></line>
+                        </svg>
+                    </span>
+                    <h2>Sea Level Measures</h2>
+                </div>
+
+                <div class="factor-row">
+                    <div class="factor-labels">
+                        <span>Mean sea level</span>
+                        <span id="sl-level-val" class="val">--</span>
+                    </div>
+                    <div class="track"><div class="fill" id="sl-level-bar" style="width: 0%;"></div></div>
+                </div>
+
+                <div class="factor-row">
+                    <div class="factor-labels">
+                        <span>Change vs 12 months earlier</span>
+                        <span id="sl-change-val" class="val">--</span>
+                    </div>
+                    <div class="track"><div class="fill warning" id="sl-change-bar" style="width: 0%;"></div></div>
+                </div>
+
+                <div class="factor-row">
+                    <div class="factor-labels">
+                        <span>Long-term trend</span>
+                        <span id="sl-trend-val" class="val">--</span>
+                    </div>
+                    <div class="track"><div class="fill" id="sl-trend-bar" style="width: 0%;"></div></div>
+                </div>
+
+                <div class="sl-chart" id="sl-chart" aria-label="Monthly mean sea level for the selected station"></div>
+
+                <div class="insight-box" id="sl-insight">
+                    "Select a station to see its monthly mean sea level and long-term trend."
+                </div>
+            </section>
+
+        </aside>
+
+        <aside class="sidebar-right">
+
+            <section class="card risk-card">
+                <p class="risk-label">Selected station</p>
+                <h3 class="sl-big" id="sl-station-level">--</h3>
+                <span class="sl-unit" id="sl-station-month">Select a station</span>
+                <h4 id="sl-station-name">No station selected</h4>
+                <span class="sl-unit" id="sl-station-trend"></span>
+            </section>
+
+            <section class="card risk-card">
+                <p class="risk-label">All stations</p>
+                <h3 class="sl-big" id="sl-avg-trend">--</h3>
+                <span class="sl-unit">average trend, mm per year</span>
+                <h4 id="sl-station-count">0 stations</h4>
+                <span class="sl-unit">South African coast</span>
+            </section>
+
+            <section class="card map-legend">
+                <div class="legend-header">
+                    <h2>Map Legend</h2>
+                    <span class="info-icon" title="Colours show each station's long-term trend. Thresholds are demo values.">i</span>
+                </div>
+
+                <ul class="legend-list">
+                    <li class="active"><span class="dot blue"></span> Tide gauge stations</li>
+                    <li><span class="dot red"></span> Faster rise (3.5 mm/yr or more)</li>
+                    <li><span class="dot yellow"></span> Moderate rise (2.5 to 3.5 mm/yr)</li>
+                    <li><span class="dot green"></span> Slower rise (under 2.5 mm/yr)</li>
+                </ul>
+
+                <p class="sl-demo-note">Synthetic demo data. Not observed measurements.</p>
+            </section>
+
+        </aside>
+
+        <footer class="bottom-panel">
+            <div class="timeline-controls">
+                <div class="title-area">
+                    <div class="play-btn" id="play-btn" role="button" tabindex="0" aria-label="Play timeline">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                    </div>
+                    <h3>Sea Level Timeline</h3>
+                </div>
+
+                <div class="badge" id="sl-range-badge">HISTORICAL DATA</div>
+
+                <div class="target-icon" id="recenter-btn" title="Recenter Map">
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="22" y1="12" x2="18" y2="12"></line>
+                        <line x1="6" y1="12" x2="2" y2="12"></line>
+                        <line x1="12" y1="6" x2="12" y2="2"></line>
+                        <line x1="12" y1="22" x2="12" y2="18"></line>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="slider-wrapper">
+                <input type="range" id="time-slider" min="0" max="0" value="0" step="1" disabled>
+
+                <div class="slider-labels">
+                    <span id="sl-label-first">--</span>
+                    <span class="current" id="sl-label-current">--</span>
+                    <span id="sl-label-last">--</span>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="../scripts/sea-level-page.js"></script>
+</body>
+</html>

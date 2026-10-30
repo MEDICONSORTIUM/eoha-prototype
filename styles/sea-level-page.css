@@ -1,0 +1,108 @@
+/* Sea level dashboard additions.
+   Layout, cards, nav and theme come from theme.css and ncd-page.css. */
+
+#map {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+body {
+  position: relative;
+  z-index: 1;
+}
+
+header,
+.sidebar-left,
+.sidebar-right,
+.bottom-panel {
+  position: relative;
+  z-index: 2;
+}
+
+.sl-status {
+  margin: 0.75rem 0 0;
+  font-size: 0.8rem;
+  opacity: 0.75;
+}
+
+.sl-status.error {
+  color: #c0392b;
+  opacity: 1;
+}
+
+.sl-big {
+  margin: 0.25rem 0 0;
+  font-size: 2.25rem;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.sl-unit {
+  display: block;
+  font-size: 0.8rem;
+  opacity: 0.75;
+}
+
+.risk-card h4 {
+  margin: 0.75rem 0 0.15rem;
+}
+
+.sl-chart {
+  margin-top: 0.75rem;
+}
+
+.sl-chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.sl-chart .line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.sl-chart .axis-label {
+  fill: currentColor;
+  font-size: 9px;
+  opacity: 0.7;
+}
+
+.sl-chart .guide {
+  stroke: currentColor;
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  opacity: 0.45;
+}
+
+.sl-chart .point {
+  fill: #2d7ff9;
+  stroke: #ffffff;
+  stroke-width: 1.5;
+}
+
+.sl-demo-note {
+  margin: 0.75rem 0 0;
+  font-size: 0.75rem;
+  opacity: 0.75;
+}
+
+.sl-popup strong {
+  display: block;
+  margin-bottom: 0.15rem;
+}
+
+.play-btn[aria-pressed="true"] {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.play-btn:focus-visible,
+.target-icon:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
