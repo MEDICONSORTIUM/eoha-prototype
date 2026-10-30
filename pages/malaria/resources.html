@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Malaria Guard - Resource Center</title>
+    <link
+      rel="icon"
+      href="../../assets/icons/favicon.svg?v=eoha-1"
+      type="image/svg+xml"
+    />
+    <link rel="stylesheet" href="../../styles/shared/theme.css" />
+    <link rel="stylesheet" href="../../styles/shared/resources.css" />
+    <script src="../../scripts/shared/theme.js"></script>
+    <link rel="stylesheet" href="../../styles/shared/mobile.css?v=20261020-3" />
+    <link rel="stylesheet" href="../../styles/shared/components.css" />
+  </head>
+
+  <body class="resources-page">
+    <div class="page-layout">
+      <header class="top-bar">
+        <a
+          class="brand-pill brand-home"
+          href="../../index.html"
+          aria-label="EOHA home"
+        >
+          <img
+            src="../../assets/images/mca-logo.jpg"
+            alt="MCA logo"
+            class="brand-pill-logo"
+          />
+          <div class="brand-copy">
+            <h1>Malaria Guard</h1>
+            <small>Earth Observation Health Analytics</small>
+          </div>
+        </a>
+
+        <nav class="nav-pill" aria-label="Malaria navigation">
+          <a href="dashboard.html">Dashboard</a>
+          <a href="forecasting.html">Forecasting</a>
+          <a href="resources.html" class="active" aria-current="page">Resource Center</a>
+          <a href="reports.html">Reports</a>
+        </nav>
+
+        <div class="actions-pill">
+          <a href="../../index.html" class="back-link">Back</a>
+          <div class="theme-picker" role="group" aria-label="Color theme">
+            <button
+              type="button"
+              data-theme-choice="system"
+              aria-pressed="false"
+            >
+              System
+            </button>
+            <button
+              type="button"
+              data-theme-choice="light"
+              aria-pressed="false"
+            >
+              Light
+            </button>
+            <button type="button" data-theme-choice="dark" aria-pressed="false">
+              Dark
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="content-area">
+        <div class="content-header">
+          <div>
+            <h2>Resource Center</h2>
+            <p class="content-subtitle">
+              Research papers, datasets, and methodology documentation
+            </p>
+          </div>
+        </div>
+
+        <div class="filter-bar">
+          <button class="filter-btn active" data-category="all">All</button>
+          <button class="filter-btn" data-category="research">Research</button>
+          <button class="filter-btn" data-category="data">Data</button>
+          <button class="filter-btn" data-category="methodology">
+            Methodology
+          </button>
+          <button class="filter-btn" data-category="tools">Tools</button>
+        </div>
+
+        <div class="resource-grid" id="resource-grid">
+          <article class="resource-card" data-category="research">
+            <div class="card-top">
+              <span class="file-icon" aria-hidden="true">PDF</span>
+              <span class="category-badge badge-research">Research</span>
+            </div>
+            <img
+              class="resource-thumbnail"
+              src="../../assets/images/know_-malaria_GettyImages959911388_Thumb-2.avif"
+              alt=""
+              loading="lazy"
+            />
+            <h3>WHO World Malaria Report 2024</h3>
+            <p>
+              Comprehensive annual assessment of malaria trends, interventions,
+              and outcomes across Africa.
+            </p>
+            <a
+              href="https://www.who.int/teams/global-malaria-programme/reports/world-malaria-report-2024"
+              target="_blank"
+              rel="noopener"
+              class="resource-btn"
+              >View Report →</a
+            >
+          </article>
+
+          <article class="resource-card" data-category="research">
+            <div class="card-top">
+              <span class="file-icon" aria-hidden="true">PDF</span>
+              <span class="category-badge badge-research">Research</span>
+            </div>
+            <img
+              class="resource-thumbnail"
+              src="../../assets/images/iss072e807123_lrg.jpg"
+              alt=""
+              loading="lazy"
+            />
+            <h3>Earth Observation for Malaria Control</h3>
+            <p>
+              Peer-reviewed review of satellite-derived environmental indicators
+              and their role in malaria risk modelling in sub-Saharan Africa.
+            </p>
+            <a
+              href="https://www.mdpi.com/2072-4292/13/3/431"
+              target="_blank"
+              rel="noopener"
+              class="resource-btn"
+              >Read Paper →</a
+            >
+          </article>
+
+          <article class="resource-card" data-category="data">
+            <div class="card-top">
+              <span class="file-icon" aria-hidden="true">EO</span>
+              <span class="category-badge badge-data">Data</span>
+            </div>
+            <img
+              class="resource-thumbnail"
+              src="../../assets/images/northatlantic_tmo_2017197_lrg.jpg"
+              alt=""
+              loading="lazy"
+            />
+            <h3>NASA MODIS Land Surface Temperature</h3>
+            <p>
+              MOD11A1 daily LST product at 1 km resolution — a key input to the
+              EOHA malaria risk model.
+            </p>
+            <a
+              href="https://lpdaac.usgs.gov/products/mod11a1v061/"
+              target="_blank"
+              rel="noopener"
+              class="resource-btn"
+              >Access Data →</a
+            >
+          </article>
+
+          <article class="resource-card" data-category="data">
+            <div class="card-top">
+              <span class="file-icon" aria-hidden="true">DOC</span>
+              <span class="category-badge badge-data">Data</span>
+            </div>
+            <img
+              class="resource-thumbnail"
+              src="../../assets/images/hartbeesdam_oli2_20220810_lrg.jpg"
+              alt=""
+              loading="lazy"
+            />
+            <h3>Sentinel-2 Multispectral Imagery</h3>
+            <p>
+              ESA Copernicus Sentinel-2 surface reflectance data used to derive
+              NDWI water indices and habitat classification.
+            </p>
+            <a
+              href="https://dataspace.copernicus.eu/"
+              target="_blank"
+              rel="noopener"
+              class="resource-btn"
+              >Access Data →</a
+            >
+          </article>
+
+          <article class="resource-card" data-category="data">
+            <div class="card-top">
+              <span class="file-icon" aria-hidden="true">DOC</span>
+              <span class="category-badge badge-data">Data</span>
+            </div>
+            <h3>South Africa Province Boundaries</h3>
+            <p>
+              Administrative level 1 province boundaries for geographic
+              reference. These are not ward boundaries.
+            </p>
+            <a
+              href="../../data/shared/South_Africa_ADM1.geojson"
+              download
+              class="resource-btn"
+              >Download GeoJSON →</a
+            >
+          </article>
+
+          <article class="resource-card" data-category="methodology">
+            <div class="card-top">
+              <span class="file-icon" aria-hidden="true">DOC</span>
+              <span class="category-badge badge-methodology">Methodology</span>
+            </div>
+            <h3>EOHA Risk Scoring Methodology</h3>
+            <p>
+              How EOHA combines soil moisture, land surface temperature, NDWI,
+              and population density into a composite malaria risk score.
+            </p>
+            <div class="method-snippet">
+              <code>Risk = SM(40) + LST(30) + NDWI(20) + PopDensity(10)</code>
+            </div>
+            <span class="resource-btn resource-btn-static"
+              >Internal Document</span
+            >
+          </article>
+
+          <article class="resource-card" data-category="methodology">
+            <div class="card-top">
+              <span class="file-icon" aria-hidden="true">DOC</span>
+              <span class="category-badge badge-methodology">Methodology</span>
+            </div>
+            <h3>Forecast API requirements</h3>
+            <p>
+              Forecasting requires a backend model and an endpoint returning
+              forecast values. This feature remains unavailable until those are
+              connected.
+            </p>
+            <span class="resource-btn resource-btn-static"
+              >API integration pending</span
+            >
+          </article>
+
+          <article class="resource-card" data-category="tools">
+            <div class="card-top">
+              <span class="file-icon" aria-hidden="true">DOC</span>
+              <span class="category-badge badge-tools">Tools</span>
+            </div>
+            <h3>Leaflet.js Interactive Maps</h3>
+            <p>
+              Open-source mapping library powering the EOHA dashboard maps and
+              heatmap overlays.
+            </p>
+            <a
+              href="https://leafletjs.com"
+              target="_blank"
+              rel="noopener"
+              class="resource-btn"
+              >Documentation →</a
+            >
+          </article>
+        </div>
+      </main>
+    </div>
+
+    <script src="../../scripts/shared/resources.js"></script>
+  </body>
+</html>

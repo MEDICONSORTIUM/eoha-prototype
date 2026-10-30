@@ -1,6 +1,5 @@
 # Dependencies
 node_modules/
-package-lock.json
 
 # Testing
 playwright-report/
@@ -39,3 +38,7 @@ npm-debug.log*
 # Temporary files
 *.tmp
 *.bak
+
+# Python caches
+__pycache__/
+*.py[cod]

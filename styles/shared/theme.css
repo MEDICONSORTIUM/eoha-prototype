@@ -1,0 +1,192 @@
+/* Semantic palette shared by all EOHA routes. */
+:root {
+  color-scheme: light;
+  --bg-main: #f4f7fb;
+  --bg-page: #f4f7fb;
+  --bg-soft: #eaf0f7;
+  --panel-bg: #ffffff;
+  --surface-raised: #f0f5fb;
+  --text-dark: #101e35;
+  --text-primary: #101e35;
+  --text-muted: #52647e;
+  --text-secondary: #52647e;
+  --primary: #0865e9;
+  --primary-brand: #0865e9;
+  --primary-hover: #0756c7;
+  --on-primary: #ffffff;
+  --accent-soft: #e7f1ff;
+  --border: #dce5ef;
+  --shadow: 0 4px 20px rgba(28, 52, 84, 0.045);
+  --risk-high: #c52e3a;
+  --risk-mod: #a45a00;
+  --risk-low: #187443;
+  --danger-soft: #ffe8eb;
+  --warning-soft: #fff1ce;
+  --success-soft: #e0f5e9;
+  --purple-soft: #eee9ff;
+  --purple-text: #6544a9;
+  --map-bg: #e7eef3;
+  --chart-band: rgba(8, 101, 233, 0.12);
+}
+[data-theme='dark'] {
+  color-scheme: dark;
+  --bg-main: #0b1220;
+  --bg-page: #0b1220;
+  --bg-soft: #101c2d;
+  --panel-bg: #162235;
+  --surface-raised: #223249;
+  --text-dark: #f1f5f9;
+  --text-primary: #f1f5f9;
+  --text-muted: #b0bfd1;
+  --text-secondary: #b0bfd1;
+  --primary: #38bdf8;
+  --primary-brand: #38bdf8;
+  --primary-hover: #76d5ff;
+  --on-primary: #082033;
+  --accent-soft: #15354e;
+  --border: #2a3b51;
+  --shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+  --risk-high: #ff9ca6;
+  --risk-mod: #ffd077;
+  --risk-low: #7ce2ac;
+  --danger-soft: #482734;
+  --warning-soft: #413727;
+  --success-soft: #193e35;
+  --purple-soft: #302a4a;
+  --purple-text: #c4b4fa;
+  --map-bg: #101c29;
+  --chart-band: rgba(56, 189, 248, 0.16);
+}
+* {
+  box-sizing: border-box;
+}
+html {
+  background: var(--bg-main);
+  scroll-behavior: smooth;
+}
+body {
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+button,
+input,
+select {
+  font: inherit;
+}
+button,
+a,
+input,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+:is(a, button, input, select, [tabindex]):focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 3px;
+}
+button {
+  cursor: pointer;
+}
+button:disabled,
+select:disabled,
+input:disabled {
+  cursor: not-allowed;
+}
+::selection {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+.brand-pill-logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: white;
+}
+.brand-home {
+  color: var(--text-dark);
+  text-decoration: none;
+}
+.brand-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.brand-copy small {
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  font-weight: 400;
+}
+.back-link {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 8px;
+  border-radius: 20px;
+}
+.back-link:hover {
+  background: var(--surface-raised);
+  color: var(--text-dark);
+}
+.theme-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px;
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  border-radius: 24px;
+  flex-shrink: 0;
+}
+.theme-picker button {
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 20px;
+  min-height: 34px;
+  transition:
+    background-color 0.18s,
+    color 0.18s;
+}
+.theme-picker button:hover {
+  color: var(--text-dark);
+}
+.theme-picker button[aria-pressed='true'] {
+  background: var(--primary);
+  color: var(--on-primary);
+  box-shadow: var(--shadow);
+}
+.eyebrow {
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.skip-link {
+  position: fixed;
+  left: 16px;
+  top: -100px;
+  z-index: 9999;
+  background: var(--panel-bg);
+  color: var(--text-dark);
+  padding: 12px 18px;
+  border-radius: 8px;
+}
+.skip-link:focus {
+  top: 12px;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

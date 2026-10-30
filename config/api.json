@@ -1,0 +1,7 @@
+{
+  "defaultTarget": "hosted",
+  "browserSelectionEnabled": false,
+  "targets": {
+    "hosted": "https://eoha-backend.onrender.com"
+  }
+}

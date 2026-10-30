@@ -1,0 +1,11 @@
+{
+  "/pages/malaria-page.html": "/pages/malaria/dashboard.html",
+  "/pages/malaria-forecasting.html": "/pages/malaria/forecasting.html",
+  "/pages/malaria-reports.html": "/pages/malaria/reports.html",
+  "/pages/resource-center.html": "/pages/malaria/resources.html",
+  "/pages/ncd-page.html": "/pages/ncd/dashboard.html",
+  "/pages/ncd-forecasting.html": "/pages/ncd/forecasting.html",
+  "/pages/ncd-reports.html": "/pages/ncd/reports.html",
+  "/pages/ncd-resource-center.html": "/pages/ncd/resources.html",
+  "/pages/contact-page.html": "/pages/contact/index.html"
+}

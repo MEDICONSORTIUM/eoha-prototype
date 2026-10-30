@@ -1,0 +1,19 @@
+{
+  "name": "eoha-prototype",
+  "version": "1.0.0",
+  "private": true,
+  "description": "EOHA JavaScript frontend preview and read-only API proxy",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node tools/serve.cjs",
+    "test": "node --test tests/malaria/api.test.cjs tests/malaria/forecast.test.cjs tests/ncd/data.test.cjs tests/repository/structure.test.cjs tests/server/serve.test.cjs",
+    "test:browser": "node tests/malaria/api.browser.cjs && node tests/shared/theme.browser.cjs",
+    "test:live": "node tests/malaria/api.live.cjs",
+    "start:hosted": "node tools/serve.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.57.0"
+  }
+}
