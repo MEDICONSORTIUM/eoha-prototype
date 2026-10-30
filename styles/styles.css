@@ -24,7 +24,7 @@ a { color: inherit; text-decoration: none; }
 .home-button.ghost { background: rgba(5, 19, 37, .25); color: white; border-color: #a6bbd1; }
 .home-button.ghost:hover { background: rgba(255, 255, 255, .12); }
 .hero-caption { position: absolute; right: 24px; bottom: 18px; font-size: .65rem; color: #b7cce0; }
-.home-modules { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; margin-top: 24px; }
+.home-modules { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 20px; margin-top: 24px; }
 .module-card { display: flex; flex-direction: column; align-items: flex-start; padding: 28px; gap: 12px; border: 1px solid var(--border); border-radius: 16px; background: var(--panel-bg); box-shadow: var(--shadow); transition: transform .2s, border-color .2s; }
 .module-card:hover { transform: translateY(-3px); border-color: var(--primary); }
 .module-icon { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; margin-bottom: 4px; }
@@ -33,6 +33,7 @@ a { color: inherit; text-decoration: none; }
 .module-icon.green { color: var(--risk-low); background: var(--success-soft); }
 .module-icon.purple { color: var(--purple-text); background: var(--purple-soft); }
 .module-icon.amber { color: var(--risk-mod); background: var(--warning-soft); }
+.module-icon.teal { color: var(--primary); background: var(--accent-soft); }
 .module-card h2 { font-size: 1.05rem; letter-spacing: -.03em; }
 .module-card p { color: var(--text-muted); font-size: .83rem; line-height: 1.7; flex: 1; }
 .module-action { display: flex; justify-content: space-between; width: 100%; color: var(--primary); font-size: .8rem; font-weight: 600; margin-top: 8px; }

@@ -1,0 +1,23 @@
+.biosecurity-dashboard .top-bar { pointer-events: none; }
+.biosecurity-dashboard .top-bar > * { pointer-events: auto; }
+.biosecurity-dashboard .sidebar-left, .biosecurity-dashboard .sidebar-right { min-height: 0; }
+.biosecurity-dashboard .play-btn, .biosecurity-dashboard .target-icon { border: 0; }
+.biosecurity-dashboard .play-btn:disabled { opacity: .5; cursor: not-allowed; }
+.biosecurity-dashboard .play-btn[aria-pressed="true"] svg { visibility: hidden; }
+.biosecurity-dashboard .play-btn[aria-pressed="true"]::before { content: 'Ⅱ'; position: absolute; }
+.biosecurity-dashboard .dot.neutral { background: var(--text-muted); }
+.biosecurity-dashboard .leaflet-popup-content-wrapper, .biosecurity-dashboard .leaflet-popup-tip { background: var(--bg-page); color: var(--text-dark); }
+.biosecurity-dashboard :is(button, select, a):focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+.biosecurity-dashboard .input-group select:disabled { opacity: .55; cursor: not-allowed; }
+.biosecurity-dashboard .data-status { margin: 12px 0 0; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; font-size: .75rem; line-height: 1.5; color: var(--text-muted); }
+.biosecurity-dashboard .data-status[data-state="ready"] { border-color: var(--risk-low); }
+.biosecurity-dashboard .data-status[data-state="loading"] { border-color: var(--primary); color: var(--text-dark); }
+.biosecurity-dashboard .factor-card .factor-row { margin-bottom: 12px; }
+.biosecurity-dashboard .data-status[data-state="empty"], .biosecurity-dashboard .data-status[data-state="error"] { border-color: var(--risk-high); color: var(--text-dark); }
+.biosecurity-dashboard #sel-text, .biosecurity-dashboard #mean-text { font-size: 1.3rem; }
+.biosecurity-dashboard #sel-sub, .biosecurity-dashboard #mean-sub { font-size: .6rem; white-space: nowrap; }
+.biosecurity-dashboard .trend-card .trend-canvas { position: relative; height: 150px; }
+.biosecurity-dashboard .ramp { height: 10px; border-radius: 999px; background: linear-gradient(90deg, #34a853, #f9bb06, #d93025); margin: 10px 0 4px; }
+.biosecurity-dashboard .ramp-labels { display: flex; justify-content: space-between; font-size: .7rem; color: var(--text-muted); margin-bottom: 10px; }
+.biosecurity-dashboard .legend-note { margin: 8px 0 0; font-size: .7rem; line-height: 1.4; color: var(--text-muted); }
+@media (min-width: 1101px) { .biosecurity-dashboard .leaflet-bottom.leaflet-left { left: 340px; bottom: 180px; } }
