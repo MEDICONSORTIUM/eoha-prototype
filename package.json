@@ -8,12 +8,10 @@
   },
   "scripts": {
     "start": "node tools/serve.cjs",
-    "test": "node --test tests/malaria/api.test.cjs tests/ncd/data.test.cjs tests/repository/structure.test.cjs tests/server/serve.test.cjs",
-    "test:browser": "node tests/malaria/api.browser.cjs && node tests/shared/theme.browser.cjs && node tests/shared/api-selector.browser.cjs",
+    "test": "node --test tests/malaria/api.test.cjs tests/malaria/forecast.test.cjs tests/ncd/data.test.cjs tests/repository/structure.test.cjs tests/server/serve.test.cjs",
+    "test:browser": "node tests/malaria/api.browser.cjs && node tests/shared/theme.browser.cjs",
     "test:live": "node tests/malaria/api.live.cjs",
-    "start:hosted": "node tools/serve.cjs --api hosted",
-    "start:local": "node tools/serve.cjs --api local",
-    "start:auto": "node tools/serve.cjs --api auto"
+    "start:hosted": "node tools/serve.cjs"
   },
   "devDependencies": {
     "playwright": "1.57.0"

@@ -29,10 +29,12 @@ const inputs = regions.flatMap((region) =>
   try {
     for (const width of [1440, 390]) {
       const context = await browser.newContext({ viewport: { width, height: 1000 } });
+      let apiRequests = 0;
       const csvRequests = [],
         errors = [];
       context.on('request', (request) => {
         if (request.url().endsWith('.csv')) csvRequests.push(request.url());
+        if (request.url().includes('/api/malaria-risk-inputs')) apiRequests++;
       });
       context.on('page', (page) => page.on('pageerror', (error) => errors.push(error.message)));
       await context.route('**/api/**', (route) => {
@@ -53,6 +55,8 @@ const inputs = regions.flatMap((region) =>
       await reports.goto(new URL('pages/malaria/reports.html', base).href);
       await reports.locator('#api-status').filter({ hasText: 'API connected' }).waitFor();
       assert.equal(await reports.locator('#stat-total').textContent(), '30');
+      assert.match(await reports.locator('#api-status').innerText(), /Cached hosted data/);
+      assert.equal(apiRequests, 1, 'reports should reuse the dashboard dataset');
       assert.equal(await reports.locator('#table-body tr').count(), 25);
       await reports.click('#next-page');
       assert.equal(await reports.locator('#table-body tr').count(), 5);

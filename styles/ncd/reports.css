@@ -1,0 +1,4 @@
+.column-sort { color: inherit; background: transparent; border: 0; font: inherit; cursor: pointer; padding: 4px 0; text-align: left; }
+.reports-page .stat-val { font-size: clamp(1.2rem, 2vw, 2rem); }
+#api-status { line-height: 1.6; }
+#retry-btn { align-self: start; padding: 8px 12px; background: var(--bg-soft); color: var(--text-dark); border: 1px solid var(--border); border-radius: 8px; }

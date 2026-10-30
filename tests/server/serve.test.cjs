@@ -181,208 +181,95 @@ test('defaults to the hosted Render API without a local backend dependency', () 
   );
 });
 
-test('local API selection remains explicit and optional', () => {
-  assert.equal(resolve_backend({ api_target: 'local' }).origin, 'http://127.0.0.1:8080');
-  assert.equal(
-    resolve_backend({ api_target: 'hosted', backend: 'https://example.com' }).origin,
-    'https://example.com',
-  );
+test('removed local and Auto profiles cannot be selected', () => {
+  for (const api_target of ['local', 'auto', 'unknown']) {
+    assert.throws(() => resolve_backend({ api_target }), /Only the hosted API/);
+  }
 });
-
-test('unknown API profiles fail instead of silently selecting another backend', () => {
-  assert.throws(() => resolve_backend({ api_target: 'unknown' }), /hosted.*local/);
-  assert.throws(
-    () =>
-      resolve_backend({
-        api_target: 'auto',
-        api_config: {
-          defaultTarget: 'hosted',
-          browserSelectionEnabled: false,
-          targets: { hosted: 'https://example.com' },
-        },
-      }),
-    /Auto requires/,
-  );
-});
-
-test('Auto tries hosted before local and reports the source actually used', async (context) => {
-  const calls = [];
-  const hosted = await start_server(
+test('stale browser preferences never change hosted routing or hide failures', async (context) => {
+  let calls = 0;
+  const backend = await start_server(
     context,
     http.createServer((req, res) => {
-      calls.push('hosted');
+      calls++;
       res.writeHead(503);
-      res.end('unavailable');
+      res.end('hosted unavailable');
     }),
   );
-  const local = await start_server(
-    context,
-    http.createServer((req, res) => {
-      calls.push('local');
-      res.setHeader('Content-Type', 'application/json');
-      res.end(JSON.stringify({ success: true, data: ['local'] }));
-    }),
-  );
-  const api_config = {
-    defaultTarget: 'auto',
-    browserSelectionEnabled: true,
-    autoOrder: ['hosted', 'local'],
-    targets: { hosted, local },
-  };
   const base = await start_server(
     context,
-    create_preview_server({ root: fixture_root(context), api_config }),
+    create_preview_server({ root: fixture_root(context), backend }),
   );
-  const response = await fetch(base + '/api/regions');
-  assert.equal(response.status, 200);
-  assert.equal(response.headers.get('x-eoha-api-source'), 'local');
-  assert.deepEqual((await response.json()).data, ['local']);
-  assert.deepEqual(calls, ['hosted', 'local']);
-});
-
-test('Auto keeps hosted success and does not mask missing endpoints', async (context) => {
-  let status = 200;
-  let localCalls = 0;
-  const hosted = await start_server(
-    context,
-    http.createServer((req, res) => {
-      res.writeHead(status);
-      res.end('hosted');
-    }),
-  );
-  const local = await start_server(
-    context,
-    http.createServer((req, res) => {
-      localCalls++;
-      res.end('local');
-    }),
-  );
-  const api_config = {
-    defaultTarget: 'auto',
-    browserSelectionEnabled: true,
-    targets: { hosted, local },
-  };
-  const base = await start_server(
-    context,
-    create_preview_server({ root: fixture_root(context), api_config }),
-  );
-  assert.equal((await fetch(base + '/api/regions')).headers.get('x-eoha-api-source'), 'hosted');
-  status = 404;
-  assert.equal((await fetch(base + '/api/regions')).status, 404);
-  assert.equal(localCalls, 0);
-});
-
-test('manual browser modes do not fail over or accept arbitrary URLs', async (context) => {
-  const calls = [];
-  const hosted = await start_server(
-    context,
-    http.createServer((req, res) => {
-      calls.push('hosted');
-      res.writeHead(503);
-      res.end('hosted failure');
-    }),
-  );
-  const local = await start_server(
-    context,
-    http.createServer((req, res) => {
-      calls.push('local');
-      res.end('local');
-    }),
-  );
-  const api_config = {
-    defaultTarget: 'auto',
-    browserSelectionEnabled: true,
-    targets: { hosted, local },
-  };
-  const base = await start_server(
-    context,
-    create_preview_server({ root: fixture_root(context), api_config }),
-  );
-  assert.equal(
-    (await fetch(base + '/api/regions', { headers: { 'X-EOHA-API-Target': 'hosted' } })).status,
-    503,
-  );
-  assert.deepEqual(calls, ['hosted']);
-  const selected = await fetch(base + '/api/regions', {
-    headers: { 'X-EOHA-API-Target': 'local' },
-  });
-  assert.equal(selected.headers.get('x-eoha-api-source'), 'local');
-  assert.equal(
-    (
-      await fetch(base + '/api/regions', {
-        headers: { 'X-EOHA-API-Target': 'https://example.com' },
-      })
-    ).status,
-    400,
-  );
-});
-
-test('disabling browser selection enforces the configured default despite stale overrides', async (context) => {
-  const calls = [];
-  const hosted = await start_server(
-    context,
-    http.createServer((req, res) => {
-      calls.push('hosted');
-      res.end('hosted');
-    }),
-  );
-  const local = await start_server(
-    context,
-    http.createServer((req, res) => {
-      calls.push('local');
-      res.end('local');
-    }),
-  );
-  const api_config = {
+  for (const mode of ['local', 'auto', 'https://example.com']) {
+    const response = await fetch(base + '/api/regions', {
+      headers: { 'X-EOHA-API-Target': mode },
+    });
+    assert.equal(response.status, 503);
+    assert.equal(response.headers.get('x-eoha-api-source'), 'hosted');
+  }
+  assert.equal(calls, 3);
+  const settings = await (await fetch(base + '/api-settings')).json();
+  assert.deepEqual(settings, {
     defaultTarget: 'hosted',
     browserSelectionEnabled: false,
-    targets: { hosted },
-  };
+    modes: ['hosted'],
+  });
+});
+test('preserves upstream gzip so large responses are compressed over the wire', async (context) => {
+  const { gzipSync } = require('node:zlib');
+  const body = JSON.stringify({
+    success: true,
+    data: ['compressed measurements'],
+  });
+  let encoding;
+  const backend = await start_server(
+    context,
+    http.createServer((req, res) => {
+      encoding = req.headers['accept-encoding'];
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Content-Encoding': 'gzip',
+      });
+      res.end(gzipSync(body));
+    }),
+  );
   const base = await start_server(
     context,
-    create_preview_server({ root: fixture_root(context), api_config }),
+    create_preview_server({ root: fixture_root(context), backend }),
   );
-  const settings = await (await fetch(base + '/api-settings')).json();
-  assert.equal(settings.browserSelectionEnabled, false);
-  const response = await fetch(base + '/api/regions', {
-    headers: { 'X-EOHA-API-Target': 'local' },
+  const response = await fetch(base + '/api/malaria-risk-inputs', {
+    headers: { 'Accept-Encoding': 'gzip' },
   });
-  assert.equal(response.headers.get('x-eoha-api-source'), 'hosted');
-  assert.deepEqual(calls, ['hosted']);
+  assert.equal(encoding, 'gzip');
+  assert.equal(response.headers.get('content-encoding'), 'gzip');
+  assert.equal(await response.text(), body);
 });
-
-test('Auto falls back on connection failure and timeout, with hosted-first order enforced', async (context) => {
-  const local = await start_server(
+test('Live Server loopback origins can read the proxy; foreign origins cannot', async (context) => {
+  const backend = await start_server(
     context,
-    http.createServer((req, res) => res.end('local')),
+    http.createServer((req, res) => res.end('{}')),
   );
-  const stalled = await start_server(
+  const base = await start_server(
     context,
-    http.createServer(() => {}),
+    create_preview_server({ root: fixture_root(context), backend }),
   );
-  for (const hosted of ['http://127.0.0.1:1', stalled]) {
-    const api_config = {
-      defaultTarget: 'auto',
-      browserSelectionEnabled: true,
-      targets: { hosted, local },
-    };
-    const base = await start_server(
-      context,
-      create_preview_server({ root: fixture_root(context), api_config, timeout_ms: 30 }),
+  for (const origin of ['http://127.0.0.1:5500', 'http://localhost:5501']) {
+    const response = await fetch(base + '/api/health', {
+      headers: { Origin: origin },
+    });
+    assert.equal(response.headers.get('access-control-allow-origin'), origin);
+    assert.equal(
+      (
+        await fetch(base + '/api/health', {
+          method: 'OPTIONS',
+          headers: { Origin: origin },
+        })
+      ).status,
+      204,
     );
-    const response = await fetch(base + '/api/regions');
-    assert.equal(response.status, 200);
-    assert.equal(response.headers.get('x-eoha-api-source'), 'local');
   }
-  assert.throws(
-    () =>
-      create_preview_server({
-        api_config: {
-          defaultTarget: 'auto',
-          targets: { hosted: local, local },
-          autoOrder: ['local', 'hosted'],
-        },
-      }),
-    /hosted first/,
-  );
+  const response = await fetch(base + '/api/health', {
+    headers: { Origin: 'https://example.com' },
+  });
+  assert.equal(response.headers.get('access-control-allow-origin'), null);
 });

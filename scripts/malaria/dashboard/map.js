@@ -6,6 +6,8 @@ const map = L.map('map', { zoomControl: false }).setView(
 EOHAMap.addBasemap(map);
 
 const city_layer = L.layerGroup().addTo(map);
+// One shared canvas avoids thousands of individual SVG nodes for ward hit areas.
+const ward_renderer = L.canvas({ padding: 0.5 });
 
 const heat_layer = L.heatLayer([], {
   radius: 20,
@@ -99,6 +101,7 @@ function create_ward_marker(ward_data) {
   const risk_color = get_risk_color(risk_score);
 
   const marker = L.circleMarker([ward_data.latitude, ward_data.longitude], {
+    renderer: ward_renderer,
     radius: 12,
     fillColor: risk_color,
     color: '#fff',

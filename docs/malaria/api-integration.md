@@ -5,35 +5,30 @@ of the Limpopo CSV. Both use the existing four-factor risk formula and exclude
 records with missing required inputs. NCD historical observation browsing remains
 separate. Synthetic data and fabricated forecasting have been removed.
 
-## Hosted-first Auto mode; removable browser selection
+## Hosted-only access
 
-Start with `npm start` or `npm run start:auto` for hosted-first Auto, or
-`npm run start:hosted` / `npm run start:local` for an explicit process default. Node forwards
-same-origin `/api/*` requests to `https://eoha-backend.onrender.com`; no local
-Spring Boot process or database credentials are required for hosted mode.
+Run `npm start` and open `http://localhost:8766/pages/malaria/dashboard.html`.
+Node forwards `/api/*` only to `https://eoha-backend.onrender.com`, configured in
+`config/api.json`. No local Java backend or database credentials are needed.
+Local/Auto modes and the browser selector have been removed; stale preferences
+are ignored.
 
-For local development, start the sibling backend with `bash mvnw spring-boot:run`,
-then run `npm run start:local` in the prototype. Only local mode needs the backend's
-ignored `.env.local` database settings. The browser still uses relative `/api`.
+Live Server on loopback port 5500/5501 is also supported while Node runs on port
+8766. Shared browser configuration sends API requests to that bridge; restricted
+loopback CORS permits the browser to read its responses. Render remains the sole
+data source. Plain static servers cannot perform API forwarding themselves.
 
-Profiles and the default are in `config/api.json`. CLI equivalents are
-`node tools/serve.cjs --api hosted` and `node tools/serve.cjs --api local`.
-An explicit `--backend URL` overrides the profile origin; `--port PORT` changes
-the frontend port. Use the browser selector to switch sources and reload the dataset, or restart
-the frontend to change its process default. Auto retries network failures, timeouts and HTTP 502/503/504 on Local before
-forwarding a body. Manual modes never fail over; there is no CSV fallback.
+The proxy preserves gzip, reducing the large JSON transfer. Browser CacheStorage
+reuses successful hosted records for five minutes across dashboard/report loads on
+the same origin. Cached data is labelled; failures and results without any complete scoring records are
+not cached. After expiry the next load refreshes. The backend has its own
+60-second query cache, so observation age can include both cache layers.
+A shared Canvas renderer reduces ward marker DOM work.
 
-Open `http://localhost:8766/pages/malaria/dashboard.html` or
-`http://localhost:8766/pages/malaria/reports.html`. Direct browser requests to
-Render require backend CORS, which the deployed API did not advertise in testing.
-The JavaScript same-origin proxy works without that browser CORS permission.
-
-On 30 October 2026, hosted database readiness and environmental variables returned
-200, but the required `/api/malaria-risk-inputs` route returned 404. The backend
-integration's scoring-input controller/service must be deployed on Render before
-hosted malaria scoring can load. The frontend now gives an actionable error.
-See the [README](../../README.md) for both startup options, all endpoints and
-JavaScript consumption examples.
+The hosted joined endpoint now returns 200 with real ward/month records. The
+earlier missing-route deployment blocker is resolved. See the
+[README](../../README.md) for all routes, response locations, configuration,
+JavaScript examples and diagnostics.
 
 ## API contract and data conversion
 
@@ -92,13 +87,31 @@ check confirmed ward scoring, timeline changes, report totals, zero CSV reads an
 zero JavaScript errors. Backend tests passed (3 tests), along with frontend API
 unit tests and desktop/mobile browser checks.
 
-Both repositories use `API-integration`; backend work starts from GitHub `main`
-commit `e6c79ee`. Database access is read-only; no database records were modified.
+Database access is read-only; no database records were modified.
 
-## Removing optional selection
+## Experimental malaria outlook
 
-Set `defaultTarget` to `hosted` and `browserSelectionEnabled` to `false` in
-`config/api.json`, then restart Node. The server ignores old browser preferences
-and overrides. The unused local target can be removed. The selector script, CSS
-and markup can then be deleted without changing API loading or scoring. Source
-policy lives in `tools/api-source.cjs`; the browser helper is optional.
+The forecasting page restores the original EOHA chart and card layout. It consumes
+`EOHAMalariaAPI.load()` and does not read CSVs or generate illustrative values.
+Province, municipality and ward filters use returned API metadata; horizons are
+7, 14 and 30 days. Layout and Retry remain available during loading or failure.
+
+`forecast-model.js` requires four consecutive complete monthly observations per
+ward, ending in the latest month of the selected region. Duplicate ward/month
+records are ambiguous and excluded. Monthly means are anchored at UTC month end.
+For each ward, the first three months predict the fourth: compare a recent linear
+input trend against persistence using absolute error in the existing four-factor
+score. Ties use persistence. The selected method projects the latest three input
+observations up to 30 days; population density remains at its latest value.
+Soil moisture and NDWI are bounded to their physical ranges. Regional output is
+an unweighted mean across a fixed eligible cohort; coverage is visible.
+
+The displayed latest-month error is model-selection error, not independent test
+accuracy. Scenario bounds span persistence and trend scores; they are not a
+statistical confidence interval. These experimental outputs describe environmental
+suitability, not malaria cases or probability of infection. Daily points are
+modelled from monthly inputs and do not imply daily observations. Stale data is
+labelled as a historical outlook with explicit dates, never relabelled as today.
+
+Run `node --test tests/malaria/forecast.test.cjs` for horizon, month-end, missing
+history, duplicate, gap, score and cohort checks.

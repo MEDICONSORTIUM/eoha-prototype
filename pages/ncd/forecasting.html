@@ -1,61 +1,184 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>EOHA — NCD forecasting</title>
-    <link rel="icon" href="../../assets/icons/favicon.svg?v=eoha-1" type="image/svg+xml" />
-    <link rel="stylesheet" href="../../styles/shared/theme.css" />
-    <link rel="stylesheet" href="../../styles/shared/resources.css" />
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NCD Exposure - Forecasting</title>
+    <link rel="icon" href="../../assets/icons/favicon.svg?v=eoha-1" type="image/svg+xml">
+    <link rel="stylesheet" href="../../styles/shared/theme.css">
+    <link rel="stylesheet" href="../../styles/malaria/forecasting.css?v=20261030">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="../../scripts/shared/theme.js"></script>
-    <link rel="stylesheet" href="../../styles/shared/mobile.css?v=20261020-3" />
-    <link rel="stylesheet" href="../../styles/shared/components.css" />
-  </head>
+    <script src="../../scripts/shared/map-theme.js"></script>
+<link rel="stylesheet" href="../../styles/shared/mobile.css?v=20261020-3">
+    <link rel="stylesheet" href="../../styles/shared/components.css">
+<link rel="stylesheet" href="../../styles/ncd/forecasting.css?v=20261030-stacked">
+</head>
 
-  <body class="resources-page">
-    <div class="page-layout">
-      <header class="top-bar">
-        <a class="brand-pill brand-home" href="../../index.html" aria-label="EOHA home">
-          <img src="../../assets/images/mca-logo.jpg" alt="MCA logo" class="brand-pill-logo" />
-          <div class="brand-copy">
-            <h1>NCD Exposure</h1>
-            <small>Earth Observation Health Analytics</small>
-          </div>
-        </a>
+<body class="forecast-page ncd-forecasting">
 
-        <nav class="nav-pill">
+    <div class="dashboard-layout">
+
+        <header class="top-bar">
+            <a class="brand-pill brand-home" href="../../index.html" aria-label="EOHA home">
+                <img src="../../assets/images/mca-logo.jpg" alt="MCA logo" class="brand-pill-logo">
+                <div class="brand-copy"><h1>NCD Exposure</h1><small>Earth Observation Health Analytics</small></div>
+            </a>
+
+            <nav class="nav-pill" aria-label="NCD navigation">
           <a href="dashboard.html">Dashboard</a>
           <a href="forecasting.html" class="active" aria-current="page">Forecasting</a>
           <a href="resources.html">Resource Center</a>
           <a href="reports.html">Reports</a>
         </nav>
 
-        <div class="actions-pill">
-          <a href="../../index.html" class="back-link">Back</a>
-          <div class="theme-picker" role="group" aria-label="Color theme">
-            <button type="button" data-theme-choice="system" aria-pressed="false">System</button>
-            <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-            <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
-          </div>
-        </div>
-      </header>
+            <div class="actions-pill">
+                <a href="../../index.html" class="back-link">Back</a>
+                <div class="theme-picker" role="group" aria-label="Color theme">
+                    <button type="button" data-theme-choice="system" aria-pressed="false">System</button>
+                    <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+                    <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+                </div>
+            </div>
+        </header>
 
-      <main class="content-area">
-        <div class="content-header">
-          <div>
-            <h2>NCD forecasting</h2>
-            <p class="content-subtitle">API integration pending</p>
-          </div>
-        </div>
-        <p role="status">
-          The backend does not expose an NCD forecasting model. Historical environmental
-          measurements remain available on the dashboard.
-        </p>
-        <p>
-          <a href="dashboard.html">Open the dashboard</a> ·
-          <a href="resources.html">View data requirements</a>
-        </p>
-      </main>
+        <aside class="sidebar-left">
+            <section class="card range-card">
+                <div class="card-header">
+                    <span class="icon text-primary">
+                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                    </span>
+                    <h2>Forecast Range</h2>
+                </div>
+                <p class="subtitle">Select prediction window</p>
+                <div class="range-btns">
+                    <button class="range-btn active" data-days="7" aria-pressed="true">7 Days</button>
+                    <button class="range-btn" data-days="14" aria-pressed="false">14 Days</button>
+                    <button class="range-btn" data-days="30" aria-pressed="false">30 Days</button>
+                </div>
+            </section>
+
+            <section class="card region-card">
+                <div class="card-header">
+                    <span class="icon text-primary">
+                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                    </span>
+                    <h2>Region</h2>
+                </div>
+                <p class="subtitle">Filter by region</p>
+<div class="input-group"><label for="forecast-province">Province</label><select id="forecast-province" disabled><option value="">All provinces</option></select></div>
+<div class="input-group"><label for="forecast-municipality">Municipality</label><select id="forecast-municipality" disabled><option value="">All municipalities</option></select></div>
+<div class="input-group"><label for="forecast-ward">Ward</label><select id="forecast-ward" disabled><option value="">All wards</option></select></div>
+            </section>
+
+            <section class="card model-card">
+                <div class="card-header">
+                    <span class="icon text-primary">
+                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                    </span>
+                    <h2>Model Info</h2>
+                </div>
+                <div class="model-detail"><span class="model-label">Status</span><span class="model-val" id="model-status">Unavailable</span></div>
+                <p class="demo-notice"><span id="model-detail">A validated NCD forecasting model is not connected. Historical comparisons remain available below.</span></p>
+
+                <div class="model-detail"><span class="model-label">Data source</span><span class="model-val">Historical observations</span></div>
+            </section>
+        </aside>
+
+        <section class="chart-area" aria-label="NCD forecast">
+            <div class="chart-header">
+                <h2>NCD Exposure Forecast</h2>
+                <span class="chart-badge" id="range-label">7-day outlook</span>
+            </div>
+            <p class="demo-notice" role="status">NCD forecast unavailable. Use the historical comparison below to explore measured environmental conditions.</p>
+            <div class="chart-wrapper ncd-empty-chart" role="img" aria-label="NCD forecast chart: no validated predictions available">
+              <svg viewBox="0 0 800 320" preserveAspectRatio="none" aria-hidden="true">
+                <g class="empty-chart-grid"><path d="M45 30H780 M45 95H780 M45 160H780 M45 225H780 M45 290H780" /></g>
+                <g class="empty-chart-labels"><text x="8" y="34">100</text><text x="8" y="99">75</text><text x="8" y="164">50</text><text x="8" y="229">25</text><text x="8" y="294">0</text></g>
+              </svg>
+              <p>Forecast unavailable<span>Validated NCD predictions will appear here when connected.</span></p>
+            </div>
+        </section>
+
+        <aside class="sidebar-right">
+            <section class="card confidence-card">
+                <p class="risk-label">FORECAST SUMMARY</p>
+                <div class="ci-row">
+                    <span class="ci-label">Higher scenario</span>
+                    <span class="ci-val text-danger" id="ci-upper">--</span>
+                </div>
+                <div class="ci-row">
+                    <span class="ci-label">Mean forecast</span>
+                    <span class="ci-val" id="ci-mean">--</span>
+                </div>
+                <div class="ci-row">
+                    <span class="ci-label">Lower scenario</span>
+                    <span class="ci-val text-success" id="ci-lower">--</span>
+                </div>
+                <div class="ci-bar-track">
+                    <div class="ci-bar-fill" id="ci-bar"></div>
+                </div>
+            </section>
+
+            <section class="card trend-card">
+                <p class="risk-label">TREND</p>
+                <div class="trend-display" id="trend-display">
+                    <span class="trend-arrow" id="trend-arrow">—</span>
+                    <span class="trend-text" id="trend-text">Unavailable</span>
+                </div>
+                <p class="trend-detail" id="trend-detail">Waiting for eligible observations.</p>
+            </section>
+
+            <section class="card peak-card">
+                <p class="risk-label">PEAK EXPOSURE DAY</p>
+                <h3 id="peak-day" class="peak-val">--</h3>
+                <p class="peak-label" id="peak-pct">NCD score unavailable</p>
+            </section>
+
+            <section class="card legend-card">
+                <div class="legend-header"><h2>Chart Legend</h2></div>
+                <ul class="legend-list">
+                    <li><span class="dot blue"></span> Projected exposure (unavailable)</li>
+                    <li><span class="dot light-blue"></span> Scenario range (unavailable)</li>
+                    <li><span class="dot red"></span> Exposure categories pending validation</li>
+
+
+                </ul>
+            </section>
+        </aside>
+
     </div>
-  </body>
+
+      <main class="comparison-story">
+        <div class="story-heading"><p class="eyebrow">EARTH OBSERVATION / NON-COMMUNICABLE DISEASES</p>
+          <h2>Historical period comparisons</h2>
+          <p>Compare the same place across three observation periods. Explore environmental context for NCD research.</p>
+        </div>
+        <p class="forecast-status" role="status" id="forecast-status">NCD forecasting is not yet available. Compare historical observations below while a validated forecasting model is pending.</p>
+        <div class="comparison-toolbar"><label for="comparison-metric">Observation layer</label>
+          <select id="comparison-metric"><option value="Air_Temp_C">Air temperature · °C</option><option value="LST_Surface_C">Surface temperature · °C</option><option value="Population_Density_Per_KM2">Population density · people/km²</option><option value="NO2" disabled>NO₂ · data not connected</option><option value="PM25" disabled>PM2.5 · data not connected</option></select>
+          <span id="comparison-region">South Africa</span><span class="observation-badge">Observed data</span>
+        </div>
+        <div class="comparison-grid">
+<article class="period-card"><div class="period-heading"><label for="period-0">PERIOD 01</label><select id="period-0" disabled><option>Loading…</option></select></div><div id="comparison-map-0" class="comparison-map" aria-label="Environmental observation map for period 1"></div><p id="period-summary-0" class="period-summary" role="status">Loading observations…</p></article><article class="period-card"><div class="period-heading"><label for="period-1">PERIOD 02</label><select id="period-1" disabled><option>Loading…</option></select></div><div id="comparison-map-1" class="comparison-map" aria-label="Environmental observation map for period 2"></div><p id="period-summary-1" class="period-summary" role="status">Loading observations…</p></article><article class="period-card"><div class="period-heading"><label for="period-2">PERIOD 03</label><select id="period-2" disabled><option>Loading…</option></select></div><div id="comparison-map-2" class="comparison-map" aria-label="Environmental observation map for period 3"></div><p id="period-summary-2" class="period-summary" role="status">Loading observations…</p></article><aside class="comparison-key"><p class="eyebrow">SHARED SCALE</p><h3 id="comparison-unit">Air temperature (°C)</h3><ul id="comparison-legend"></ul><p>Identical colours and map extent across all periods. Points represent ward observation locations; boundaries show geography only.</p></aside></div>
+        <section class="reading-panel"><p class="eyebrow">READING THE MAPS</p><h3>Look for patterns. Keep the health question in context.</h3><p id="comparison-reading" aria-live="polite">Choose periods to compare the available observations.</p><div class="reading-notes"><p><strong>What this shows</strong> Historical environmental measurements and how they vary across places and months. Means use available ward values, without population weighting.</p><p><strong>What needs more evidence</strong> NO₂ and PM2.5 measurements, exposure duration and validated health outcomes are needed before presenting pollution exposure or NCD risk estimates. These maps do not show disease prevalence.</p></div></section>
+      </main>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="../../scripts/vendor/papaparse.min.js"></script>
+    <script src="../../scripts/ncd/data.js"></script>
+    <script src="../../scripts/ncd/comparison.js"></script>
+    <script src="../../scripts/ncd/forecasting.js"></script>
+</body>
 </html>

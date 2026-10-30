@@ -152,6 +152,27 @@ function create_preview_server(options = {}) {
   const routes =
     options.routes || JSON.parse(fs.readFileSync(path.join(root, 'config/routes.json'), 'utf8'));
   return http.createServer((request, response) => {
+    // Live Server is static: allow its loopback origins to read this hosted-only proxy.
+    let live_origin = false;
+    try {
+      const origin = new URL(request.headers.origin);
+      live_origin =
+        origin.protocol === 'http:' &&
+        ['localhost', '127.0.0.1', '[::1]'].includes(origin.hostname) &&
+        ['5500', '5501'].includes(origin.port);
+    } catch {}
+    if (live_origin && request.url.startsWith('/api')) {
+      response.setHeader('Access-Control-Allow-Origin', request.headers.origin);
+      response.setHeader('Vary', 'Origin');
+      response.setHeader('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS');
+      response.setHeader('Access-Control-Allow-Headers', 'Accept, Content-Type');
+      response.setHeader('Access-Control-Expose-Headers', 'X-EOHA-API-Source, Content-Encoding');
+      if (request.method === 'OPTIONS') {
+        response.writeHead(204);
+        response.end();
+        return;
+      }
+    }
     if (!['GET', 'HEAD'].includes(request.method)) {
       response.setHeader('Allow', 'GET, HEAD');
       send_error(response, 405, 'Only GET and HEAD requests are supported');
@@ -171,7 +192,10 @@ function create_preview_server(options = {}) {
     }
     if (pathname === '/api-settings') {
       const body = JSON.stringify(api_router.settings);
-      response.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
+      response.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-store',
+      });
       response.end(request.method === 'HEAD' ? undefined : body);
       return;
     }
@@ -195,7 +219,7 @@ function create_preview_server(options = {}) {
 /**
  * main()
  * ------
- * Select the hosted/local API profile, parse overrides and start the Node.js preview server.
+ * Start the hosted-only frontend server on the requested local port.
  *
  * Parameters:
  * -----------
@@ -208,24 +232,22 @@ function create_preview_server(options = {}) {
 function main(args = process.argv.slice(2)) {
   if (args.includes('--help') || args.includes('-h')) {
     console.log(
-      'Usage: node tools/serve.cjs [--port 8766] [--api hosted|local|auto] [--backend URL]\nDefault API: ' +
+      'Usage: node tools/serve.cjs [--port 8766] [--api hosted]\nDefault API: ' +
         API_TARGETS.defaultTarget +
-        ' (Auto: hosted → local)',
+        '',
     );
     return;
   }
   let port = 8766,
-    api_target = API_TARGETS.defaultTarget,
-    backend;
+    api_target = API_TARGETS.defaultTarget;
   for (let index = 0; index < args.length; index += 2) {
     if (args[index] === '--port' && args[index + 1]) port = Number(args[index + 1]);
     else if (args[index] === '--api' && args[index + 1]) api_target = args[index + 1];
-    else if (args[index] === '--backend' && args[index + 1]) backend = args[index + 1];
     else throw new Error('Unknown or incomplete option. Use --help.');
   }
   if (!Number.isInteger(port) || port < 1 || port > 65535)
     throw new Error('Port must be an integer from 1 to 65535.');
-  const selection = { api_target, backend };
+  const selection = { api_target };
   const server = create_preview_server(selection);
   const selected_origin = resolve_backend(selection).origin;
   server.on('error', (error) => {

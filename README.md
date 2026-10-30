@@ -3,167 +3,91 @@
 EOHA is the Medical Consortium of Africa's prototype for exploring environmental
 measurements and malaria risk across South African wards. The frontend uses plain
 HTML, CSS and JavaScript. The Spring Boot API is hosted on Render and reads AWS RDS
-data; running that API locally remains an optional development configuration.
+data. The frontend now uses the hosted API exclusively.
 The application server, API forwarding and repository checks use JavaScript/Node.js.
 There is no frontend build step or Python requirement to run the frontend.
 
-## Choose a hosted or local API
+## Run with the hosted API
 
-The default mode is **Auto: hosted first, then local on a temporary outage**. The browser still calls relative
-`/api/...` URLs on the frontend server; Node forwards those requests to the
-selected backend. This avoids depending on browser CORS permission from Render.
-
-| Mode | Frontend command | API origin used by Node | Local Java/RDS configuration needed? |
-| --- | --- | --- | --- |
-| Auto (default) | `npm start` / `npm run start:auto` | Hosted first, then local on an outage | Local is needed only if fallback is used |
-| Hosted (explicit) | `npm run start:hosted` | `https://eoha-backend.onrender.com` | No |
-| Local (optional) | `npm run start:local` | `http://127.0.0.1:8080` | Yes, on the local backend |
-
-Run one frontend server at a time on port 8766. Stop it with Ctrl+C before changing
-modes. Each new page load uses the source selected when that server started;
-manual Hosted/Local modes never switch sources. Auto falls back only for connection
-failures, timeouts and HTTP 502/503/504, never to CSV.
-
-### Start the frontend; choose the source in the browser
-
-From this repository's root with Node.js 18 or newer:
+With Node.js 18 or newer, run from this repository:
 
 ```bash
 npm start
-# Auto explicitly: hosted → local if the hosted service is unavailable
-npm run start:auto
-# Explicit hosted-only process default:
-npm run start:hosted
-# Equivalent without npm:
-node tools/serve.cjs --api hosted
 ```
 
-Open [the prototype](http://localhost:8766). Its Node.js server uses only built-in
-modules; no `npm install`, local Java process or local database credentials are
-needed to use the hosted API. Auto can fall back to local only if that backend is running. The API must already be running and
-correctly configured on Render.
+Open [the malaria dashboard](http://localhost:8766/pages/malaria/dashboard.html).
+No local Java backend, database credentials or dependency installation is needed.
+The JavaScript server on port 8766 serves files and forwards API requests only to
+`https://eoha-backend.onrender.com`. There is no local API fallback or browser
+source selector. Old saved source choices and source headers are ignored.
 
-### Local API: optional development setup
+### Using VS Code Live Server
 
-In one terminal, start the sibling backend with Java 21:
+Live Server serves static files; it cannot forward `/api` requests. Keep
+`npm start` running on port 8766 while viewing pages on `http://127.0.0.1:5500`
+or `http://localhost:5500` (port 5501 also works).
+`scripts/shared/api-config.js` detects these loopback Live Server ports and sends
+API requests to the same hostname on port 8766. The Node server allows those
+specific browser origins through CORS and forwards requests to Render.
+Port 8766 is a local JavaScript bridge; the data always comes from the hosted API.
 
-```bash
-cd ../eoha_backend
-bash mvnw spring-boot:run
-```
+Opening the dashboard on port 8766 directly is the simplest setup. Other static
+hosts need an API reverse proxy; direct browser calls to Render currently lack
+the required CORS response headers.
 
-The local backend loads its ignored `.env.local`, using `DB_HOST`, `DB_PORT`,
-`DB_NAME`, `DB_USER`, `DB_PASSWORD` and `DB_SSLMODE`. Keep credentials there,
-not in frontend files. Then, from the prototype root in another terminal:
+### Hosted configuration
 
-```bash
-npm run start:local
-# Equivalent:
-node tools/serve.cjs --api local
-```
-
-### Configuration and overrides
-
-`config/api.json` is the single place for the two named backend origins:
-
-```json
-{
-  "defaultTarget": "auto",
-  "browserSelectionEnabled": true,
-  "autoOrder": ["hosted", "local"],
-  "targets": {
-    "hosted": "https://eoha-backend.onrender.com",
-    "local": "http://127.0.0.1:8080"
-  }
-}
-```
-
-`--api hosted|local|auto` selects the process default. An explicit `--backend URL` overrides
-that profile's origin for the current process. The URL must be an HTTP(S) origin,
-without credentials, a path or query. Unknown profile names fail at startup.
-
-```bash
-node tools/serve.cjs --port 8767 --api hosted
-node tools/serve.cjs --backend https://eoha-backend.onrender.com
-node tools/serve.cjs --backend http://127.0.0.1:8080
-node tools/serve.cjs --help
-```
-
-The startup log prints the process default and first upstream. `scripts/shared/api-config.js`
-keeps `baseUrl: '/api'` for both modes; do not put an absolute Render origin
-there unless the deployed backend has enabled CORS for your frontend origin.
-Plain static hosting does not run this proxy: configure a hosting reverse proxy
-or run this Node.js service alongside the static pages.
-
-### Optional browser selector and future removal
-
-The malaria dashboard and reports show an **API source** selector with Hosted,
-Local and Auto. Auto always starts with Hosted. The adjacent source label shows
-which backend actually returned the response, including a Local fallback.
-Changing the selector saves the named choice under `eoha-api-target`, updates the
-page's `?api=hosted|local|auto` preference and reloads the whole page. This discards
-the previous source's dataset. Storage-blocked browsers still work using the query
-parameter for the current page.
-
-Browser choices override the process default only when
-`browserSelectionEnabled: true`. An explicit custom `--backend URL` pins that
-origin and hides the selector. The server accepts only configured named modes,
-never an arbitrary browser-provided upstream URL.
-
-To retire selection later, set `config/api.json` to:
+`config/api.json` contains the sole backend origin:
 
 ```json
 {
   "defaultTarget": "hosted",
   "browserSelectionEnabled": false,
-  "targets": {
-    "hosted": "https://eoha-backend.onrender.com"
-  }
+  "targets": { "hosted": "https://eoha-backend.onrender.com" }
 }
 ```
 
-Restart the Node.js server. It hides the selector and ignores stale saved choices,
-query preferences and browser source headers. All requests use the configured
-process default. No scoring, normalization, map or report changes are needed.
-You may then delete the optional selector markup, stylesheet and
-`scripts/shared/api-selector.js` script tags; the normal loader still uses
-`/api/...`. `tools/api-source.cjs` isolates the server-side routing policy from
-static serving and page/data code.
+Restart Node after changing the hosted origin. `npm run start:hosted` is an alias
+for `npm start`; `--api local` and `--api auto` are rejected.
+For a different frontend port, use `node tools/serve.cjs --port 8767` and view the
+page on that port. The Live Server bridge specifically expects port 8766.
 
-Auto retries only before forwarding a response body, so one dataset never combines
-hosted and local records. A hosted timeout/network failure or HTTP 502/503/504 can
-trigger Local; 400/401/403/404, invalid JSON and incomplete data stay visible rather
-than being hidden by source switching. Auto allows 25 seconds of upstream socket
-inactivity per attempt; manual modes retain 60 seconds. The browser data-load limit
-is 60 seconds. Localhost refers to the machine running Node, not a visitor's laptop
-when Node is deployed online.
+### Loading speed and freshness
 
-The frontend-only `GET /api-settings` route supplies this policy to the selector;
-it is not a Render backend endpoint. Browser selection is sent as
-`X-EOHA-API-Target: hosted|local|auto`; response headers
-`X-EOHA-API-Source` and `X-EOHA-API-Mode` report the resolved source and mode.
-Direct API tabs and plain `fetch()` requests use the process default. To respect
-the browser's selected mode in custom browser code, use the optional wrapper:
+The scoring endpoint returns the full ward/month dataset: approximately 19 MB of
+decoded JSON in the current database. The proxy now preserves upstream gzip
+compression instead of requesting an uncompressed response. The browser decodes it
+automatically. The backend still has to execute its first query and serialize JSON;
+a fresh load can take several seconds, especially while the service starts.
 
-```js
-const apiFetch = window.EOHA_API_SOURCE?.fetch || window.fetch.bind(window);
-const response = await apiFetch('/api/environmental-variables');
-const body = await response.json();
-console.table(body.data.items);
-```
+Successful measurements are also stored in browser CacheStorage for five minutes,
+shared by the dashboard and reports on the same frontend origin. Reloading or
+opening reports during that interval avoids another full API download. The UI
+labels cached results. The duration is configured by `cacheTtlMs: 300000` in
+`scripts/shared/api-config.js`. Reading cached data does not restart the five-minute
+window. Expired entries are refreshed on the next page load;
+failures and responses with no complete scoring records are never stored or used as a fallback.
+Storage-disabled browsers still load fresh API data normally. This cache is
+separate from the backend's own 60-second query cache; those layers can compound
+the age of the observations (up to roughly six minutes of cache delay). An open
+page does not automatically refresh when five minutes pass. The 60-second request
+timeout is independent of the cache duration. For an immediate uncached check, clear the browser's
+`eoha-hosted-measurements-v1` cache in DevTools → Application → Cache Storage,
+and account for the backend cache as well.
 
-### Hosted deployment requirement
+A local Chromium check against Render measured a fresh Live Server dashboard load
+at about 3.6 seconds and cached report navigation at 0.8 seconds. The gzip transfer
+was approximately 3.9 MB for 19.4 MB of decoded JSON. These are observations from
+one run, not guaranteed timings; backend startup and query time can vary.
 
-On 30 October 2026, the Render health/database and environmental-variable requests
-succeeded after an initial transient database error, but
-`https://eoha-backend.onrender.com/api/malaria-risk-inputs` returned **404**.
-Malaria scoring needs that joined endpoint; the variables catalogue alone cannot
-supply scored ward records. Deploy the backend implementation containing
-`MalariaRiskInputController` and `MalariaRiskInputService`, then restart/redeploy
-Render. Until it exists, the frontend shows deployment guidance rather than silently hiding a missing endpoint. Select Local manually if a
-working local backend is available; a 404 deliberately does not trigger Auto fallback. These classes are present in the local
-backend integration changes described below; updating frontend configuration does
-not deploy them to Render.
+Ward hit areas now share a Canvas renderer rather than creating thousands of SVG
+elements. Month/filter changes still use data already loaded in browser memory.
+
+### Hosted endpoint availability
+
+The deployed `/api/malaria-risk-inputs` endpoint now returns successful joined
+ward/month records. An older deployment returned 404; that blocker is resolved.
+The frontend continues to report real HTTP errors and missing measurements.
 
 ## Feature folders
 
@@ -215,11 +139,11 @@ eoha-prototype/
 │   └── shared/                      # Country and province GeoJSON boundaries
 ├── schemas/ncd/risk-record.schema.json
 ├── config/
-│   ├── api.json                     # Sources, default mode and optional selector
+│   ├── api.json                     # Sole hosted backend origin
 │   └── routes.json                  # Old page URL → canonical page URL
 ├── tools/
 │   ├── serve.cjs                    # Static server, settings and redirects
-│   ├── api-source.cjs               # Isolated source selection and Auto failover
+│   ├── api-source.cjs               # Hosted forwarding and compression
 │   └── data-pipeline/               # Real Earth Engine extraction utility
 ├── tests/
 │   ├── malaria/                     # API unit, browser and live RDS checks
@@ -256,17 +180,16 @@ in `tools/data-pipeline/` is retained; it does not generate demo data.
 ## How the frontend reaches the backend
 
 The browser runs JavaScript from the HTML pages. The Node.js server runs separately
-on your computer and handles static files and API forwarding. By default the
-backend is the Render-hosted Java/Spring Boot application; `start:local` selects
-the optional local backend instead. Database credentials stay on the backend.
+on your computer and handles static files and API forwarding. The backend is
+the Render-hosted Java/Spring Boot application. Database credentials stay on the backend.
 
 ```mermaid
 sequenceDiagram
     participant Browser as Browser JavaScript :8766
     participant Node as tools/serve.cjs :8766
-    participant Backend as Render API (default) or local :8080
+    participant Backend as Hosted Render API
     participant Database as AWS RDS PostgreSQL
-    Browser->>Node: GET /api/malaria-risk-inputs
+    Browser->>Node: GET /api/malaria-risk-inputs (or fresh browser cache)
     Node->>Backend: Same path and query string
     Backend->>Database: Read and join measurements (unless cached)
     Database-->>Backend: Ward-month inputs
@@ -280,36 +203,33 @@ local development convenience. `tools/serve.cjs` now performs that job in JavaSc
 using Node's built-in HTTP/HTTPS, filesystem and stream modules. The Python proxy
 has been removed.
 
-You can inspect data through the selected proxy or directly on either backend:
+You can inspect data through the hosted proxy or directly on Render:
 
 | Access | Example | Intended use |
 | --- | --- | --- |
 | Through the JavaScript frontend server | `http://localhost:8766/api/environmental-variables` | Browser pages, the browser console and frontend code |
 | Directly on Render | `https://eoha-backend.onrender.com/api/environmental-variables` | Inspect the hosted JSON without the frontend |
-| Directly on local Spring Boot (optional) | `http://localhost:8080/api/environmental-variables` | Inspect/test a locally running backend |
 
 The variables URL on Render displays hosted JSON directly. On port 8766, the same
-path returns data from the selected source (Render by default). Opening `/` on
-port 8766 displays the frontend home page; opening the chosen backend origin
+path returns hosted Render data. Opening `/` on
+port 8766 displays the frontend home page; opening the hosted backend origin
 itself displays backend status.
 
 The frontend uses relative `/api/...` URLs, keeping requests on its own origin.
-This avoids a cross-origin browser request in the default setup. Direct browser
-fetches to Render or from port 8766 to port 8080 require a suitable backend CORS policy. Setting
+This avoids a cross-origin browser request in the default setup. Live Server uses the explicit loopback bridge described above. Direct browser
+fetches to Render require a suitable backend CORS policy. Setting
 a frontend URL alone does not configure backend CORS.
 
 ## Complete current API endpoint catalogue
 
 These are the routes defined by the backend integration contract. The deployed
-Render version must include each controller; the joined malaria endpoint was
-not yet deployed at the verification date noted above. Data
-access is read-only. The JavaScript proxy accepts GET and HEAD and rejects write
+Render API now serves the joined malaria endpoint. Data access is read-only. The JavaScript proxy accepts GET and HEAD and rejects write
 methods with 405; use GET in frontend consumption code. There are no forecast or
 validated NCD scoring endpoints in this backend version.
 
 | Method | Backend route | Data/result location | Parameters / purpose |
 | --- | --- | --- | --- |
-| GET | `/` | Top-level `service`, `status` | Backend status; access directly on Render or optional local port 8080 |
+| GET | `/` | Top-level `service`, `status` | Backend status; access directly on Render |
 | GET | `/api/health` | `body.data.status` | Application liveness; does not prove database readiness |
 | GET | `/api/health/database` | `body.data` | Connectivity, required schema/tables, `connected` and `ready`; HTTP 200 when ready, 503 otherwise |
 | GET | `/api/regions` | `body.data.items` | Ward/region metadata; `limit`, `offset` |
@@ -330,10 +250,8 @@ All `/api/...` routes above can also be requested on port 8766. Useful browser l
 [database readiness](http://localhost:8766/api/health/database), and
 [malaria inputs](http://localhost:8766/api/malaria-risk-inputs).
 
-The joined malaria endpoint is implemented by the integration changes in the
-sibling `eoha_backend` repository. A local or hosted backend that lacks this
-controller returns 404 until that implementation is deployed. This currently
-applies to the supplied Render deployment.
+The joined malaria endpoint is implemented in the sibling `eoha_backend` repository
+and is now available on Render.
 
 The backend implementation can be traced in the sibling repository:
 
@@ -512,9 +430,9 @@ The application receives and uses that response here:
 
 | File / function | Responsibility and data access |
 | --- | --- |
-| `scripts/shared/api-config.js` | `/api` base URL, `/malaria-risk-inputs` endpoint and 60-second browser timeout; the server selects the hosted/local upstream |
-| `tools/api-source.cjs` → `forward()` | Forward the path/query to the hosted/default or explicit local/custom backend; stream its status and JSON back |
-| `scripts/malaria/api.js` → `load()` | `fetch()`, HTTP/envelope validation, normalization and `{ rows, excluded }` result |
+| `scripts/shared/api-config.js` | `/api` base URL, `/malaria-risk-inputs` endpoint and 60-second browser timeout; the server uses the hosted upstream only |
+| `tools/api-source.cjs` → `forward()` | Forward the path/query to the hosted backend only; stream its status and JSON back |
+| `scripts/malaria/api.js` → `load()` | `fetch()`, HTTP/envelope validation, normalization, five-minute CacheStorage and `{ rows, excluded, fromCache }` result |
 | `scripts/malaria/api.js` → `normalize()` | Map fields, validate dates/numbers and exclude incomplete required inputs |
 | `scripts/malaria/api.js` → `score()` | Apply the existing four-factor formula in browser JavaScript |
 | `scripts/malaria/dashboard/data.js` → `load_risk_data()` | Store records in `all_risk_data`, group `district_lookup`, build months and render hotspots |
@@ -537,12 +455,13 @@ reload a malaria page, select `malaria-risk-inputs`, and view its Response. The
 request URL should use port 8766 in the default setup. You can also open any API
 link above in a browser tab, or use `fetch()` and `console.table()`.
 
-Records are held in page memory, not persisted in localStorage or a frontend
-database. Each page loads on opening. Changing month, municipality, risk filters,
-sorting or report pagination uses the loaded data without another API request.
-There is no polling: reload/reopen or change the source selector to request data again. The backend's 60-second
-cache can reuse measurements until it expires; the Node.js proxy itself does not
-cache API responses. Cold queries over the full dataset can take several seconds.
+Records are held in page memory and successful hosted responses are stored in
+CacheStorage for up to five minutes. Each page checks that cache before fetching.
+Changing month, municipality, risk filters, sorting or report pagination uses
+loaded data without another request. There is no polling; reload/reopen after
+the cache expires to fetch again. The backend also caches query results for 60
+seconds; Node streams responses without caching them. Cold queries over the full
+dataset can take several seconds. See the loading-speed section for freshness limits.
 
 ## Risk scoring and unavailable data
 
@@ -573,13 +492,14 @@ are implemented. No demo or fabricated data is substituted.
 | Symptom / HTTP status | Meaning and next check |
 | --- | --- |
 | Frontend will not start / `EADDRINUSE` | Port 8766 is occupied; stop the previous preview or choose `--port` |
-| 502 from the Node.js proxy | Selected backend connection failed; check Render availability, or start local Spring Boot if local mode was selected |
+| 502 from the Node.js proxy | Hosted connection failed; check Render availability |
 | 504 from the Node.js proxy | Upstream socket was inactive for 60 seconds; inspect backend/query health |
 | 503 from backend data or database health | Database is not ready or a query failed; inspect `/api/health/database` and backend logs |
 | 400 on a raw list endpoint | Invalid `limit`/`offset`; use a limit from 1–500 and a nonnegative offset |
-| 404 on `/api/malaria-risk-inputs` | The selected hosted/local backend lacks the joined endpoint implementation; deploy the scoring-input controller/service |
+| 404 on `/api/malaria-risk-inputs` | The hosted backend lacks the joined endpoint implementation; deploy the scoring-input controller/service |
 | 405 from the proxy | A write method was attempted; only GET/HEAD are forwarded |
 | API succeeds but no scoring records | Required measurements, units or ward/municipality metadata are incomplete |
+| Live Server shows no data | Keep `npm start` running on port 8766; reload the page on loopback port 5500/5501 |
 | Browser CORS error with a direct backend URL | Ports/origins differ; use relative `/api` through Node or configure backend CORS |
 
 Service validation/query failures normally use
@@ -589,10 +509,9 @@ can have a different body. Always check HTTP status before assuming a success sh
 The proxy preserves backend status codes and does not turn a database failure into
 a successful empty response. The UI displays a load error and does not fall back to CSV.
 
-Manual modes never switch automatically. Auto can retry temporary hosted failures
-on local; the source label and response header identify the backend used.
-The frontend server reads no database credentials and sends no browser Authorization
-header or cookies to the backend. The current local API has no application login
+There is no local failover. The `X-EOHA-API-Source: hosted` response header identifies
+the upstream source. The frontend server reads no database credentials and sends no browser Authorization
+header or cookies to the backend. The current API has no application login
 flow. Production authentication/access policy is a separate backend/deployment
 concern. Keep local RDS configuration only in the backend's ignored `.env.local`; configure
 hosted database settings in Render's environment configuration.
@@ -647,7 +566,7 @@ Run from the repository root:
 npm test
 ```
 
-The test command runs 33 JavaScript checks for API mapping, historical data, local
+The test command runs JavaScript checks for API mapping, historical data, local
 references, redirects, proxy responses, failure/timeout handling and static serving.
 For browser checks, install the pinned development dependency and Chromium once,
 then keep the Node.js preview running in another terminal:
@@ -656,8 +575,7 @@ then keep the Node.js preview running in another terminal:
 npm ci
 npx playwright install chromium
 npm run test:browser
-# Requires the selected backend to expose malaria-risk-inputs and connect to RDS:
-# Use npm run start:local until the joined endpoint is deployed on Render.
+# Checks the hosted API and its RDS-backed measurements:
 npm run test:live
 ```
 

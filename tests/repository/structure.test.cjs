@@ -91,3 +91,16 @@ test('demo files and synthetic runtime generators remain removed', () => {
     }
   }
 });
+
+test('feature navigation retains the same order on every page', () => {
+  for (const feature of ['malaria', 'ncd']) {
+    for (const page of ['dashboard', 'forecasting', 'resources', 'reports']) {
+      const html = fs.readFileSync(path.join(ROOT, 'pages', feature, page + '.html'), 'utf8');
+      const nav = html.match(/<nav class="nav-pill"[^>]*>([\s\S]*?)<\/nav>/)[1];
+      assert.deepEqual([...nav.matchAll(/href="([^"]+)"/g)].map(match => match[1]),
+        ['dashboard.html', 'forecasting.html', 'resources.html', 'reports.html']);
+      assert.equal([...nav.matchAll(/aria-current="page"/g)].length, 1);
+      assert.match(nav, new RegExp('href="' + page + '\\.html" class="active" aria-current="page"'));
+    }
+  }
+});

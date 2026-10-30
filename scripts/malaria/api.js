@@ -71,7 +71,14 @@
   function escapeHtml(value) {
     return String(value ?? '').replace(
       /[&<>"']/g,
-      (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c],
+      (c) =>
+        ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;',
+        })[c],
     );
   }
 
@@ -140,44 +147,75 @@
    * --------
    * Promise<object>
    */
-  async function load(
-    config = root.EOHA_API_CONFIG,
-    fetcher = root.EOHA_API_SOURCE?.fetch || root.fetch.bind(root),
-  ) {
+  async function load(config = root.EOHA_API_CONFIG, fetcher = root.fetch.bind(root)) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), config.timeoutMs || 60000);
+    const url = config.baseUrl.replace(/\/$/, '') + config.riskEndpoint;
+    let cache;
+    let cacheKey;
     try {
-      const response = await fetcher(config.baseUrl.replace(/\/$/, '') + config.riskEndpoint, {
-        signal: controller.signal,
-      });
-      if (response.status === 404) {
-        throw new Error(
-          'Malaria API endpoint unavailable (404). Deploy /api/malaria-risk-inputs to the selected backend.',
-        );
+      // Cache only successful hosted measurements, shared across dashboard/reports.
+      if (config.cacheTtlMs && root.caches && root.location) {
+        try {
+          cache = await root.caches.open('eoha-hosted-measurements-v1');
+          cacheKey = new URL(url, root.location.href).href;
+          const saved = await cache.match(cacheKey);
+          const age = saved ? Date.now() - Number(saved.headers.get('X-EOHA-Cached-At')) : Infinity;
+          if (saved && age >= 0 && age < config.cacheTtlMs) {
+            const body = await saved.json();
+            const result = normalize(body.data);
+            if (body.success === true && result.rows.length) return { ...result, fromCache: true };
+          }
+        } catch {
+          cache = undefined;
+        }
       }
-      if (response.status === 503) {
+      const response = await fetcher(url, { signal: controller.signal });
+      if (response.status === 404)
         throw new Error(
-          'Backend database unavailable (503). Check /api/health/database on the selected backend.',
+          'Hosted malaria endpoint unavailable (404). Check the deployed backend route.',
         );
-      }
-      if (!response.ok) {
-        throw new Error(
-          `Backend request failed (${response.status}). Check API and database health.`,
-        );
-      }
+      if (response.status === 503)
+        throw new Error('Hosted database unavailable (503). Retry after the service is ready.');
+      if (!response.ok) throw new Error('Hosted API request failed (' + response.status + ').');
+      const copy = cache ? response.clone() : null;
       const body = await response.json();
       if (body.success !== true)
-        throw new Error(body.message || 'Backend returned an unsuccessful response.');
+        throw new Error(body.message || 'Hosted API rejected the request.');
       const result = normalize(body.data);
       if (!result.rows.length)
         throw new Error(
-          'No complete malaria scoring records from the API. Required measurements or region metadata are missing.',
+          'No complete malaria scoring records from the hosted API. Required measurements or metadata are missing.',
         );
-      return result;
+      if (cache && copy) {
+        try {
+          await cache.put(
+            cacheKey,
+            new Response(copy.body, {
+              headers: {
+                'Content-Type': 'application/json',
+                'X-EOHA-Cached-At': String(Date.now()),
+              },
+            }),
+          );
+        } catch {
+          /* Storage limits must not prevent fresh data from displaying. */
+        }
+      }
+      return { ...result, fromCache: false };
+    } catch (error) {
+      if (error.name === 'TypeError')
+        throw new Error(
+          'Cannot reach the hosted API proxy. Run npm start and keep port 8766 available.',
+        );
+      if (error.name === 'AbortError')
+        throw new Error('Hosted API request timed out. Retry; the service may be starting.');
+      throw error;
     } finally {
       clearTimeout(timer);
     }
   }
+
   const api = { load, normalize, score, escapeHtml };
   root.EOHAMalariaAPI = api;
   if (typeof module !== 'undefined') module.exports = api;

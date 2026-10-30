@@ -1,7 +1,11 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const api = require('../../scripts/malaria/api.js');
-const config = { baseUrl: '/api', riskEndpoint: '/malaria-risk-inputs', timeoutMs: 1000 };
+const config = {
+  baseUrl: '/api',
+  riskEndpoint: '/malaria-risk-inputs',
+  timeoutMs: 1000,
+};
 const fixture = {
   region_id: 2,
   region_code: '93301001',
@@ -82,7 +86,10 @@ test('API failure and empty/incomplete datasets are errors without fallback', as
     /503/,
   );
   await assert.rejects(
-    api.load(config, async () => ({ ok: true, json: async () => ({ success: true, data: [] }) })),
+    api.load(config, async () => ({
+      ok: true,
+      json: async () => ({ success: true, data: [] }),
+    })),
     /No complete/,
   );
 });
@@ -97,7 +104,75 @@ test('a missing hosted scoring endpoint gives deployment guidance without fallba
       requests++;
       return { ok: false, status: 404 };
     }),
-    /Deploy \/api\/malaria-risk-inputs/,
+    /Hosted malaria endpoint unavailable/,
   );
   assert.equal(requests, 1);
+});
+
+test('successful hosted responses are reused across page loads only within the cache TTL', async (context) => {
+  const saved = new Map();
+  global.location = {
+    href: 'http://127.0.0.1:8766/pages/malaria/dashboard.html',
+  };
+  global.caches = {
+    open: async () => ({
+      match: async (key) => saved.get(key)?.clone(),
+      put: async (key, response) =>
+        saved.set(
+          key,
+          new Response(await response.arrayBuffer(), {
+            headers: response.headers,
+          }),
+        ),
+    }),
+  };
+  context.after(() => {
+    delete global.location;
+    delete global.caches;
+  });
+  let calls = 0;
+  const fetcher = async () => {
+    calls++;
+    return new Response(JSON.stringify({ success: true, data: [fixture] }));
+  };
+  const cachedConfig = { ...config, cacheTtlMs: 300000 };
+  assert.equal((await api.load(cachedConfig, fetcher)).fromCache, false);
+  assert.equal((await api.load(cachedConfig, fetcher)).fromCache, true);
+  assert.equal(calls, 1);
+  const key = [...saved.keys()][0];
+  saved.set(
+    key,
+    new Response(JSON.stringify({ success: true, data: [fixture] }), {
+      headers: { 'X-EOHA-Cached-At': String(Date.now() - 240000) },
+    }),
+  );
+  assert.equal((await api.load(cachedConfig, fetcher)).fromCache, true);
+  assert.equal(calls, 1, 'four-minute-old data should still be reused');
+
+  saved.set(
+    key,
+    new Response(JSON.stringify({ success: true, data: [fixture] }), {
+      headers: { 'X-EOHA-Cached-At': String(Date.now() - 301000) },
+    }),
+  );
+  assert.equal((await api.load(cachedConfig, fetcher)).fromCache, false);
+  assert.equal(calls, 2);
+});
+test('unavailable browser storage cannot block fresh hosted measurements', async (context) => {
+  global.location = { href: 'http://127.0.0.1:8766/' };
+  global.caches = {
+    open: async () => {
+      throw new Error('Storage unavailable');
+    },
+  };
+  context.after(() => {
+    delete global.location;
+    delete global.caches;
+  });
+  const result = await api.load(
+    { ...config, cacheTtlMs: 300000 },
+    async () => new Response(JSON.stringify({ success: true, data: [fixture] })),
+  );
+  assert.equal(result.rows.length, 1);
+  assert.equal(result.fromCache, false);
 });

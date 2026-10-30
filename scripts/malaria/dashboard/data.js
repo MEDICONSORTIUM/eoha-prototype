@@ -18,7 +18,7 @@ async function load_risk_data() {
   time_slider.disabled = true;
   document.getElementById('play-months').disabled = true;
   try {
-    const { rows, excluded } = await EOHAMalariaAPI.load();
+    const { rows, excluded, fromCache } = await EOHAMalariaAPI.load();
     all_risk_data = rows.filter(
       (row) =>
         Number.isFinite(row.latitude) &&
@@ -63,7 +63,7 @@ async function load_risk_data() {
     country_select.disabled = false;
     time_slider.disabled = false;
     document.getElementById('play-months').disabled = MONTH_DATA.length < 2;
-    status.textContent = `API connected · ${all_risk_data.length} ward observations. ${excluded ? `${excluded} incomplete records excluded.` : ''}`;
+    status.textContent = `API connected · ${all_risk_data.length} ward observations. ${excluded ? `${excluded} incomplete records excluded.` : ''}${fromCache ? ' Cached hosted data (up to 5 minutes).' : ''}`;
     render_hotspots();
   } catch (error) {
     status.textContent = `Risk data unavailable. ${error.message}`;

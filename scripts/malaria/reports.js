@@ -333,7 +333,7 @@ function initialize_reports_page() {
     }
   });
   EOHAMalariaAPI.load()
-    .then(({ rows, excluded }) => {
+    .then(({ rows, excluded, fromCache }) => {
       allData = rows.map((record) => ({
         month: record.Month,
         ward: record.WardLabel,
@@ -354,7 +354,7 @@ function initialize_reports_page() {
       populateMuniDropdown();
       applyFilters();
       document.getElementById("api-status").textContent =
-        `API connected · ${rows.length} ward observations. ${excluded ? `${excluded} incomplete records excluded.` : ""}`;
+        `API connected · ${rows.length} ward observations. ${excluded ? `${excluded} incomplete records excluded.` : ""}${fromCache ? " Cached hosted data (up to 5 minutes)." : ""}`;
     })
     .catch((error) => {
       const status = document.getElementById("api-status");
