@@ -11,6 +11,8 @@
 .biosecurity-dashboard .input-group select:disabled { opacity: .55; cursor: not-allowed; }
 .biosecurity-dashboard .data-status { margin: 12px 0 0; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; font-size: .75rem; line-height: 1.5; color: var(--text-muted); }
 .biosecurity-dashboard .data-status[data-state="ready"] { border-color: var(--risk-low); }
+.biosecurity-dashboard .data-status[data-state="loading"] { border-color: var(--primary); color: var(--text-dark); }
+.biosecurity-dashboard .factor-card .factor-row { margin-bottom: 12px; }
 .biosecurity-dashboard .data-status[data-state="empty"], .biosecurity-dashboard .data-status[data-state="error"] { border-color: var(--risk-high); color: var(--text-dark); }
 .biosecurity-dashboard #sel-text, .biosecurity-dashboard #mean-text { font-size: 1.3rem; }
 .biosecurity-dashboard #sel-sub, .biosecurity-dashboard #mean-sub { font-size: .6rem; white-space: nowrap; }

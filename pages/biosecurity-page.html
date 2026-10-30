@@ -70,9 +70,16 @@
                             <line x1="3" y1="10" x2="21" y2="10"></line>
                         </svg>
                     </span>
-                    <h2>Indicator and Timeframe</h2>
+                    <h2>Disease and Timeframe</h2>
                 </div>
-                <div class="input-group"><label for="indicator-select">Indicator</label><select id="indicator-select" disabled><option value="">No indicators yet</option></select></div>
+                <div class="input-group">
+                    <label for="disease-select">Disease</label>
+                    <select id="disease-select">
+                        <option value="fmd">Foot-and-Mouth Disease</option>
+                        <option value="ai">Avian Influenza</option>
+                    </select>
+                </div>
+                <p class="subtitle" id="disease-summary"></p>
                 <div class="input-group">
                     <label for="timeframe-select">Timeframe</label>
                     <select id="timeframe-select" disabled>
@@ -95,13 +102,13 @@
                         <option value="10">October</option><option value="11">November</option><option value="12">December</option>
                     </select>
                 </div>
-                <p id="data-status" class="data-status" role="status" aria-live="polite">Loading biosecurity data…</p>
+                <p id="data-status" class="data-status" role="status" aria-live="polite">Connecting to EOHA data…</p>
             </section>
         </aside>
 
         <aside class="sidebar-right">
             <section class="card risk-card">
-                <p class="risk-label" id="sel-label">Selected ward</p>
+                <p class="risk-label">Selected ward · risk points</p>
                 <div class="donut-container">
                     <svg viewBox="0 0 100 100">
                         <circle class="donut-bg" cx="50" cy="50" r="40"></circle>
@@ -112,7 +119,7 @@
                 <h4 id="sel-name">Select a Ward</h4>
             </section>
             <section class="card risk-card">
-                <p class="risk-label" id="mean-label">Area mean</p>
+                <p class="risk-label" id="mean-label">Area mean · risk points</p>
                 <div class="donut-container">
                     <svg viewBox="0 0 100 100">
                         <circle class="donut-bg" cx="50" cy="50" r="40"></circle>
@@ -122,6 +129,12 @@
                 </div>
                 <h4 id="mean-name">All wards</h4>
             </section>
+            <section class="card factor-card">
+                <div class="card-header"><h2>Risk Factors</h2></div>
+                <p class="subtitle" id="factor-subtitle">Weights are placeholders, not agreed values</p>
+                <div id="factor-list"></div>
+                <p class="legend-note">Score = weighted average of each factor's percentile rank among South African wards for the chosen period. Not yet available: drought index, water temperature, wetland share, livestock and poultry locations, outbreak records.</p>
+            </section>
             <section class="card trend-card">
                 <div class="card-header"><h2>Trend</h2></div>
                 <p class="subtitle" id="trend-subtitle">Monthly mean for the current selection</p>
@@ -130,11 +143,11 @@
             <section class="card map-legend">
                 <div class="legend-header"><h2>Map Legend</h2><span class="info-icon">i</span></div>
                 <div class="ramp" aria-hidden="true"></div>
-                <div class="ramp-labels"><span id="ramp-min">Lowest</span><span id="ramp-max">Highest</span></div>
+                <div class="ramp-labels"><span>Lower (0)</span><span>Higher (100)</span></div>
                 <ul class="legend-list">
-                    <li><span class="dot neutral"></span> Ward with no value in this period</li>
+                    <li><span class="dot neutral"></span> Ward with too little data to score</li>
                 </ul>
-                <p class="legend-note">Colours are relative to the values in the selected period. Risk thresholds will be added when they are defined.</p>
+                <p class="legend-note">Environmental risk indicator. Not outbreak records and not a prediction of outbreaks.</p>
             </section>
         </aside>
 
@@ -160,7 +173,9 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="../scripts/vendor/chart.umd.min.js"></script>
+    <script src="../scripts/biosecurity/diseases.js"></script>
     <script src="../scripts/biosecurity/data.js"></script>
+    <script src="../scripts/biosecurity/scoring.js"></script>
     <script src="../scripts/biosecurity/api.js"></script>
     <script src="../scripts/biosecurity/page.js"></script>
 </body>
